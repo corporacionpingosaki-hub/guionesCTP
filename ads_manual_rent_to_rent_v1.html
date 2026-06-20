@@ -1,0 +1,630 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  :root {
+    --navy: #0F2544; --navy-dark: #091a33; --lime: #00C96E; --lime-dim: #00a85c;
+    --lime-soft: rgba(0,201,110,0.12); --lime-softer: rgba(0,201,110,0.06);
+    --text-primary: #e8edf4; --text-secondary: #8fa3bf; --text-muted: #5a7494;
+    --border: rgba(255,255,255,0.08); --border-lime: rgba(0,201,110,0.3);
+    --card-bg: rgba(255,255,255,0.04); --card-hover: rgba(255,255,255,0.07);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, 'Inter', sans-serif; background: var(--navy-dark); color: var(--text-primary); min-height: 100vh; }
+
+  .header { background: var(--navy); border-bottom: 1px solid var(--border); padding: 18px 28px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; }
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .brand-dot { width: 8px; height: 8px; background: var(--lime); border-radius: 50%; animation: pulse 2.5s ease-in-out infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(.85)} }
+  .brand-name { font-size: 13px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
+  .brand-sub { font-size: 11px; color: var(--lime); letter-spacing: .03em; }
+  .counter { font-size: 12px; color: var(--text-muted); }
+  .counter span { color: var(--lime); font-weight: 600; }
+
+  .progress-bar { height: 2px; background: var(--border); }
+  .progress-fill { height: 100%; background: var(--lime); transition: width .4s ease; }
+
+  .main { max-width: 780px; margin: 0 auto; padding: 36px 24px 80px; }
+
+  .ad-meta { margin-bottom: 28px; animation: fadeUp .4s ease forwards; }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)} }
+  .ad-number { font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--lime); margin-bottom: 8px; }
+  .ad-title { font-size: 22px; font-weight: 600; line-height: 1.3; color: #fff; margin-bottom: 12px; }
+  .ad-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+  .tag { font-size: 11px; font-weight: 500; padding: 3px 11px; border-radius: 20px; }
+  .tag-tecnica { background: rgba(127,119,221,.15); color: #a8a1f0; border: 1px solid rgba(127,119,221,.25); }
+  .tag-formato { background: var(--card-bg); color: var(--text-secondary); border: 1px solid var(--border); }
+  .tag-dur { background: var(--card-bg); color: var(--text-secondary); border: 1px solid var(--border); }
+
+  .tabs { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 24px; }
+  .tab { padding: 11px 18px; font-size: 13px; font-weight: 500; color: var(--text-muted); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: color .2s, border-color .2s; }
+  .tab:hover { color: var(--text-secondary); }
+  .tab.active { color: var(--lime); border-bottom-color: var(--lime); }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; animation: fadeUp .3s ease forwards; }
+
+  .section-label { font-size: 10px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+  .section-label::after { content:''; flex:1; height:1px; background: var(--border); }
+  .label-hook { color: #a8a1f0; }
+  .label-cuerpo { color: #f0b429; }
+  .label-cta { color: #f08070; }
+
+  .script-block { font-size: 15px; line-height: 1.75; background: var(--card-bg); border-radius: 10px; padding: 16px 20px; white-space: pre-wrap; margin-bottom: 14px; border-left: 3px solid; }
+  .block-hook { border-color: #7F77DD; }
+  .block-cuerpo { border-color: #f0b429; }
+  .block-cta-block { border-color: #f08070; }
+
+  .notes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .note-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+  .note-title { font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; }
+  .note-text { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+  .note-full { grid-column: 1/-1; background: var(--lime-softer); border-color: var(--border-lime); }
+
+  .copy-box { position: relative; background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 22px; font-size: 14px; line-height: 1.8; white-space: pre-wrap; }
+  .copy-btn { position: absolute; top: 14px; right: 14px; background: var(--lime-soft); border: 1px solid var(--border-lime); color: var(--lime); font-size: 11px; font-weight: 600; padding: 5px 13px; border-radius: 20px; cursor: pointer; font-family: inherit; transition: background .2s; }
+  .copy-btn:hover { background: rgba(0,201,110,.2); }
+
+  .nav { display: flex; align-items: center; justify-content: space-between; margin-top: 44px; padding-top: 24px; border-top: 1px solid var(--border); }
+  .nav-btn { display: flex; align-items: center; gap: 8px; padding: 11px 22px; border-radius: 8px; border: 1px solid var(--border); background: var(--card-bg); color: var(--text-secondary); font-size: 13px; font-weight: 500; cursor: pointer; transition: all .2s; font-family: inherit; }
+  .nav-btn:hover:not(:disabled) { background: var(--card-hover); color: #fff; }
+  .nav-btn:disabled { opacity: .3; cursor: not-allowed; }
+  .nav-btn.next { background: var(--lime); border-color: var(--lime); color: var(--navy-dark); font-weight: 600; }
+  .nav-btn.next:hover:not(:disabled) { background: var(--lime-dim); border-color: var(--lime-dim); }
+  .dots { display: flex; gap: 5px; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--text-muted); cursor: pointer; transition: all .2s; }
+  .dot.active { background: var(--lime); width: 18px; border-radius: 3px; }
+
+  @media(max-width:580px){ .notes-grid{grid-template-columns:1fr} .note-full{grid-column:1} .ad-title{font-size:18px} .tab{padding:9px 13px;font-size:12px} }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="brand">
+    <div class="brand-dot"></div>
+    <div>
+      <div class="brand-name">Conquista Tu Patrimonio</div>
+      <div class="brand-sub">Manual Rent to Rent · Anuncios Meta</div>
+    </div>
+  </div>
+  <div class="counter">Anuncio <span id="cur">1</span> de <span id="tot">10</span></div>
+</div>
+<div class="progress-bar"><div class="progress-fill" id="pbar"></div></div>
+
+<div class="main">
+  <div class="ad-meta" id="ad-meta"></div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('guion')">Guión</div>
+    <div class="tab" onclick="switchTab('notas')">Notas de producción</div>
+    <div class="tab" onclick="switchTab('copy')">Copy del anuncio</div>
+  </div>
+
+  <div class="tab-content active" id="tab-guion"></div>
+  <div class="tab-content" id="tab-notas"></div>
+  <div class="tab-content" id="tab-copy"></div>
+
+  <div class="nav">
+    <button class="nav-btn" id="btn-prev" onclick="navigate(-1)">← Anterior</button>
+    <div class="dots" id="dots"></div>
+    <button class="nav-btn next" id="btn-next" onclick="navigate(1)">Siguiente →</button>
+  </div>
+</div>
+
+<script>
+const ads = [
+  {
+    numero: "Anuncio 01",
+    titulo: "El banco te mintió",
+    tecnica: "Halbert · El Enemigo",
+    formato: "Reel / Story 30–45 seg",
+    duracion: "30–45 seg",
+    hook: `El banco te dijo que necesitabas dinero para ganar dinero con propiedades.
+
+Te mintió.`,
+    cuerpo: `Óscar Martínez vivía en Bogotá con una idea fija: invertir en bienes raíces. Pero no para comprar y esperar — para generar flujo desde el primer mes.
+
+Invirtió 31 millones y medio en adecuar una propiedad que no era suya. La convirtió en coliving. Hoy recibe 6 millones 60 mil pesos netos cada mes.
+
+Sin hipoteca. Sin banco. Sin ser propietario.
+
+El modelo se llama Rent to Rent. Y hay un manual que te explica exactamente cómo funciona — desde el día 1 hasta el primer cobro real.`,
+    cta: `Descargá el Manual Rent to Rent y empezá a construir tu primer flujo inmobiliario este mes.`,
+    notas: [
+      { t: "Formato", c: "Video directo a cámara o voz en off sobre imágenes del proyecto. Reel corto, máximo 45 seg." },
+      { t: "Ritmo", c: "Hook con pausa después de 'Te mintió.' — dejar que aterrice 1 segundo antes de seguir. Cuerpo en tono de revelación, no de urgencia." },
+      { t: "Visual sugerido", c: "Foto o video real del proyecto de Óscar si está disponible. Si no, b-roll de habitaciones de coliving ordenadas. Evitar stock genérico." },
+      { t: "Audio", c: "Música contenida. El gancho vive en el silencio después de la segunda línea — no taparlo." },
+      { full: true, t: "Diferencia clave vs. versión original", c: "Se reemplazó el personaje ficticio por Óscar Martínez con números reales verificables. Se eliminó la promesa de 'sin capital inicial' — Óscar sí invirtió, pero en adecuación, no en compra. Más honesto y más fuerte." }
+    ],
+    copy: `El banco te dijo que necesitabas dinero para ganar dinero con propiedades.
+
+Te mintió.
+
+Óscar Martínez, Bogotá. Invirtió $31.500.000 en adecuación. Hoy recibe $6.060.000 netos al mes — con una propiedad que no es suya.
+
+Sin hipoteca. Sin banco. Sin comprar nada.
+
+El modelo se llama Rent to Rent. El Manual que lo explica paso a paso está disponible ahora.
+
+👉 [Descargá el Manual Rent to Rent]`
+  },
+  {
+    numero: "Anuncio 02",
+    titulo: "El caso de Nidia",
+    tecnica: "Bencivenga · La Prueba Primero",
+    formato: "Anuncio largo Facebook / Instagram",
+    duracion: "60–90 seg lectura",
+    hook: `Nidia Ruiz llevaba tiempo queriendo generar ingresos con bienes raíces.
+
+Sin propiedad propia. Sin experiencia en multirentas. Sin saber por dónde empezar.
+
+Hoy cobra $6.492.000 pesos al mes desde Popayán.`,
+    cuerpo: `No compró nada. No pidió un crédito bancario. No esperó años a que una propiedad se valorizara.
+
+Invirtió 31 millones en adecuar una propiedad que arrendó, la estructuró en modalidad de rentas cortas y multirentas, y convirtió ese flujo en un ingreso mensual real.
+
+Lo hizo con un sistema que tiene nombre, pasos concretos y resultados medibles.
+
+Se llama Rent to Rent.
+
+Y hay un manual que te explica exactamente lo que hizo Nidia — desde cómo hablar con el propietario hasta cómo estructurar los contratos para que el flujo llegue todos los meses.
+
+Si Nidia pudo hacerlo desde Popayán, el modelo no depende de la ciudad. Depende del sistema.`,
+    cta: `Descargá el Manual Rent to Rent y aprendé el sistema que Nidia aplicó.`,
+    notas: [
+      { t: "Formato", c: "Anuncio de copy largo para Facebook feed o Instagram. No requiere video — puede funcionar solo como imagen + copy." },
+      { t: "Tono", c: "Empático y concreto. El personaje de Nidia abre la identificación con mujeres y con personas de ciudades intermedias — no solo grandes capitales." },
+      { t: "Visual sugerido", c: "Foto real de Nidia o de su proyecto si está autorizada. Si no, imagen del proyecto con el número superpuesto: '$6.492.000/mes — Popayán'." },
+      { t: "Segmentación sugerida", c: "Mujeres 28–50, ciudades intermedias de Colombia. Este anuncio tiene potencial de resonancia especial fuera de Bogotá y Medellín." },
+      { full: true, t: "Diferencia clave vs. versión original", c: "Se reemplazó 'Marcos en Madrid' (ficticio, mercado diferente) por Nidia Ruiz (real, Colombia, ciudad intermedia). El resultado es más creíble y más relevante para la audiencia objetivo." }
+    ],
+    copy: `Nidia Ruiz, Popayán.
+
+Sin propiedad propia. Sin experiencia en multirentas. Sin saber por dónde empezar.
+
+Invirtió $31.000.000 en adecuación. Hoy cobra $6.492.000 pesos al mes con rentas cortas estructuradas — con una propiedad que no es suya.
+
+No compró nada. No pidió un crédito. No esperó años.
+
+Aplicó un sistema que tiene nombre y pasos concretos: Rent to Rent.
+
+El Manual que explica exactamente lo que hizo Nidia está disponible ahora.
+
+👉 [Descargá el Manual Rent to Rent]`
+  },
+  {
+    numero: "Anuncio 03",
+    titulo: "El dato que rompe la incredulidad",
+    tecnica: "Ogilvy · El Dato Irrefutable",
+    formato: "Anuncio nativo / copy largo",
+    duracion: "60–90 seg lectura",
+    hook: `Una propiedad que no es tuya puede generar más de 6 millones de pesos al mes.
+
+No es teoría. Hay personas en Bogotá y Popayán que lo están haciendo hoy.`,
+    cuerpo: `El modelo se llama Rent to Rent.
+
+El mecanismo es directo: arrendás una propiedad, la adecuás para multirentas o rentas cortas, y la diferencia entre lo que pagás al propietario y lo que generás con las habitaciones es tu flujo mensual.
+
+Óscar Martínez lo hizo en Bogotá. Invirtió 31 millones y medio en adecuación. Hoy recibe 6 millones 60 mil netos al mes.
+
+Nidia Ruiz lo hizo en Popayán. Misma inversión aproximada. Hoy recibe 6 millones 492 mil al mes con rentas cortas.
+
+No compraron nada. No pidieron hipotecas. No esperaron a que el mercado se valorizara.
+
+¿Por qué no lo sabías antes? Porque el modelo tradicional — comprar, arrendar y esperar — es el que todos enseñan. Rent to Rent requiere sistema, no capital.
+
+Hay un manual que te explica ese sistema paso a paso.`,
+    cta: `Descargá el Manual Rent to Rent y empezá a construir tu primer flujo inmobiliario.`,
+    notas: [
+      { t: "Formato", c: "Anuncio de copy largo o nativo. Funciona bien en Facebook feed con imagen de los resultados reales." },
+      { t: "Estructura", c: "Los dos casos juntos (Óscar + Nidia) hacen el argumento más sólido que uno solo — muestran que el modelo funciona en diferentes ciudades y perfiles." },
+      { t: "Visual sugerido", c: "Dos imágenes lado a lado: proyecto Óscar (Bogotá) y proyecto Nidia (Popayán) con sus números. Si no hay fotos de los proyectos, usar los números como protagonistas del visual." },
+      { t: "Tono", c: "Objetivo y concreto — este es el anuncio más 'periodístico' de los 10. No motivacional, sino informativo con datos reales que hablan solos." },
+      { full: true, t: "Diferencia clave vs. versión original", c: "Se reemplazó la referencia histórica a Robert Allen (1972) — que suena a justificación — por los dos casos reales colombianos. Más relevante, más creíble, más cercano." }
+    ],
+    copy: `Una propiedad que no es tuya puede generar más de $6.000.000 al mes.
+
+No es teoría.
+
+→ Óscar Martínez, Bogotá: $31.500.000 de inversión en adecuación. $6.060.000 netos mensuales.
+→ Nidia Ruiz, Popayán: $31.000.000 de inversión. $6.492.000 mensuales en rentas cortas.
+
+Ninguno compró una propiedad. Ninguno pidió hipoteca.
+
+El modelo se llama Rent to Rent. El Manual que lo explica está disponible ahora.
+
+👉 [Descargá el Manual Rent to Rent]`
+  },
+  {
+    numero: "Anuncio 04",
+    titulo: "La métrica que separa los proyectos que funcionan de los que no",
+    tecnica: "Albuquerque · El Mecanismo con Nombre",
+    formato: "VSL / Video 60–90 seg",
+    duracion: "60–90 seg",
+    hook: `¿Sabés cómo saber en menos de 5 minutos si una propiedad para Rent to Rent va a funcionar o te va a quebrar?
+
+Hay una métrica que lo determina antes de firmar cualquier contrato.`,
+    cuerpo: `Se llama la métrica dorada del Rent to Rent.
+
+La lógica es simple: el flujo que generás con las habitaciones tiene que ser mínimo 2.5 veces lo que le pagás al propietario por el arriendo. Si no llega a ese múltiplo, la propiedad no pasa el filtro. La descartás y seguís buscando.
+
+Óscar Martínez la aplicó en Bogotá antes de comprometerse con su proyecto. Resultado: 6 millones 60 mil pesos netos al mes sobre una inversión de 31 millones y medio.
+
+Nidia Ruiz la aplicó en Popayán. Resultado: 6 millones 492 mil pesos al mes en rentas cortas.
+
+La diferencia entre un proyecto que genera flujo y uno que te deja pagando de tu bolsillo no está en la suerte ni en la ciudad. Está en saber calcular antes de firmar.
+
+El Manual Rent to Rent te enseña esta métrica y cómo aplicarla paso a paso — desde el primer contacto con el propietario hasta el primer cobro real.`,
+    cta: `Descargá el Manual y aprendé a filtrar propiedades con la métrica dorada antes de comprometer un solo peso.`,
+    notas: [
+      { t: "Formato", c: "Video directo a cámara — este guion funciona mejor con Camilo en cámara que como voz en off. La métrica dorada es propia de CTP y necesita la autoridad del rostro de la marca." },
+      { t: "Visual sugerido", c: "Al mencionar la métrica: texto sobreimpreso '2.5x el arriendo = mínimo'. Al mencionar los casos: números en pantalla. Podés mostrar una calculadora o pantalla de análisis real." },
+      { t: "Ritmo", c: "Hook con pausa después de la pregunta. Cuerpo a ritmo didáctico — este es el anuncio más 'educativo' de los 10, lo cual está bien para audiencia fría con algo de conocimiento del tema." },
+      { t: "Duración", c: "Puede ir hasta 90 seg si los casos se muestran con visuals. No apurar — este anuncio convierte por credibilidad, no por urgencia." },
+      { full: true, t: "Diferencia clave vs. versión original", c: "Se eliminaron las '4 Métricas Doradas' inventadas del original y se reemplazó por la métrica dorada real de CTP (2.5x). Más honesto, más específico, más propio de la marca." }
+    ],
+    copy: `¿Cómo sabés si una propiedad para Rent to Rent va a funcionar antes de firmar?
+
+Hay una métrica que lo determina en menos de 5 minutos.
+
+Se llama la métrica dorada: el flujo de las habitaciones tiene que ser mínimo 2.5 veces lo que pagás de arriendo. Si no llega, la descartás.
+
+Óscar Martínez la aplicó en Bogotá → $6.060.000/mes netos.
+Nidia Ruiz la aplicó en Popayán → $6.492.000/mes.
+
+El Manual Rent to Rent te enseña esta métrica y cómo aplicarla desde el día 1.
+
+👉 [Descargá el Manual Rent to Rent]`
+  },
+  {
+    numero: "Anuncio 05",
+    titulo: "La pregunta que cambia todo",
+    tecnica: "Jim Edwards · La Pregunta Espejo",
+    formato: "Anuncio corto Facebook / Instagram",
+    duracion: "30–45 seg",
+    hook: `¿Llevás tiempo queriendo generar ingresos con bienes raíces pero creés que no tenés suficiente capital para empezar?
+
+El capital no es el requisito. El sistema sí.`,
+    cuerpo: `Nidia Ruiz no tenía una propiedad. No tenía experiencia en multirentas. Tenía el sistema.
+
+Invirtió 31 millones en adecuación — no en compra — y hoy genera 6 millones 492 mil pesos al mes desde Popayán con rentas cortas estructuradas.
+
+Óscar Martínez hizo lo mismo en Bogotá. 31 millones y medio de inversión. 6 millones 60 mil de flujo mensual neto.
+
+El modelo que los dos aplicaron se llama Rent to Rent. No requiere comprar una propiedad. Requiere saber qué hacer con una propiedad que ya existe.
+
+Hay un manual que te enseña exactamente eso.`,
+    cta: `Descargá el Manual Rent to Rent y aprendé el sistema antes de buscar la propiedad.`,
+    notas: [
+      { t: "Formato", c: "Anuncio corto — copy + imagen estática o video de 30 seg. Ideal para remarketing de personas que ya visitaron la landing pero no compraron." },
+      { t: "Gancho", c: "La pregunta espejo funciona porque la audiencia objetivo se identifica inmediatamente. No cambiar el tono de pregunta por afirmación — la pregunta genera más retención." },
+      { t: "Estructura", c: "Los dos casos al inicio del cuerpo invierten el orden habitual (primero los números, luego el producto). Esto funciona especialmente bien en audiencia fría que no conoce CTP." },
+      { t: "Visual sugerido", c: "Imagen con los dos nombres y sus resultados: 'Nidia, Popayán → $6.492.000/mes' y 'Óscar, Bogotá → $6.060.000/mes'. Fondo navy CTP con texto en lima." },
+      { full: true, t: "Diferencia clave vs. versión original", c: "Se eliminó el lenguaje de 'el momento correcto que esperabas no existe' — suena a presión de ventas. Se reemplazó por el contraste entre capital y sistema, que es el argumento real de CTP." }
+    ],
+    copy: `¿Querés generar ingresos con bienes raíces pero creés que no tenés suficiente capital?
+
+El capital no es el requisito. El sistema sí.
+
+Nidia Ruiz, Popayán: $31M de inversión → $6.492.000/mes.
+Óscar Martínez, Bogotá: $31.5M de inversión → $6.060.000/mes.
+
+Ninguno compró una propiedad. Los dos aplicaron Rent to Rent.
+
+El Manual que explica el sistema está disponible ahora.
+
+👉 [Descargá el Manual Rent to Rent]`
+  },
+  {
+    numero: "Anuncio 06",
+    titulo: "Cada mes que no empezás",
+    tecnica: "Halbert · El Costo del No",
+    formato: "Reel / TikTok 30 seg",
+    duracion: "30 seg",
+    hook: `Cada mes que no aplicás esto, son 6 millones de pesos que no existieron.
+
+No porque no pudieras. Sino porque nadie te había explicado el modelo.`,
+    cuerpo: `Óscar Martínez lo entendió. Invirtió en adecuación — no en compra — y hoy genera 6 millones 60 mil pesos netos al mes en Bogotá con una propiedad que no es suya.
+
+El modelo se llama Rent to Rent.
+
+Hay un manual que te lleva del día 1 al primer cobro real. Con el proceso paso a paso, los criterios para elegir la propiedad correcta y los contratos que protegen tu operación.
+
+No te estoy hablando de comprar nada.
+
+Te estoy hablando de empezar a cobrar.`,
+    cta: `Descargá el Manual Rent to Rent hoy.`,
+    notas: [
+      { t: "Formato", c: "Reel cortísimo — máximo 30 seg. Ritmo rápido, sin pausas largas. Este es el anuncio de menor fricción: una idea, un caso, un CTA." },
+      { t: "Gancho", c: "Los '6 millones' del hook son el flujo real de Óscar — no un número inventado. Eso hace la urgencia creíble, no manipuladora." },
+      { t: "Visual sugerido", c: "Texto en pantalla que aparece con el hook: '$6.060.000 que no existieron'. Ritmo de texto rápido tipo typewriter. Fondo oscuro navy." },
+      { t: "Uso ideal", c: "Retargeting de audiencia tibia o lookalike de compradores. No para audiencia completamente fría — necesita algo de contexto previo para que el número resuene." },
+      { full: true, t: "Diferencia clave vs. versión original", c: "Se reemplazó el rango genérico '$400–$800' por el número real de Óscar ($6.060.000). La urgencia del original era abstracta — esta versión ancla en un caso concreto." }
+    ],
+    copy: `Cada mes que no empezás son $6.000.000 que no existieron.
+
+No porque no pudieras. Sino porque nadie te había explicado el modelo.
+
+Óscar Martínez, Bogotá: invirtió en adecuación, no en compra. Hoy recibe $6.060.000 netos al mes con una propiedad que no es suya.
+
+Se llama Rent to Rent. Hay un manual.
+
+👉 [Descargá el Manual Rent to Rent]`
+  },
+  {
+    numero: "Anuncio 07",
+    titulo: "La cláusula que el 97% no incluye",
+    tecnica: "Bencivenga · El Secreto Específico",
+    formato: "Anuncio nativo / copy largo",
+    duracion: "60–90 seg lectura",
+    hook: `Hay una cláusula que la mayoría de quienes hacen Rent to Rent no incluyen en su contrato.
+
+Sin ella, el propietario puede pedirte la propiedad de vuelta cuando quiera.
+
+Con ella, tu operación está protegida desde el primer día.`,
+    cuerpo: `Esa cláusula está en el Manual Rent to Rent.
+
+Pero no es lo único que hay adentro.
+
+También encontrarás:
+
+El criterio exacto para saber si una propiedad va a generar flujo antes de firmar — sin visitar, sin negociar, sin comprometer tiempo en lo que no va a funcionar.
+
+El proceso para hablar con un propietario que no te conoce y lograr que quiera reunirse con vos esta semana.
+
+Las preguntas que hacen que el propietario entienda el modelo y quiera ser parte de él — sin que vos tengas que convencer a nadie de nada.
+
+El plan día a día, acción por acción, desde el día 1 hasta el primer cobro real.
+
+Óscar Martínez lo aplicó en Bogotá. 31 millones y medio de inversión en adecuación. 6 millones 60 mil pesos netos al mes.
+
+Nidia Ruiz lo aplicó en Popayán. 31 millones de inversión. 6 millones 492 mil pesos al mes.
+
+Todo eso está en un manual. Disponible ahora.`,
+    cta: `Descargá el Manual Rent to Rent y empezá con la operación protegida desde el día 1.`,
+    notas: [
+      { t: "Formato", c: "Copy largo — este anuncio necesita espacio para desarrollar la lista de beneficios. Funciona mejor en Facebook feed que en Stories o Reels." },
+      { t: "Estructura de lista", c: "Los bullets son el corazón de este anuncio. Cada uno tiene que ser específico y concreto — nada genérico. Si alguno suena vago, eliminarlo." },
+      { t: "Gancho", c: "La cláusula específica genera intriga real porque toca un miedo concreto: perder la propiedad. No es miedo genérico — es un riesgo operativo real del modelo." },
+      { t: "Posición de los casos", c: "Óscar y Nidia van al final como cierre de credibilidad — después de los beneficios, no antes. En este formato funciona mejor así." },
+      { full: true, t: "Diferencia clave vs. versión original", c: "Se eliminaron las referencias a páginas específicas del manual (p.8, p.14, p.20) porque generan expectativas de contenido que no controlamos. Se mantiene la especificidad sin comprometer páginas." }
+    ],
+    copy: `Hay una cláusula que la mayoría de quienes hacen Rent to Rent no incluyen en su contrato.
+
+Sin ella, el propietario puede pedirte la propiedad de vuelta cuando quiera.
+
+El Manual Rent to Rent la incluye. Y también incluye:
+
+→ El criterio para saber si una propiedad genera flujo antes de firmar.
+→ Cómo hablar con un propietario que no te conoce y lograr una reunión esta semana.
+→ Las preguntas que hacen que el propietario quiera ser parte del modelo.
+→ El plan día a día desde el día 1 hasta el primer cobro.
+
+Óscar Martínez lo aplicó: $31.5M de inversión → $6.060.000/mes, Bogotá.
+Nidia Ruiz lo aplicó: $31M de inversión → $6.492.000/mes, Popayán.
+
+👉 [Descargá el Manual Rent to Rent]`
+  },
+  {
+    numero: "Anuncio 08",
+    titulo: "El caso de Óscar",
+    tecnica: "Ogilvy · El Titular que No Puede Ignorarse",
+    formato: "Anuncio gráfico / imagen con copy",
+    duracion: "45–60 seg lectura",
+    hook: `Óscar Martínez vivía en Bogotá con ganas de generar ingresos con bienes raíces.
+
+No quería comprar. No quería esperar años. Quería flujo mensual real.
+
+Hoy recibe 6 millones 60 mil pesos netos al mes — con una propiedad que no es suya.`,
+    cuerpo: `No vendió nada. No pidió un crédito bancario. No especuló con la valorización.
+
+Invirtió 31 millones y medio en adecuar una propiedad arrendada, la convirtió en coliving con habitaciones independientes, y estructuró el flujo mes a mes.
+
+Lo que cambió todo para Óscar fue tener el sistema claro antes de buscar la propiedad.
+
+Saber qué criterio usar para identificarla. Saber cómo hablar con el propietario. Saber qué contratos firmar y qué cláusulas incluir. Saber cómo llenar las habitaciones rápido.
+
+Cuando tenés eso, el resultado no depende de la suerte. Depende de seguir el proceso.
+
+El modelo que Óscar aplicó se llama Rent to Rent. Y hay un manual que lo explica paso a paso.`,
+    cta: `Descargá el Manual Rent to Rent y aprendé el sistema que Óscar aplicó en Bogotá.`,
+    notas: [
+      { t: "Formato", c: "Anuncio imagen + copy o video corto con fotos del proyecto de Óscar. Si hay autorización y fotos disponibles, este es el anuncio que más se beneficia de material visual real." },
+      { t: "Protagonista", c: "Óscar es el protagonista — no el producto, no CTP, no Camilo. El producto aparece al final como la herramienta que lo hizo posible. Este orden es clave en la técnica Ogilvy." },
+      { t: "Tono", c: "Narrativo y concreto. Sin adjetivos innecesarios. Los números hablan — no hace falta calificarlos de 'increíbles' o 'históricos'." },
+      { t: "Segmentación sugerida", c: "Hombres 28–45, Bogotá y ciudades principales. Profesionales con ingresos estables buscando diversificación." },
+      { full: true, t: "Diferencia clave vs. versión original", c: "Se reemplazó 'Alejandro el profesor de México' (ficticio) por Óscar en Bogotá (real). El 'marco legal de 4 pilares' inventado se reemplazó por los beneficios reales del manual." }
+    ],
+    copy: `Óscar Martínez, Bogotá.
+
+Quería flujo mensual real — no esperar años a que una propiedad se valorizara.
+
+Invirtió $31.500.000 en adecuación. Hoy recibe $6.060.000 netos al mes con una propiedad que no es suya.
+
+No compró nada. No pidió hipoteca.
+
+Aplicó Rent to Rent con el sistema correcto: criterio para identificar la propiedad, proceso para hablar con el propietario, contratos que protegen la operación.
+
+El Manual que explica ese sistema está disponible ahora.
+
+👉 [Descargá el Manual Rent to Rent]`
+  },
+  {
+    numero: "Anuncio 09",
+    titulo: "La ventana que pocos están viendo",
+    tecnica: "Albuquerque · El Sistema con Fecha de Caducidad",
+    formato: "Anuncio largo / email de campaña",
+    duracion: "90–120 seg lectura",
+    hook: `Hay una brecha en el mercado inmobiliario colombiano que la mayoría no está viendo.
+
+Y las personas que la están aprovechando no son las que más capital tienen.
+
+Son las que tienen el sistema correcto.`,
+    cuerpo: `La demanda de habitaciones en arriendo sigue subiendo. Los precios de compra siguen fuera del alcance de la mayoría. Y cada vez hay más propietarios que prefieren trabajar con un operador profesional que gestionar inquilinos solos.
+
+Esa brecha es exactamente donde vive el modelo Rent to Rent.
+
+Óscar Martínez la encontró en Bogotá. Invirtió 31 millones y medio en adecuación. Hoy recibe 6 millones 60 mil pesos netos al mes.
+
+Nidia Ruiz la encontró en Popayán. Invirtió 31 millones. Hoy genera 6 millones 492 mil al mes con rentas cortas estructuradas.
+
+Ninguno esperó el momento perfecto. Ninguno esperó tener más capital. Entraron con el sistema claro y siguieron el proceso.
+
+El Manual Rent to Rent te explica ese proceso: desde cómo identificar la propiedad y hablar con el propietario, hasta cómo estructurar los contratos y llenar las habitaciones en el menor tiempo posible.
+
+Una propiedad bien operada genera flujo. Dos propiedades generan el doble. El proceso es exactamente el mismo.
+
+Las brechas de mercado no esperan.`,
+    cta: `Descargá el Manual Rent to Rent y entrá al modelo antes de que la competencia lo sature.`,
+    notas: [
+      { t: "Formato", c: "Anuncio largo o email de campaña para base de datos tibia. No para audiencia fría — requiere algo de contexto previo sobre el modelo." },
+      { t: "Tono", c: "Analítico y de mercado — este anuncio habla a quien ya está evaluando opciones, no a quien recién descubre el modelo. Tono de 'esto es lo que está pasando en el mercado'." },
+      { t: "Urgencia", c: "La urgencia es de mercado, no de oferta limitada. Evitar frases como 'oferta válida hasta...' — no es coherente con la marca CTP. La urgencia real es la brecha, no el precio." },
+      { t: "Escalabilidad", c: "El cierre '1 propiedad → 2 propiedades, mismo proceso' siembra la semilla del modelo escalable sin prometer resultados específicos no verificados." },
+      { full: true, t: "Diferencia clave vs. versión original", c: "Se eliminó la 'neuroarquitectura de 4 fases' y la 'ratio 10:3:1' — conceptos que no pertenecen a CTP y que pueden generar expectativas difíciles de cumplir. El argumento de mercado se mantuvo pero anclado en contexto colombiano real." }
+    ],
+    copy: `Hay una brecha en el mercado inmobiliario colombiano que la mayoría no está viendo.
+
+La demanda de habitaciones sube. Los precios de compra siguen inalcanzables. Más propietarios prefieren trabajar con operadores profesionales.
+
+Esa brecha es donde vive Rent to Rent.
+
+→ Óscar Martínez, Bogotá: $31.5M de inversión → $6.060.000/mes.
+→ Nidia Ruiz, Popayán: $31M de inversión → $6.492.000/mes.
+
+Ninguno esperó el momento perfecto. Entraron con el sistema.
+
+Una propiedad bien operada genera flujo. Dos generan el doble. El proceso es el mismo.
+
+El Manual que explica ese proceso está disponible ahora.
+
+👉 [Descargá el Manual Rent to Rent]`
+  },
+  {
+    numero: "Anuncio 10",
+    titulo: "El costo real del algún día",
+    tecnica: "Jim Edwards · La Identidad que Duele Reconocer",
+    formato: "Video largo / VSL emocional 90 seg",
+    duracion: "75–90 seg",
+    hook: `Si llevás tiempo pensando que "algún día" vas a generar ingresos con bienes raíces y todavía no empezaste...
+
+Ese "algún día" tiene un costo que nadie calcula.`,
+    cuerpo: `Doce meses sin un flujo de 6 millones son 72 millones de pesos que no existieron.
+
+No porque no pudieras. Sino porque el modelo que te enseñaron — comprar, esperar, valorización — te dejó esperando un capital que no llegaba.
+
+Hay un modelo diferente. Se llama Rent to Rent.
+
+No comprás. No esperás. Arrendás una propiedad, la adecuás para multirentas o rentas cortas, y la diferencia entre lo que pagás y lo que generás es tu flujo mensual.
+
+Nidia Ruiz lo hizo en Popayán con 31 millones de inversión. Hoy genera 6 millones 492 mil al mes.
+
+Óscar Martínez lo hizo en Bogotá con 31 millones y medio. Hoy recibe 6 millones 60 mil netos mensuales.
+
+Los dos empezaron sin saber cómo hacerlo. Los dos aprendieron el sistema antes de buscar la propiedad.
+
+Hay un manual que explica ese sistema. Paso a paso. Desde el primer contacto con un propietario hasta el primer cobro real.
+
+El año que viene podés estar exactamente en el mismo punto.
+
+O podés tener un flujo mensual que no tenés hoy.`,
+    cta: `Descargá el Manual Rent to Rent y empezá a construir ese flujo.`,
+    notas: [
+      { t: "Formato", c: "VSL o video largo a cámara. Este es el anuncio más emocional de los 10 — necesita la voz y el rostro de Camilo para que funcione. No como voz en off sobre stock." },
+      { t: "Ritmo", c: "Hook lento — dejar que 'ese algún día tiene un costo que nadie calcula' aterrice antes de seguir. El cuerpo puede ir más rápido. El cierre vuelve a bajar el ritmo." },
+      { t: "Tono", c: "Empático, no culposo. La audiencia que se identifica con 'algún día' no necesita sentirse mal — necesita ver la salida. El tono es de quien ya encontró esa salida y la está mostrando." },
+      { t: "Los 72 millones", c: "12 meses × $6M es una proyección basada en los casos reales. Aclarar que es una proyección, no una garantía — si el equipo de cumplimiento lo requiere, agregar un disclaimer." },
+      { full: true, t: "Diferencia clave vs. versión original", c: "Se reemplazó el cálculo abstracto de '$4.800 en 12 meses' por los casos reales de Óscar y Nidia. Se eliminó el tono de urgencia manipuladora del cierre original — 'el año que viene podés estar igual' es más honesto que 'hacé algo diferente hoy'." }
+    ],
+    copy: `Si llevás tiempo pensando que "algún día" vas a generar ingresos con bienes raíces...
+
+Ese "algún día" tiene un costo que nadie calcula.
+
+12 meses sin un flujo de $6.000.000 son $72.000.000 que no existieron.
+
+No porque no pudieras. Sino porque el modelo que te enseñaron te dejó esperando capital que no llegaba.
+
+Nidia Ruiz, Popayán: $31M de inversión → $6.492.000/mes.
+Óscar Martínez, Bogotá: $31.5M de inversión → $6.060.000/mes.
+
+Los dos empezaron sin saber cómo. Los dos aprendieron el sistema primero.
+
+Ese sistema es Rent to Rent. El Manual está disponible ahora.
+
+El año que viene podés estar exactamente en el mismo punto. O podés tener un flujo que hoy no tenés.
+
+👉 [Descargá el Manual Rent to Rent]`
+  }
+];
+
+let cur = 0, curTab = 'guion';
+
+function render() {
+  const a = ads[cur];
+  document.getElementById('cur').textContent = cur + 1;
+  document.getElementById('tot').textContent = ads.length;
+  document.getElementById('pbar').style.width = ((cur+1)/ads.length*100)+'%';
+
+  const meta = document.getElementById('ad-meta');
+  meta.innerHTML = `
+    <div class="ad-number">${a.numero}</div>
+    <div class="ad-title">${a.titulo}</div>
+    <div class="ad-tags">
+      <span class="tag tag-tecnica">${a.tecnica}</span>
+      <span class="tag tag-formato">${a.formato}</span>
+      <span class="tag tag-dur">⏱ ${a.duracion}</span>
+    </div>`;
+  meta.style.animation='none'; void meta.offsetWidth; meta.style.animation='fadeUp .4s ease forwards';
+
+  document.getElementById('tab-guion').innerHTML = `
+    <div class="section-label label-hook" style="margin-bottom:8px">Hook</div>
+    <div class="script-block block-hook" style="margin-bottom:16px">${a.hook}</div>
+    <div class="section-label label-cuerpo" style="margin-bottom:8px">Cuerpo</div>
+    <div class="script-block block-cuerpo" style="margin-bottom:16px">${a.cuerpo}</div>
+    <div class="section-label label-cta" style="margin-bottom:8px">CTA</div>
+    <div class="script-block block-cta-block">${a.cta}</div>`;
+
+  document.getElementById('tab-notas').innerHTML = `
+    <div class="notes-grid">${a.notas.map(n=>`
+      <div class="note-card${n.full?' note-full':''}">
+        <div class="note-title">${n.t}</div>
+        <div class="note-text">${n.c}</div>
+      </div>`).join('')}</div>`;
+
+  document.getElementById('tab-copy').innerHTML = `
+    <div class="copy-box">
+      <button class="copy-btn" onclick="copyCopy()">Copiar</button>${a.copy}
+    </div>`;
+
+  document.getElementById('dots').innerHTML = ads.map((_,i)=>`<div class="dot${i===cur?' active':''}" onclick="goTo(${i})"></div>`).join('');
+  document.getElementById('btn-prev').disabled = cur===0;
+  document.getElementById('btn-next').disabled = cur===ads.length-1;
+  document.getElementById('btn-next').textContent = cur===ads.length-1 ? '✓ Fin' : 'Siguiente →';
+
+  switchTab(curTab, false);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function switchTab(t, scroll) {
+  curTab = t;
+  document.querySelectorAll('.tab').forEach((el,i)=>el.classList.toggle('active',['guion','notas','copy'][i]===t));
+  document.querySelectorAll('.tab-content').forEach(el=>el.classList.remove('active'));
+  document.getElementById('tab-'+t).classList.add('active');
+}
+
+function navigate(d) { cur = Math.max(0,Math.min(ads.length-1,cur+d)); render(); }
+function goTo(i) { cur=i; render(); }
+function copyCopy() {
+  navigator.clipboard.writeText(ads[cur].copy).then(()=>{
+    const b=document.querySelector('.copy-btn');
+    b.textContent='✓ Copiado'; setTimeout(()=>b.textContent='Copiar',2000);
+  });
+}
+render();
+</script>
+</body>
+</html>

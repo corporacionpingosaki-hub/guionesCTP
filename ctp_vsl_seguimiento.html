@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mini VSL · Seguimiento Instagram · CTP</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+
+  :root {
+    --navy: #0F2544;
+    --navy-light: #1a3560;
+    --navy-dark: #091a33;
+    --lime: #00C96E;
+    --lime-dim: #00a85c;
+    --lime-soft: rgba(0,201,110,0.12);
+    --lime-softer: rgba(0,201,110,0.06);
+    --white: #ffffff;
+    --text-primary: #e8edf4;
+    --text-secondary: #8fa3bf;
+    --text-muted: #5a7494;
+    --border: rgba(255,255,255,0.08);
+    --border-lime: rgba(0,201,110,0.3);
+    --card-bg: rgba(255,255,255,0.04);
+    --card-hover: rgba(255,255,255,0.07);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--navy-dark);
+    color: var(--text-primary);
+    min-height: 100vh;
+  }
+
+  .header {
+    background: var(--navy);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .brand-dot {
+    width: 8px; height: 8px;
+    background: var(--lime);
+    border-radius: 50%;
+    animation: pulse 2.5s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%,100% { opacity:1; transform:scale(1); }
+    50% { opacity:.6; transform:scale(.85); }
+  }
+  .brand-name { font-size: 13px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--white); }
+  .brand-handle { font-size: 12px; color: var(--lime); font-weight: 400; letter-spacing: .04em; }
+  .counter { font-size: 12px; color: var(--text-muted); letter-spacing: .04em; }
+  .counter span { color: var(--lime); font-weight: 600; }
+
+  .progress-bar { height: 2px; background: var(--border); }
+  .progress-fill { height: 100%; background: var(--lime); transition: width .4s ease; }
+
+  .main { max-width: 820px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  .reel-meta { margin-bottom: 32px; opacity: 0; transform: translateY(12px); animation: fadeUp .4s ease forwards; }
+  @keyframes fadeUp { to { opacity:1; transform:translateY(0); } }
+
+  .reel-number { font-size: 11px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--lime); margin-bottom: 10px; }
+  .reel-title { font-size: 26px; font-weight: 600; line-height: 1.3; color: var(--white); margin-bottom: 14px; }
+  .reel-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+  .tag { font-size: 11px; font-weight: 500; padding: 4px 12px; border-radius: 20px; }
+  .tag-bloque { background: rgba(127,119,221,.15); color: #a8a1f0; border: 1px solid rgba(127,119,221,.25); }
+  .tag-tipo { background: var(--lime-softer); color: var(--lime); border: 1px solid var(--border-lime); }
+  .tag-palanca { background: rgba(255,255,255,.06); color: var(--text-secondary); border: 1px solid var(--border); }
+  .tag-duracion { background: rgba(255,255,255,.06); color: var(--text-secondary); border: 1px solid var(--border); }
+
+  .tabs { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 28px; }
+  .tab { padding: 12px 20px; font-size: 13px; font-weight: 500; color: var(--text-muted); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; transition: color .2s, border-color .2s; user-select: none; }
+  .tab:hover { color: var(--text-secondary); }
+  .tab.active { color: var(--lime); border-bottom-color: var(--lime); }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; animation: fadeUp .3s ease forwards; }
+
+  .guion-block { margin-bottom: 16px; }
+  .block-label { font-size: 10px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+  .block-label::after { content:''; flex:1; height:1px; background: var(--border); }
+  .label-gancho { color: #a8a1f0; }
+  .label-relevancia { color: var(--lime); }
+  .label-valor { color: #f0b429; }
+  .label-accion { color: #f08070; }
+  .block-timing { font-size: 10px; color: var(--text-muted); font-weight: 400; letter-spacing: 0; text-transform: none; margin-left: 4px; }
+
+  .script-text { background: var(--card-bg); border-radius: 10px; padding: 18px 20px; font-size: 15px; line-height: 1.75; color: var(--text-primary); white-space: pre-wrap; border-left: 3px solid; }
+  .script-text.gancho { border-color: #7F77DD; }
+  .script-text.relevancia { border-color: var(--lime); }
+  .script-text.valor { border-color: #f0b429; }
+  .script-text.accion { border-color: #f08070; }
+
+  .notes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .note-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 16px; transition: background .2s; }
+  .note-card:hover { background: var(--card-hover); }
+  .note-icon { font-size: 16px; margin-bottom: 8px; }
+  .note-title { font-size: 10px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px; }
+  .note-text { font-size: 13px; line-height: 1.6; color: var(--text-secondary); }
+  .cta-note { grid-column: 1/-1; background: var(--lime-softer); border-color: var(--border-lime); }
+
+  .desc-box { background: var(--card-bg); border: 1px solid var(--border); border-radius: 12px; padding: 24px; font-size: 14px; line-height: 1.8; color: var(--text-primary); white-space: pre-wrap; position: relative; }
+  .desc-copy-btn { position: absolute; top: 16px; right: 16px; background: var(--lime-soft); border: 1px solid var(--border-lime); color: var(--lime); font-size: 11px; font-weight: 600; padding: 6px 14px; border-radius: 20px; cursor: pointer; font-family: 'Inter', sans-serif; transition: background .2s; }
+  .desc-copy-btn:hover { background: rgba(0,201,110,.2); }
+  .hashtags { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); display: flex; flex-wrap: wrap; gap: 6px; }
+  .hashtag { font-size: 12px; color: var(--lime); background: var(--lime-softer); padding: 3px 10px; border-radius: 20px; border: 1px solid var(--border-lime); }
+
+  .nav { display: flex; align-items: center; justify-content: space-between; margin-top: 48px; padding-top: 28px; border-top: 1px solid var(--border); }
+  .nav-btn { display: flex; align-items: center; gap: 10px; padding: 12px 24px; border-radius: 8px; border: 1px solid var(--border); background: var(--card-bg); color: var(--text-secondary); font-size: 13px; font-weight: 500; cursor: pointer; transition: all .2s; font-family: 'Inter', sans-serif; }
+  .nav-btn:hover:not(:disabled) { background: var(--card-hover); color: var(--white); border-color: rgba(255,255,255,.15); }
+  .nav-btn:disabled { opacity: .3; cursor: not-allowed; }
+  .nav-btn.next { background: var(--lime); border-color: var(--lime); color: var(--navy-dark); font-weight: 600; }
+  .nav-btn.next:hover:not(:disabled) { background: var(--lime-dim); border-color: var(--lime-dim); }
+  .dot-nav { display: flex; gap: 6px; align-items: center; }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--text-muted); cursor: pointer; transition: all .2s; }
+  .dot.active { background: var(--lime); width: 20px; border-radius: 3px; }
+
+  @media (max-width: 600px) {
+    .header { padding: 16px 20px; }
+    .main { padding: 28px 16px 60px; }
+    .reel-title { font-size: 20px; }
+    .notes-grid { grid-template-columns: 1fr; }
+    .cta-note { grid-column: 1; }
+    .tab { padding: 10px 14px; font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="brand">
+    <div class="brand-dot"></div>
+    <div>
+      <div class="brand-name">Conquista Tu Patrimonio</div>
+      <div class="brand-handle">@elpingo_83</div>
+    </div>
+  </div>
+  <div class="counter">VSL <span id="current-num">1</span> de <span id="total-num">2</span></div>
+</div>
+
+<div class="progress-bar">
+  <div class="progress-fill" id="progress-fill"></div>
+</div>
+
+<div class="main">
+  <div class="reel-meta" id="reel-meta"></div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('guion')">Guión</div>
+    <div class="tab" onclick="switchTab('notas')">Notas de producción</div>
+    <div class="tab" onclick="switchTab('descripcion')">Copy del post</div>
+  </div>
+
+  <div class="tab-content active" id="tab-guion"></div>
+  <div class="tab-content" id="tab-notas"></div>
+  <div class="tab-content" id="tab-descripcion"></div>
+
+  <div class="nav">
+    <button class="nav-btn prev" id="btn-prev" onclick="navigate(-1)">← Anterior</button>
+    <div class="dot-nav" id="dot-nav"></div>
+    <button class="nav-btn next" id="btn-next" onclick="navigate(1)">Siguiente →</button>
+  </div>
+</div>
+
+<script>
+const reels = [
+  {
+    numero: "VSL 01",
+    titulo: "Empleado / Asalariado",
+    bloque: "📱 Mini VSL",
+    tipo: "Resultado / Transformación",
+    palanca: "Promesa específica",
+    duracion: "35–45 seg",
+    guion: [
+      {
+        parte: "Gancho",
+        timing: "~5 seg",
+        clase: "gancho",
+        texto: `"Si tenés un empleo y recibís tu salario todos los meses… ese dinero no está generando nada más por vos.\n\nEsto te va a cambiar la perspectiva."`
+      },
+      {
+        parte: "Relevancia",
+        timing: "~8 seg",
+        clase: "relevancia",
+        texto: `"Hola, soy Camilo de Conquista Tu Patrimonio.\n\nLlevamos más de 10 años construyendo negocios de multirrentas. Tenemos más de 175 puertas en operación y ya formamos a más de 2.500 personas que hoy generan rentas todos los meses."`
+      },
+      {
+        parte: "Valor",
+        timing: "~20 seg",
+        clase: "valor",
+        texto: `"Todos los días publicamos acá estrategias reales, errores que cometimos nosotros primero y casos de estudiantes con números verificables.\n\nNo enseñamos teoría. Enseñamos desde nuestros propios proyectos — para que veas exactamente cómo se hace, no cómo se supone que se hace."`
+      },
+      {
+        parte: "Acción",
+        timing: "~7 seg",
+        clase: "accion",
+        texto: `"Si nos seguís, cada día vas a tener un paso más claro de cómo construir activos que trabajen por vos — incluso mientras estás en tu trabajo.\n\nSeguinos. Todos los días subimos el camino."`
+      }
+    ],
+    notas: [
+      { icon: "⚡", titulo: "Formato", texto: "Video directo a cámara. Ideal grabarlo en locación de un proyecto activo — no en estudio genérico. El fondo vende antes de que hables.", cta: false },
+      { icon: "🎯", titulo: "Ritmo", texto: "El gancho va rápido y sin saludo previo. La presentación llega después de la promesa — quien llega frío ya tiene razón para quedarse antes de saber quién habla. Cierre sube levemente la energía.", cta: false },
+      { icon: "😐", titulo: "Expresión", texto: "Tono de quien comparte algo que ya probó, no de quien vende. Al decir \"no enseñamos teoría\": pausa corta y énfasis — esa línea es el diferenciador de CTP frente a cualquier otro perfil de inversión.", cta: false },
+      { icon: "🤲", titulo: "Gestos", texto: "Al mencionar \"175 puertas\" y \"2.500 personas\": gesto afirmativo, palma arriba — números que respaldan, no que presumen. Al decir \"exactamente cómo se hace\": señalar hacia adelante.", cta: false },
+      { icon: "🎬", titulo: "Visuales sugeridos", texto: "Texto sobreimpreso en el gancho: \"Tu salario no está trabajando por vos.\" Si es en interiores: B-roll de habitaciones de coliving en operación intercalado con el cuerpo.", cta: false },
+      { icon: "📢", titulo: "Audio y CTA", texto: "Música muy baja o sin música — este video vive en la voz y la credibilidad. CTA de seguir la cuenta, no de comentar keyword.", cta: true }
+    ],
+    descripcion: `Tu salario llega todos los meses. Pero no está generando nada más por vos. 💡
+
+En @elpingo_83 publicamos todos los días cómo construir un negocio de multirrentas desde cero:
+
+→ Estrategias reales de nuestros propios proyectos
+→ Errores que cometimos nosotros primero
+→ Casos de estudiantes con números verificables
+
+Más de 10 años en esto. Más de 175 puertas en operación. Más de 2.500 personas formadas.
+
+No teoría. Lo que estamos haciendo hoy.
+
+Seguinos 👆 — todos los días subimos el camino.`,
+    hashtags: ["#ConquistaTuPatrimonio", "#InversionInmobiliaria", "#FincaRaiz", "#Multirrentas", "#Coliving"]
+  },
+  {
+    numero: "VSL 02",
+    titulo: "Emprendedor / Independiente",
+    bloque: "📱 Mini VSL",
+    tipo: "Error / Creencia Limitante",
+    palanca: "Negación contraintuitiva",
+    duracion: "40–50 seg",
+    guion: [
+      {
+        parte: "Gancho",
+        timing: "~5 seg",
+        clase: "gancho",
+        texto: `"Si ya generás ingresos con tu negocio o tu trabajo independiente, pero todavía no convertiste ese dinero en activos que trabajen solos…\n\nEstás dejando pasar el momento más importante."`
+      },
+      {
+        parte: "Relevancia",
+        timing: "~10 seg",
+        clase: "relevancia",
+        texto: `"Hola, soy Camilo de Conquista Tu Patrimonio.\n\nEsto es lo que nosotros mismos hicimos para llegar a más de 175 puertas propias en operación — en más de 10 años, y con más de 2.500 personas formadas que hoy tienen un negocio de multirrentas generando ingresos todos los meses."`
+      },
+      {
+        parte: "Valor",
+        timing: "~22 seg",
+        clase: "valor",
+        texto: `"Todos los días publicamos acá cómo estructuramos nuestros proyectos, qué errores evitar y qué están logrando nuestros estudiantes — con casos reales y números verificables.\n\nLa diferencia es que no te enseñamos lo que funciona en otros países o en otros mercados. Te enseñamos lo que estamos haciendo nosotros hoy, acá."`
+      },
+      {
+        parte: "Acción",
+        timing: "~7 seg",
+        clase: "accion",
+        texto: `"Si ya tenés ingresos y querés que esos ingresos construyan algo que dure, este perfil es para vos.\n\nSeguinos — todos los días subimos el camino exacto para construir tu patrimonio desde lo que ya tenés."`
+      }
+    ],
+    notas: [
+      { icon: "⚡", titulo: "Formato", texto: "Video directo a cámara. Esta versión se beneficia de una locación que transmita solidez — un proyecto terminado o espacio que comunique que esto ya está funcionando.", cta: false },
+      { icon: "🎯", titulo: "Ritmo", texto: "Gancho más lento que la versión A — dar espacio a \"estás dejando pasar el momento más importante\" antes de seguir. El cuerpo puede ir más rápido: esta audiencia tolera más información densa.", cta: false },
+      { icon: "😐", titulo: "Expresión", texto: "Más directo y menos empático que la versión A. Esta audiencia ya puede — necesita ver por qué no convirtió sus ingresos en activos todavía. Tono de colega que ya resolvió ese problema, no de mentor que enseña desde arriba.", cta: false },
+      { icon: "🔑", titulo: "La línea clave", texto: "\"No te enseñamos lo que funciona en otros países — te enseñamos lo que estamos haciendo nosotros hoy, acá.\" Pausa antes y después. Es el diferenciador más fuerte de esta versión.", cta: false },
+      { icon: "🎬", titulo: "Visuales sugeridos", texto: "Texto sobreimpreso en el gancho: \"Tus ingresos no están construyendo nada todavía.\" B-roll de proyectos CTP en operación — habitaciones ocupadas, espacios comunes activos.", cta: false },
+      { icon: "📢", titulo: "Audio y CTA", texto: "Música muy baja o sin música. Al decir \"hoy, acá\": gesto hacia el suelo, enfatizando localidad y presente. CTA de seguir la cuenta.", cta: true }
+    ],
+    descripcion: `Ya generás ingresos. Pero ¿ese dinero está construyendo algo que dure? 💡
+
+En @elpingo_83 publicamos todos los días cómo convertir ingresos en activos reales:
+
+→ Cómo estructuramos nuestros propios proyectos
+→ Qué errores evitar antes de comprometer tu capital
+→ Casos reales de estudiantes con números verificables
+
+No lo que funciona en otros mercados. Lo que estamos haciendo nosotros hoy, acá.
+
+Más de 10 años. Más de 175 puertas en operación. Más de 2.500 personas formadas.
+
+Si ya tenés ingresos y querés que trabajen por vos, este perfil es para vos.
+
+Seguinos 👆 — todos los días subimos el camino.`,
+    hashtags: ["#ConquistaTuPatrimonio", "#InversionInmobiliaria", "#FincaRaiz", "#Multirrentas", "#Coliving"]
+  }
+];
+
+let current = 0;
+let currentTab = 'guion';
+
+function render() {
+  const r = reels[current];
+  const total = reels.length;
+
+  document.getElementById('current-num').textContent = current + 1;
+  document.getElementById('total-num').textContent = total;
+  document.getElementById('progress-fill').style.width = ((current + 1) / total * 100) + '%';
+
+  const meta = document.getElementById('reel-meta');
+  meta.innerHTML = `
+    <div class="reel-number">${r.numero}</div>
+    <div class="reel-title">${r.titulo}</div>
+    <div class="reel-tags">
+      <span class="tag tag-bloque">${r.bloque}</span>
+      <span class="tag tag-tipo">${r.tipo}</span>
+      <span class="tag tag-palanca">${r.palanca}</span>
+      <span class="tag tag-duracion">⏱ ${r.duracion}</span>
+    </div>`;
+  meta.style.animation = 'none';
+  void meta.offsetWidth;
+  meta.style.animation = 'fadeUp 0.4s ease forwards';
+
+  const labelMap = { gancho: 'label-gancho', relevancia: 'label-relevancia', valor: 'label-valor', accion: 'label-accion' };
+  document.getElementById('tab-guion').innerHTML = r.guion.map(g => `
+    <div class="guion-block">
+      <div class="block-label ${labelMap[g.clase]}">${g.parte}<span class="block-timing">${g.timing}</span></div>
+      <div class="script-text ${g.clase}">${g.texto}</div>
+    </div>`).join('');
+
+  document.getElementById('tab-notas').innerHTML = `
+    <div class="notes-grid">
+      ${r.notas.map(n => `
+        <div class="note-card${n.cta ? ' cta-note' : ''}">
+          <div class="note-icon">${n.icon}</div>
+          <div class="note-title">${n.titulo}</div>
+          <div class="note-text">${n.texto}</div>
+        </div>`).join('')}
+    </div>`;
+
+  const descText = r.descripcion;
+  const hashHtml = r.hashtags.map(h => `<span class="hashtag">${h}</span>`).join('');
+  document.getElementById('tab-descripcion').innerHTML = `
+    <div class="desc-box">
+      <button class="desc-copy-btn" onclick="copyDesc()">Copiar</button>
+      ${descText}
+      <div class="hashtags">${hashHtml}</div>
+    </div>`;
+
+  document.getElementById('dot-nav').innerHTML = reels.map((_, i) =>
+    `<div class="dot${i === current ? ' active' : ''}" onclick="goTo(${i})"></div>`).join('');
+
+  document.getElementById('btn-prev').disabled = current === 0;
+  document.getElementById('btn-next').disabled = current === total - 1;
+  document.getElementById('btn-next').textContent = current === total - 1 ? '✓ Fin' : 'Siguiente →';
+
+  switchTab(currentTab, false);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.tab').forEach((t, i) => {
+    t.classList.toggle('active', ['guion','notas','descripcion'][i] === tab);
+  });
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+}
+
+function navigate(dir) {
+  current = Math.max(0, Math.min(reels.length - 1, current + dir));
+  render();
+}
+
+function goTo(i) { current = i; render(); }
+
+function copyDesc() {
+  const r = reels[current];
+  const full = r.descripcion + '\n\n' + r.hashtags.join(' ');
+  navigator.clipboard.writeText(full).then(() => {
+    const btn = document.querySelector('.desc-copy-btn');
+    btn.textContent = '✓ Copiado';
+    setTimeout(() => btn.textContent = 'Copiar', 2000);
+  });
+}
+
+render();
+</script>
+</body>
+</html>
