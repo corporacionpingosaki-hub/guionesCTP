@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CTP · Guiones Embudo 1</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+
+:root {
+  --navy:        #0F2544;
+  --navy-light:  #1a3560;
+  --navy-dark:   #091a33;
+  --lime:        #00C96E;
+  --lime-dim:    #00a85c;
+  --lime-soft:   rgba(0,201,110,0.12);
+  --lime-softer: rgba(0,201,110,0.06);
+
+  --white:        #ffffff;
+  --text-primary: #e8edf4;
+  --text-secondary:#8fa3bf;
+  --text-muted:   #5a7494;
+
+  --border:       rgba(255,255,255,0.08);
+  --border-lime:  rgba(0,201,110,0.3);
+
+  --card-bg:    rgba(255,255,255,0.04);
+  --card-hover: rgba(255,255,255,0.07);
+}
+
+* { box-sizing: border-box; }
+html, body {
+  margin: 0; padding: 0;
+  background: var(--navy-dark);
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+}
+
+.header {
+  position: sticky; top: 0; z-index: 50;
+  background: rgba(9,26,51,0.92);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+  padding: 16px 32px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.header-left { display: flex; align-items: center; gap: 10px; }
+.brand-dot {
+  width: 8px; height: 8px;
+  background: var(--lime);
+  border-radius: 50%;
+  animation: pulse 2.5s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.6; transform: scale(0.85); }
+}
+.brand-text { display: flex; flex-direction: column; line-height: 1.2; }
+.brand-name { font-weight: 600; font-size: 14px; color: var(--white); }
+.brand-handle { font-size: 11px; color: var(--text-muted); }
+.counter { font-size: 12px; color: var(--text-secondary); }
+.counter b { color: var(--lime); font-weight: 600; }
+
+.progress-bar  { height: 2px; background: var(--border); }
+.progress-fill { height: 100%; background: var(--lime); transition: width 0.4s ease; }
+
+.main { max-width: 760px; margin: 0 auto; padding: 32px 24px 60px; }
+
+.meta { margin-bottom: 20px; animation: fadeUp 0.4s ease forwards; }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.numero { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; color: var(--lime); text-transform: uppercase; margin-bottom: 8px; }
+.reel-title { font-size: 26px; font-weight: 600; color: var(--white); margin: 0 0 14px 0; line-height: 1.25; }
+
+.tags { display: flex; flex-wrap: wrap; gap: 8px; }
+.tag { font-size: 11px; font-weight: 500; padding: 4px 12px; border-radius: 20px; }
+.tag-bloque  { background: rgba(127,119,221,0.15); color: #a8a1f0; border: 1px solid rgba(127,119,221,0.25); }
+.tag-tipo    { background: var(--lime-softer); color: var(--lime); border: 1px solid var(--border-lime); }
+.tag-palanca { background: rgba(255,255,255,0.06); color: var(--text-secondary); border: 1px solid var(--border); }
+.tag-duracion{ background: rgba(255,255,255,0.06); color: var(--text-secondary); border: 1px solid var(--border); }
+
+.tabs { display: flex; gap: 4px; margin: 24px 0 20px; border-bottom: 1px solid var(--border); }
+.tab {
+  padding: 10px 18px; font-size: 13px; font-weight: 500;
+  color: var(--text-secondary); cursor: pointer;
+  border-bottom: 2px solid transparent; transition: all 0.2s;
+  background: none; border-top: none; border-left: none; border-right: none;
+  font-family: 'Inter', sans-serif;
+}
+.tab:hover { color: var(--white); }
+.tab.active { color: var(--lime); border-bottom-color: var(--lime); }
+
+.tab-content { display: none; animation: fadeUp 0.35s ease forwards; }
+.tab-content.active { display: block; }
+
+/* --- GUION TAB --- */
+.script-block { margin-bottom: 18px; }
+.script-label { display: flex; align-items: baseline; gap: 10px; margin-bottom: 6px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+.script-timing { font-size: 11px; font-weight: 400; color: var(--text-muted); text-transform: none; letter-spacing: 0; }
+.label-gancho     { color: #a8a1f0; }
+.label-relevancia { color: var(--lime); }
+.label-valor      { color: #f0b429; }
+.label-accion     { color: #f08070; }
+.script-text {
+  background: var(--card-bg);
+  border-left: 3px solid var(--text-muted);
+  border-radius: 6px;
+  padding: 14px 16px;
+  font-size: 15px; line-height: 1.6;
+  color: var(--text-primary);
+}
+.script-text.gancho     { border-left-color: #7F77DD; }
+.script-text.relevancia { border-left-color: #00C96E; }
+.script-text.valor      { border-left-color: #f0b429; }
+.script-text.accion     { border-left-color: #f08070; }
+
+/* --- NOTAS TAB --- */
+.notes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.note-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 16px;
+}
+.note-card .note-head { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.note-card .note-icon { font-size: 16px; }
+.note-card .note-title { font-size: 12px; font-weight: 600; color: var(--white); }
+.note-card .note-text { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+.cta-note {
+  grid-column: 1 / -1;
+  background: var(--lime-softer);
+  border-color: var(--border-lime);
+}
+.cta-note .note-title { color: var(--lime); }
+
+/* --- DESCRIPCION TAB --- */
+.desc-box {
+  position: relative;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px;
+}
+.desc-copy-btn {
+  position: absolute; top: 16px; right: 16px;
+  background: var(--lime-soft);
+  border: 1px solid var(--border-lime);
+  color: var(--lime);
+  font-size: 11px; font-weight: 600;
+  padding: 6px 14px; border-radius: 20px;
+  cursor: pointer;
+  transition: background 0.2s;
+  font-family: 'Inter', sans-serif;
+}
+.desc-copy-btn:hover { background: rgba(0,201,110,0.2); }
+.desc-text { font-size: 14px; line-height: 1.7; color: var(--text-primary); white-space: pre-line; margin-bottom: 16px; padding-right: 90px; }
+.hashtags { display: flex; flex-wrap: wrap; gap: 6px; }
+.hashtag {
+  font-size: 12px; color: var(--lime);
+  background: var(--lime-softer);
+  padding: 3px 10px; border-radius: 20px;
+  border: 1px solid var(--border-lime);
+}
+
+/* --- NAV --- */
+.nav-row { display: flex; align-items: center; justify-content: space-between; margin-top: 32px; }
+.nav-btn {
+  padding: 12px 24px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  color: var(--text-secondary);
+  font-size: 13px; font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Inter', sans-serif;
+}
+.nav-btn:hover:not(:disabled) { background: var(--card-hover); color: var(--white); }
+.nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+.nav-btn.next {
+  background: var(--lime); border-color: var(--lime); color: var(--navy-dark); font-weight: 600;
+}
+.nav-btn.next:hover:not(:disabled) { background: var(--lime-dim); border-color: var(--lime-dim); }
+
+.dots { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; justify-content: center; max-width: 320px; }
+.dot { width: 6px; height: 6px; border-radius: 50%; background: var(--text-muted); cursor: pointer; transition: all 0.2s; border: none; padding: 0; }
+.dot.active { background: var(--lime); width: 20px; border-radius: 3px; }
+
+@media (max-width: 600px) {
+  .header { padding: 16px 20px; }
+  .main   { padding: 28px 16px 60px; }
+  .reel-title { font-size: 20px; }
+  .notes-grid { grid-template-columns: 1fr; }
+  .cta-note   { grid-column: 1; }
+  .tab        { padding: 10px 14px; font-size: 12px; }
+  .desc-text  { padding-right: 0; }
+  .desc-copy-btn { position: static; display: inline-block; margin-bottom: 12px; }
+  .nav-row { flex-wrap: wrap; gap: 14px; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <div class="brand-dot"></div>
+    <div class="brand-text">
+      <div class="brand-name">Conquista Tu Patrimonio</div>
+      <div class="brand-handle">@el_pingo83</div>
+    </div>
+  </div>
+  <div class="counter">Guión <b id="counter-current">1</b> de <span id="counter-total">16</span></div>
+</div>
+<div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+
+<div class="main">
+  <div class="meta" id="meta">
+    <div class="numero" id="f-numero"></div>
+    <h1 class="reel-title" id="f-titulo"></h1>
+    <div class="tags">
+      <span class="tag tag-bloque" id="f-bloque"></span>
+      <span class="tag tag-tipo" id="f-tipo"></span>
+      <span class="tag tag-palanca" id="f-palanca"></span>
+      <span class="tag tag-duracion" id="f-duracion"></span>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="guion" onclick="switchTab('guion')">Guión</button>
+    <button class="tab" data-tab="notas" onclick="switchTab('notas')">Notas de grabación</button>
+    <button class="tab" data-tab="descripcion" onclick="switchTab('descripcion')">Descripción del post</button>
+  </div>
+
+  <div class="tab-content active" id="tab-guion"></div>
+  <div class="tab-content" id="tab-notas"></div>
+  <div class="tab-content" id="tab-descripcion"></div>
+
+  <div class="nav-row">
+    <button class="nav-btn" id="btn-prev" onclick="navigate(-1)">← Anterior</button>
+    <div class="dots" id="dots"></div>
+    <button class="nav-btn next" id="btn-next" onclick="navigate(1)">Siguiente →</button>
+  </div>
+</div>
+
+<script>
+const reels = [
+{
+  numero: "Guión 01", titulo: "Ahorrador vs. Inversor",
+  bloque: "📊 Comparativas", tipo: "Contraste Directo · #1",
+  palanca: "Identificación + disonancia cognitiva", duracion: "50–55 seg",
+  guion: [
+    { parte: "Gancho", timing: "~7 seg", clase: "gancho", texto: "Juan y Andrea ganaban exactamente el mismo sueldo. Uno guardó su plata. La otra la puso a trabajar. Esto fue lo que pasó." },
+    { parte: "Relevancia", timing: "~12 seg", clase: "relevancia", texto: "La mayoría de nosotros crecimos pensando que ahorrar es lo seguro: meter la plata en el banco y ver crecer el numerito poquito a poquito. Pero mientras tú ahorras... hay gente comprando el activo que te va a pagar renta el resto de tu vida." },
+    { parte: "Valor", timing: "~26 seg", clase: "valor", texto: "Juan metió $30 millones en un CDT. Al año tenía casi lo mismo, menos la inflación. Andrea agarró esos mismos $30 millones, arrendó una casa vieja, la arregló, y hoy recibe la renta de 6 habitaciones. Ese dinero le entra así ella esté dormida. Uno ve un número que sube lento en una app. La otra ve billetes reales entrando cada mes. La diferencia no es cuánto ganan — es en qué convirtieron su plata." },
+    { parte: "Acción", timing: "~8 seg", clase: "accion", texto: "Si quieres entender cómo se elige la propiedad correcta para hacer esto, sígueme — en los próximos videos te muestro el paso a paso." }
+  ],
+  notas: [
+    { icon: "⚡", titulo: "Ritmo y energía", texto: "Arranca pausado y serio (ahorrador), sube el ritmo y la energía al pasar al inversor — el corte de energía debe sentirse físicamente.", cta: false },
+    { icon: "😐", titulo: "Expresión", texto: "Reflexivo/neutro en el gancho, más convencido y animado en el valor — sin sobreactuar.", cta: false },
+    { icon: "🤲", titulo: "Gestos", texto: "Usa las manos para partir el encuadre en dos (izquierda = Juan, derecha = Andrea) cuando los nombras.", cta: false },
+    { icon: "🎬", titulo: "Visuales sugeridos", texto: "B-roll: pantalla de app bancaria con número quieto/estático (Juan) vs. llaves, remodelación, recibo de transferencia de arriendo (Andrea).", cta: false },
+    { icon: "🎵", titulo: "Audio", texto: "Track neutro/tenso en gancho-relevancia, cambia a uno up-tempo cuando entra Andrea.", cta: false },
+    { icon: "📢", titulo: "CTA", texto: "Verbal + texto en pantalla: \"Sígueme para el paso a paso\" — CTA suave, sin mencionar programa ni precio.", cta: true }
+  ],
+  descripcion: "Juan y Andrea ganaban lo mismo. Uno decidió ahorrar. La otra decidió invertir. Hoy sus vidas financieras no se parecen en nada.\n\nNo se trata de cuánto ganas — se trata de qué haces con lo que ganas.\n\nLlevamos 4 años enseñando cómo convertir propiedades en flujo real, mes a mes, sin necesidad de ser millonario para empezar.\n\n👉 Sígueme para la serie completa de cómo lo hacemos, paso a paso.",
+  hashtags: ["#ConquistaTuPatrimonio","#InversionInmobiliaria","#LibertadFinanciera","#BienesRaicesColombia","#FlujoPasivo","#EducacionFinanciera","#RentToRent"]
+},
+{
+  numero: "Guión 02", titulo: "Propiedad Correcta vs. Incorrecta",
+  bloque: "📊 Comparativas", tipo: "Tumba-Mitos · #1",
+  palanca: "Evidencia visual (el precio no es la variable que importa)", duracion: "48–56 seg",
+  guion: [
+    { parte: "Gancho", timing: "~6 seg", clase: "gancho", texto: "Estas dos casas cuestan casi lo mismo. Pero solo una de las dos es un buen negocio. Te cuento por qué." },
+    { parte: "Relevancia", timing: "~10 seg", clase: "relevancia", texto: "El precio no es lo que decide si una casa es negocio o no. Hay dos cosas que sí lo deciden: qué tanto se puede aprovechar el espacio por dentro, y si en esa zona hay gente buscando dónde vivir." },
+    { parte: "Valor", timing: "~28 seg", clase: "valor", texto: "Esta primera casa: $320 millones. Tiene un patio grande y un garaje que casi no se usa — espacio que se puede convertir en habitaciones nuevas, pasando de 4 a 10 unidades. Y está en una zona donde siempre hay gente buscando arriendo. Esa combinación puede dejar $6 millones de flujo al mes. Esta otra: $310 millones, precio parecido, pero la estructura no permite ampliarla, y está en un sector con poca demanda de arriendo. Así lograras armar más habitaciones, no habría quién las ocupe — el flujo se queda corto, ni siquiera llega a $3 millones." },
+    { parte: "Acción", timing: "~8 seg", clase: "accion", texto: "Antes de comprar, no te fijes solo en el precio o en qué tan bonita se ve. Fíjate en si esa casa realmente puede producir el flujo que te dé libertad financiera. Sígueme, en el próximo video te cuento cómo lo evalúo." }
+  ],
+  notas: [
+    { icon: "⚡", titulo: "Ritmo y energía", texto: "Analítico y directo, tono de \"te voy a enseñar a ver lo que otros no ven\" — sin anécdota personal, más de observador/educador.", cta: false },
+    { icon: "😐", titulo: "Expresión", texto: "Curiosidad/complicidad en el gancho; certeza tranquila en el valor, como quien explica un criterio de análisis, no una historia.", cta: false },
+    { icon: "🤲", titulo: "Gestos", texto: "Señalar hacia los lados al nombrar cada casa (\"esta\" / \"esta otra\"); usar las manos para trazar espacio que se puede aprovechar (abrir) vs. estructura que no se puede tocar (cerrar/limitar).", cta: false },
+    { icon: "🎬", titulo: "Visuales sugeridos", texto: "B-roll de dos propiedades reales: una con patio/garaje amplio + zona con movimiento de gente en la calle; otra con espacio cerrado/estructural + calle solitaria. Overlay: \"$320M → 10 habitaciones → $6M/mes\" y \"$310M → poca demanda → menos de $3M/mes\".", cta: false },
+    { icon: "🎵", titulo: "Audio", texto: "Track neutro y limpio, sin subir intensidad dramática — el contraste lo dan los datos, no la música.", cta: false },
+    { icon: "📢", titulo: "CTA", texto: "Verbal + texto en pantalla: \"Sígueme para el próximo video\" — genérico, sin mencionar CTP.", cta: true }
+  ],
+  descripcion: "Estas dos casas cuestan casi lo mismo. Pero solo una de las dos es un buen negocio.\n\nEl precio no es lo que lo decide. Lo deciden dos cosas: qué tanto se puede aprovechar el espacio por dentro, y si en esa zona hay gente buscando dónde vivir.\n\nAntes de comprar, no te fijes solo en el precio o en qué tan bonita se ve una casa. Fíjate en si realmente puede producir el flujo que te dé libertad financiera.\n\n👉 Sígueme, en el próximo video te cuento cómo lo evalúo.",
+  hashtags: ["#ConquistaTuPatrimonio","#InversionInmobiliaria","#Flipping20","#ColivingColombia","#BienesRaicesColombia","#RemodelacionRentable"]
+},
+{
+  numero: "Guión 03", titulo: "Así Funciona Nuestro Modelo de Negocio",
+  bloque: "🏢 Explicativo", tipo: "Explicación del Modelo · #1",
+  palanca: "Simplicidad + curiosidad (desmitificar algo que suena complicado)", duracion: "48–56 seg",
+  guion: [
+    { parte: "Gancho", timing: "~7 seg", clase: "gancho", texto: "Mucha gente no entiende el modelo de negocio en bienes raíces que nosotros ejecutamos. Te lo cuento en palabras sencillas." },
+    { parte: "Relevancia", timing: "~8 seg", clase: "relevancia", texto: "Suena complicado, pero en realidad son solo 3 pasos. Y cuando los entiendes, dejas de ver casas viejas — empiezas a ver negocios." },
+    { parte: "Valor", timing: "~28 seg", clase: "valor", texto: "Primero, buscamos propiedades abandonadas o subutilizadas que tengan potencial para construir un coliving. Segundo, las remodelamos y las dividimos en habitaciones y apartaestudios — varios espacios rentables dentro de una sola propiedad. Tercero, arrendamos cada espacio por separado. Por ejemplo: una propiedad de $320 millones, convertida en 10 habitaciones, puede dejar $6 millones de flujo cada mes. A esto, dentro de nuestro sistema, le llamamos Flipping 2.0." },
+    { parte: "Acción", timing: "~8 seg", clase: "accion", texto: "Así de simple es el negocio que ejecutamos. Sígueme, en el próximo video te cuento cómo elegimos esas propiedades." }
+  ],
+  notas: [
+    { icon: "⚡", titulo: "Ritmo y energía", texto: "Tono de \"te voy a explicar algo que suena difícil, pero no lo es\" — cercano, sin acelerar, como si estuvieras desenredando una duda común.", cta: false },
+    { icon: "😐", titulo: "Expresión", texto: "Cercana y segura, con un gesto de \"es más simple de lo que parece\" en la relevancia.", cta: false },
+    { icon: "🤲", titulo: "Gestos", texto: "Contar con los dedos los 3 pasos (1, 2, 3) mientras los nombras — ayuda a que el espectador los retenga.", cta: false },
+    { icon: "🎬", titulo: "Visuales sugeridos", texto: "B-roll en 3 cortes: (1) fachada de propiedad abandonada/vieja, (2) proceso de remodelación, (3) pasillo de habitaciones/apartaestudios terminados. Overlay: \"1. Buscar → 2. Remodelar → 3. Arrendar por espacio\".", cta: false },
+    { icon: "🎵", titulo: "Audio", texto: "Track simple y limpio, sin cambios de intensidad — el contenido ya es claro por sí mismo, no necesita dramatismo.", cta: false },
+    { icon: "📢", titulo: "CTA", texto: "Verbal + texto en pantalla: \"Sígueme para el próximo video\" — genérico, sin mencionar CTP.", cta: true }
+  ],
+  descripcion: "Mucha gente no entiende el modelo de negocio en bienes raíces que ejecutamos. Te lo cuento en palabras sencillas.\n\nPrimero, buscamos propiedades abandonadas o subutilizadas con potencial para un coliving. Segundo, las remodelamos y las dividimos en habitaciones y apartaestudios. Tercero, arrendamos cada espacio por separado.\n\nAsí de simple es el negocio. Una casa que nadie quiere se puede convertir en una fuente de flujo mensual real.\n\n👉 Sígueme, en el próximo video te cuento cómo elegimos esas propiedades.",
+  hashtags: ["#ConquistaTuPatrimonio","#InversionInmobiliaria","#Flipping20","#ColivingColombia","#BienesRaicesColombia"]
+},
+{
+  numero: "Guión 04", titulo: "Rent to Rent vs. Flipping 2.0",
+  bloque: "📊 Comparativas", tipo: "Contraste Directo · #2",
+  palanca: "Autoidentificación (¿cuál me queda a mí según mi capital?)", duracion: "50–58 seg",
+  guion: [
+    { parte: "Gancho", timing: "~7 seg", clase: "gancho", texto: "Vos tenés dos formas de hacer este negocio. Una la empezás con poquito capital. La otra pide más plata, pero te da mucho más. Te cuento la diferencia, en cristiano." },
+    { parte: "Relevancia", timing: "~9 seg", clase: "relevancia", texto: "La pregunta que más me hacen no es cuál es mejor — esa pregunta está mal hecha. La buena pregunta es: ¿cuál me queda a mí, según lo que tengo hoy en el bolsillo? Ojo con esto, porque ahí es donde la gente se equivoca." },
+    { parte: "Valor", timing: "~30 seg", clase: "valor", texto: "Rent to Rent es la puerta de entrada: arrendás una propiedad, la adecuás, y subarrendás por habitaciones. Necesitás poquito capital, y desde el primer mes ya te está entrando flujo — hablamos de unos $5 millones mensuales. Ahora, Flipping 2.0 es la jugada principal: acá comprás la propiedad, la remodelás y la convertís en multirrenta. Necesitás más capital para arrancar, y toca esperar un poco más antes de que entre el primer peso. Pero el flujo es mayor — hablamos de $9 millones mensuales — y de paso la propiedad queda siendo tuya, valorizándose mientras te paga renta." },
+    { parte: "Acción", timing: "~8 seg", clase: "accion", texto: "Rent to Rent si querés arrancar rápido con poquito capital. Flipping 2.0 si ya tenés más capital y querés más flujo y patrimonio propio. Seguime, que en el próximo video me meto más a fondo en cada uno." }
+  ],
+  notas: [
+    { icon: "⚡", titulo: "Ritmo y energía", texto: "Como explicándole a alguien que quiere invertir mejor — cercano, seguro, sin acelerar. Guion de claridad, no de shock.", cta: false },
+    { icon: "😐", titulo: "Expresión", texto: "Cercana y directa, con gesto de complicidad en \"ojo con esto, porque ahí es donde la gente se equivoca\".", cta: false },
+    { icon: "🤲", titulo: "Gestos", texto: "Palma izquierda para \"Rent to Rent\", palma derecha para \"Flipping 2.0\" — mismo gesto todo el guion.", cta: false },
+    { icon: "🎬", titulo: "Visuales sugeridos", texto: "Overlay tipo tabla comparativa en pantalla dividida: \"Rent to Rent\" (capital bajo, flujo $5M, rápido) vs \"Flipping 2.0\" (capital alto, flujo $9M, + valorización). B-roll de una propiedad arrendada/remodelada de fondo.", cta: false },
+    { icon: "🎵", titulo: "Audio", texto: "Track neutro y confiable, sin picos de intensidad — el contraste ya lo da la explicación.", cta: false },
+    { icon: "📢", titulo: "CTA", texto: "Verbal + texto en pantalla: \"Seguime para el próximo video\" — genérico, sin mencionar CTP.", cta: true }
+  ],
+  descripcion: "Tenés dos formas de ejecutar este negocio: Rent to Rent y Flipping 2.0. Y no, la pregunta no es cuál es mejor — es cuál te queda mejor a vos según tu capital.\n\nRent to Rent: poquito capital, flujo desde el primer mes.\nFlipping 2.0: más capital, más flujo, y la propiedad queda siendo tuya mientras se valoriza.\n\n👉 Seguime, en el próximo video me meto más a fondo en cada uno.",
+  hashtags: ["#ConquistaTuPatrimonio","#InversionInmobiliaria","#RentToRent","#Flipping20","#ColivingColombia","#BienesRaicesColombia"]
+},
+{
+  numero: "Guión 05", titulo: "Sin Filtro vs. Con Filtro Antes de Comprar",
+  bloque: "📊 Comparativas", tipo: "Contraste Directo · #3",
+  palanca: "Consecuencia visible (lo que pasa cuando no revisás antes de comprar)", duracion: "48–56 seg",
+  guion: [
+    { parte: "Gancho", timing: "~7 seg", clase: "gancho", texto: "Vos podés comprar una propiedad a ciegas, o podés comprarla después de hacerle números. La diferencia entre las dos te la muestro ahorita." },
+    { parte: "Relevancia", timing: "~9 seg", clase: "relevancia", texto: "Mucha gente compra porque le gustó la casa, porque el precio \"estaba bueno\", o porque alguien le dijo que era negocio. Ojo con esto: eso no es suficiente. Hay un solo cálculo que te dice si de verdad es negocio." },
+    { parte: "Valor", timing: "~28 seg", clase: "valor", texto: "Esta propiedad la compraron sin hacerle números: se veía bien, estaba a buen precio, $310 millones. Hoy, con las habitaciones que lograron sacarle, deja $2.8 millones al mes — casi nada frente a lo que costó. Esta otra, antes de comprarla, le sacaron la cuenta: mismo precio más o menos, $320 millones, pero revisaron el potencial de espacio y la demanda de la zona antes de firmar. Hoy deja $6 millones al mes — más del doble, con la misma plata invertida. La casa no cambió. Lo que cambió fue que unos compraron a ciegas, y los otros compraron con un filtro." },
+    { parte: "Acción", timing: "~8 seg", clase: "accion", texto: "Antes de poner tu plata en cualquier propiedad, hacele números primero. Seguime, que en el próximo video te muestro cuál es ese filtro." }
+  ],
+  notas: [
+    { icon: "⚡", titulo: "Ritmo y energía", texto: "Tono de advertencia amigable — \"te voy a mostrar algo que te va a ahorrar una mala compra\". Firme en la relevancia, didáctico en el valor.", cta: false },
+    { icon: "😐", titulo: "Expresión", texto: "Seriedad genuina al mostrar el caso \"sin filtro\" (sin exagerar el drama); satisfacción al mostrar el caso \"con filtro\".", cta: false },
+    { icon: "🤲", titulo: "Gestos", texto: "Señalar hacia los lados al comparar ambos casos; gesto de filtrar con la mano (como colando algo) al mencionar \"un filtro\".", cta: false },
+    { icon: "🎬", titulo: "Visuales sugeridos", texto: "Split screen o corte alternado de dos propiedades reales. Overlay: \"$310M → sin revisar → $2.8M/mes\" vs \"$320M → con filtro → $6M/mes\".", cta: false },
+    { icon: "🎵", titulo: "Audio", texto: "Track neutro, bajar volumen en el momento de los números para que se escuchen nítidos.", cta: false },
+    { icon: "📢", titulo: "CTA", texto: "Verbal + texto en pantalla: \"Seguime para el próximo video\" — genérico, sin mencionar CTP ni la métrica dorada todavía.", cta: true }
+  ],
+  descripcion: "Estas dos propiedades costaron casi lo mismo. Una la compraron a ciegas. La otra, después de hacerle números antes de firmar.\n\nEl resultado: una deja $2.8 millones al mes. La otra deja $6 millones. Misma plata invertida, resultado completamente distinto.\n\nLa casa no fue la diferencia. El filtro que usaron antes de comprar, sí.\n\n👉 Seguime, en el próximo video te muestro cuál es ese filtro.",
+  hashtags: ["#ConquistaTuPatrimonio","#InversionInmobiliaria","#Flipping20","#ColivingColombia","#BienesRaicesColombia"]
+},
+{
+  numero: "Guión 06", titulo: "Vacancia Alta vs. Vacancia Baja",
+  bloque: "📊 Comparativas", tipo: "Contraste Directo · #4",
+  palanca: "Seguridad/tranquilidad (refuerzo positivo, no miedo)", duracion: "48–55 seg",
+  guion: [
+    { parte: "Gancho", timing: "~7 seg", clase: "gancho", texto: "Vos alquilás una casa completa a una sola familia, y si esa familia se va, te quedás en ceros ese mes. Te cuento por qué eso no pasa con la multirrenta." },
+    { parte: "Relevancia", timing: "~9 seg", clase: "relevancia", texto: "Esto es clave: cuando tu flujo depende de un solo inquilino, tu tranquilidad también depende de un solo inquilino. La multirrenta te quita esa dependencia de encima." },
+    { parte: "Valor", timing: "~28 seg", clase: "valor", texto: "Si arrendás la casa completa a una sola persona por $2.5 millones, y esa persona se va, ese mes no te entra ni un peso — tenés que esperar a conseguir otro inquilino. Ahora, esa misma casa convertida en multirrenta, con 10 habitaciones independientes, te deja $6 millones al mes con todo ocupado. Si se te va uno de esos 10 inquilinos, seguís recibiendo $5.4 millones de las otras 9 habitaciones mientras consigues reemplazo. No te quedás en ceros — seguís teniendo flujo mientras resolvés." },
+    { parte: "Acción", timing: "~8 seg", clase: "accion", texto: "Por eso la multirrenta nos da más tranquilidad que una renta tradicional. Seguime, que en el próximo video te muestro cómo se gestiona una propiedad con varios inquilinos." }
+  ],
+  notas: [
+    { icon: "⚡", titulo: "Ritmo y energía", texto: "Tono tranquilizador, no alarmista — el énfasis está en la seguridad que da la multirrenta, nunca en asustar con la posibilidad de no alquilar.", cta: false },
+    { icon: "😐", titulo: "Expresión", texto: "Calma y confianza; evitar cara de preocupación al mencionar \"te quedás en ceros\" — es un dato, no un susto.", cta: false },
+    { icon: "🤲", titulo: "Gestos", texto: "Gesto de \"todo o nada\" (una mano cerrada) al hablar de la renta tradicional; gesto de varias manos sosteniendo (abrir los dedos) al hablar de la multirrenta.", cta: false },
+    { icon: "🎬", titulo: "Visuales sugeridos", texto: "Overlay: \"Renta tradicional: 1 inquilino se va → $0\" vs \"Multirrenta: 1 de 10 se va → $5.4M siguen entrando\". B-roll de pasillo con varias puertas de habitaciones.", cta: false },
+    { icon: "🎵", titulo: "Audio", texto: "Track neutro y tranquilo, sin tensión dramática — coherente con el mensaje de seguridad, no de miedo.", cta: false },
+    { icon: "📢", titulo: "CTA", texto: "Verbal + texto en pantalla: \"Seguime para el próximo video\" — genérico, sin mencionar CTP.", cta: true }
+  ],
+  descripcion: "Si arrendás tu casa completa a una sola persona y esa persona se va, te quedás sin nada ese mes.\n\nCon la multirrenta es distinto: si se te va uno de varios inquilinos, seguís recibiendo el resto mientras consigues reemplazo. Nunca te quedás en ceros.\n\nPor eso es un modelo que da más tranquilidad, no más riesgo.\n\n👉 Seguime, en el próximo video te muestro cómo se gestiona.",
+  hashtags: ["#ConquistaTuPatrimonio","#InversionInmobiliaria","#ColivingColombia","#Flipping20","#BienesRaicesColombia"]
+},
+{
+  numero: "Guión 07", titulo: "Una Sola Renta vs. Múltiples Flujos",
+  bloque: "📊 Comparativas", tipo: "Contraste Directo · #5",
+  palanca: "Magnitud del resultado (mismo activo, ingreso muy distinto)", duracion: "48–55 seg",
+  guion: [
+    { parte: "Gancho", timing: "~7 seg", clase: "gancho", texto: "Es la misma casa, el mismo barrio, la misma inversión. Pero una forma de arrendarla te deja el triple que la otra. Te muestro la diferencia." },
+    { parte: "Relevancia", timing: "~10 seg", clase: "relevancia", texto: "La mayoría piensa que arrendar es arrendar, y ya. Pero cómo dividís esa propiedad cambia completamente cuánto te entra cada mes — y ahí está la diferencia entre un flujo mediocre y uno que realmente te construye patrimonio." },
+    { parte: "Valor", timing: "~28 seg", clase: "valor", texto: "Si arrendás una casa completa a una sola familia, en una zona buena te puede dejar $2.5 millones al mes. Punto, ahí se acaba. Ahora, esa misma casa convertida en coliving — dividida en 10 habitaciones independientes, cada una arrendada por separado — te deja $6 millones al mes. Es la misma propiedad, la misma ubicación. Lo que cambia es que en vez de un solo flujo, tenés diez flujos entrando al mismo tiempo. Por eso la multirrenta no es \"más complicada porque sí\": es más rentable porque multiplica el flujo mensual de un mismo activo." },
+    { parte: "Acción", timing: "~8 seg", clase: "accion", texto: "Por eso en Flipping 2.0 nunca buscamos una renta — buscamos coliving, que es multiplicar los flujos dentro de una sola propiedad. Seguime, que en el próximo video te muestro cómo se hace esa transformación." }
+  ],
+  notas: [
+    { icon: "⚡", titulo: "Ritmo y energía", texto: "Directo y seguro; sube el ritmo en \"diez flujos entrando al mismo tiempo\" y en el cierre con \"coliving\".", cta: false },
+    { icon: "😐", titulo: "Expresión", texto: "Convicción tranquila, no sorpresa exagerada — es lógica de negocio, no un giro dramático.", cta: false },
+    { icon: "🤲", titulo: "Gestos", texto: "Un dedo al hablar de \"un flujo\"; los diez dedos abiertos al hablar de \"diez flujos\".", cta: false },
+    { icon: "🎬", titulo: "Visuales sugeridos", texto: "Overlay: \"1 flujo → $2.5M/mes\" vs \"10 flujos → $6M/mes\", con ícono de una casa dividiéndose en varias puertas. B-roll de pasillo con puertas numeradas.", cta: false },
+    { icon: "🎵", titulo: "Audio", texto: "Track neutro, subir levemente la energía en el contraste de cifras y en el cierre.", cta: false },
+    { icon: "📢", titulo: "CTA", texto: "Verbal + texto en pantalla: \"Seguime para el próximo video\" — genérico, sin mencionar CTP.", cta: true }
+  ],
+  descripcion: "Es la misma casa, el mismo barrio, la misma inversión. Pero cómo la arrendás cambia todo.\n\nCompleta a una sola familia: un flujo, un techo de ingreso.\nConvertida en coliving: múltiples flujos, mismo activo.\n\nEn Flipping 2.0 nunca buscamos una renta — buscamos multiplicar el flujo de una sola propiedad.\n\n👉 Seguime, en el próximo video te muestro cómo se hace esa transformación.",
+  hashtags: ["#ConquistaTuPatrimonio","#InversionInmobiliaria","#Flipping20","#ColivingColombia","#BienesRaicesColombia"]
+},
+{
+  numero: "Guión 08", titulo: "Flipping Tradicional vs. Flipping 2.0",
+  bloque: "📊 Comparativas", tipo: "Contraste Directo · #6",
+  palanca: "Ganancia única vs. ganancia recurrente", duracion: "50–58 seg",
+  guion: [
+    { parte: "Gancho", timing: "~7 seg", clase: "gancho", texto: "Hay dos formas de hacer flipping. Una te deja una ganancia una sola vez. La otra te deja ganando todos los meses, para siempre. Te muestro la diferencia." },
+    { parte: "Relevancia", timing: "~9 seg", clase: "relevancia", texto: "Esto es clave: el flipping tradicional que todo el mundo conoce, termina el día que vendés la casa. Ahí se acaba el negocio. Nosotros hacemos otra jugada." },
+    { parte: "Valor", timing: "~30 seg", clase: "valor", texto: "El flipping tradicional es así: comprás una casa en $320 millones, le metés $40 millones de remodelación, y la vendés en $430 millones. Ganaste $70 millones — una sola vez, y se acabó el negocio. Ahora, en Flipping 2.0 hacés lo mismo al principio: comprás, remodelás. Pero en vez de vender, la convertís en coliving de 10 habitaciones y te la quedás. Esa propiedad te deja $6 millones cada mes, mes tras mes. En poco más de 5 meses ya recuperaste lo que hubieras ganado vendiéndola — y la casa sigue siendo tuya, generando y valorizándose al mismo tiempo." },
+    { parte: "Acción", timing: "~8 seg", clase: "accion", texto: "Por eso en Flipping 2.0 no vendemos la jugada — nos la quedamos. Seguime, que en el próximo video te cuento cómo se arma ese negocio de cero." }
+  ],
+  notas: [
+    { icon: "⚡", titulo: "Ritmo y energía", texto: "Directo y con seguridad, tono de \"te voy a mostrar la jugada que la mayoría no ve\" — sube energía en \"mes tras mes, para siempre\".", cta: false },
+    { icon: "😐", titulo: "Expresión", texto: "Neutral-convencida en el ejemplo de venta (no es mala idea, solo limitada); entusiasmo genuino al hablar de quedarse con la propiedad.", cta: false },
+    { icon: "🤲", titulo: "Gestos", texto: "Gesto de \"cerrar\" (una palmada) al decir \"y se acabó el negocio\"; gesto de flujo continuo (mano ondulando hacia adelante) al hablar de \"mes tras mes\".", cta: false },
+    { icon: "🎬", titulo: "Visuales sugeridos", texto: "Overlay: \"Flipping tradicional → $70M una sola vez\" vs \"Flipping 2.0 → $6M/mes + valorización\". B-roll de propiedad con letrero \"Se Vende\" tachado, y la misma convertida en coliving.", cta: false },
+    { icon: "🎵", titulo: "Audio", texto: "Track neutro, subir energía levemente al llegar al contraste \"una sola vez\" vs \"para siempre\".", cta: false },
+    { icon: "📢", titulo: "CTA", texto: "Verbal + texto en pantalla: \"Seguime para el próximo video\" — genérico, sin mencionar CTP.", cta: true }
+  ],
+  descripcion: "Hay dos formas de hacer flipping. Una te deja una ganancia una sola vez. La otra te deja ganando todos los meses, para siempre.\n\nFlipping tradicional: comprás, remodelás, vendés. Ganás una vez y el negocio se acaba ahí.\nFlipping 2.0: comprás, remodelás, y en vez de vender, la convertís en coliving. Ganás cada mes — y la propiedad sigue siendo tuya, valorizándose.\n\n👉 Seguime, en el próximo video te cuento cómo se arma ese negocio de cero.",
+  hashtags: ["#ConquistaTuPatrimonio","#InversionInmobiliaria","#Flipping20","#ColivingColombia","#BienesRaicesColombia"]
+},
+{
+  numero: "Guión 09", titulo: "Esto No Es un Inquilinato",
+  bloque: "📊 Comparativas", tipo: "Tumba-Mitos · #2",
+  palanca: "Reencuadre de crítica (convertir la objeción en prueba)", duracion: "50–58 seg",
+  guion: [
+    { parte: "Gancho", timing: "~7 seg", clase: "gancho", texto: "Hay gente que ve esto y dice \"eso es un inquilinato\". Ojo con esto, porque quien dice eso no tiene ni idea de lo que está mirando." },
+    { parte: "Relevancia", timing: "~10 seg", clase: "relevancia", texto: "Cuando la gente piensa en inquilinato, piensa en cuartos improvisados, sin privacidad, hacinamiento, una casa vieja a la que solo le metieron camas. Esto es exactamente lo contrario a eso." },
+    { parte: "Valor", timing: "~28 seg", clase: "valor", texto: "Un inquilinato lo arman rápido y barato: paredes de lona, un solo baño para diez personas, cero espacios comunes, cero diseño. Nuestros coliving se piensan distinto: cada habitación tiene su propio espacio digno, hay zonas comunes reales — cocina equipada, sala, zonas para trabajar o socializar — y todo está pensado para el tipo de persona que va a vivir ahí. No es meter camas en un cuarto. Es diseñar un espacio donde alguien realmente quiera vivir." },
+    { parte: "Acción", timing: "~8 seg", clase: "accion", texto: "La diferencia no es el nombre que le pongas — es cómo está construido y para quién está pensado. Seguime, que en el próximo video te muestro cómo se diseña un coliving de verdad." }
+  ],
+  notas: [
+    { icon: "⚡", titulo: "Ritmo y energía", texto: "Directo y con seguridad, sin tono defensivo ni agresivo — es un \"te voy a aclarar esto de una vez\", no una pelea contra los críticos.", cta: false },
+    { icon: "😐", titulo: "Expresión", texto: "Firme pero relajado en el gancho; orgullo genuino (sin arrogancia) al mostrar los espacios reales en el valor.", cta: false },
+    { icon: "🤲", titulo: "Gestos", texto: "Gesto de cerrar/pobre (manos juntas, apretadas) al describir el inquilinato; gesto de abrir/amplio (brazos abiertos) al describir el coliving CTP.", cta: false },
+    { icon: "🎬", titulo: "Visuales sugeridos", texto: "B-roll real de una propiedad CTP: cocina equipada, sala común, habitación individual bien terminada, zona social. Contraste sutil con imagen genérica de cuarto improvisado (sin identificar a nadie).", cta: false },
+    { icon: "🎵", titulo: "Audio", texto: "Track neutro, sin dramatismo — la seguridad la da el tono de Camilo, no la música.", cta: false },
+    { icon: "📢", titulo: "CTA", texto: "Verbal + texto en pantalla: \"Seguime para el próximo video\" — genérico, sin mencionar CTP como marca todavía.", cta: true }
+  ],
+  descripcion: "Hay gente que ve un coliving y dice \"eso es un inquilinato\". No tienen ni idea de lo que están mirando.\n\nUn inquilinato se arma rápido y barato, sin pensar en quién va a vivir ahí. Un coliving se diseña: espacios comunes reales, habitaciones dignas, todo pensado para la persona que realmente va a habitarlo.\n\nLa diferencia no es el nombre — es cómo está construido y para quién.\n\n👉 Seguime, en el próximo video te muestro cómo se diseña un coliving de verdad.",
+  hashtags: ["#ConquistaTuPatrimonio","#ColivingColombia","#InversionInmobiliaria","#Flipping20","#BienesRaicesColombia"]
+},
+{
+  numero: "Guión 10", titulo: "Propiedad para Vivir vs. Propiedad para Generar Flujo",
+  bloque: "📊 Comparativas", tipo: "Cambio de Paradigma · #7",
+  palanca: "Reencuadre de creencia (la meta de vida no debería ser \"la casa propia\")", duracion: "48–56 seg",
+  guion: [
+    { parte: "Gancho", timing: "~7 seg", clase: "gancho", texto: "A los dos nos criaron con la misma idea: ahorrá toda tu vida y cómprate la casa donde vas a vivir. Yo tuve que desaprender eso educándome. Te cuento por qué." },
+    { parte: "Relevancia", timing: "~9 seg", clase: "relevancia", texto: "Ojo con esto: no digo que esté mal comprar dónde vivir. Digo que si esa es tu única meta financiera, te estás perdiendo la jugada más importante — y a mí también me tocó darme cuenta solo, nadie me lo enseñó." },
+    { parte: "Valor", timing: "~28 seg", clase: "valor", texto: "Si comprás una casa para vivir en ella, esa plata queda quieta. No te genera ni un peso mientras la pagás — al contrario, te toca sostenerla: administración, servicios, mantenimiento. Ahora, si esa misma plata la ponés en una propiedad pensada para generar flujo — un coliving, por ejemplo — la historia cambia completamente: esa propiedad te puede dejar $6 millones cada mes, mientras vos seguís viviendo donde quieras. Y lo más interesante: con ese flujo, en algún momento vos mismo te podés comprar tu casa propia, de contado, sin deberle nada a nadie. Primero el activo que te paga. Después, si querés, la casa donde vivís." },
+    { parte: "Acción", timing: "~8 seg", clase: "accion", texto: "No se trata de nunca tener casa propia — se trata de en qué orden vas construyendo. Seguime, que en el próximo video te cuento cómo elegir esa primera propiedad." }
+  ],
+  notas: [
+    { icon: "⚡", titulo: "Ritmo y energía", texto: "Reflexivo y honesto en el gancho (sin dramatizar la crianza); convencido y cercano en el valor — suena a \"yo también tuve que aprenderlo\".", cta: false },
+    { icon: "😐", titulo: "Expresión", texto: "Complicidad genuina en \"a los dos nos criaron con la misma idea\" — es un punto de conexión, no de superioridad.", cta: false },
+    { icon: "🤲", titulo: "Gestos", texto: "Mano quieta/cerrada al hablar de \"esa plata queda quieta\"; mano abierta con movimiento hacia adelante al hablar del flujo entrando cada mes.", cta: false },
+    { icon: "🎬", titulo: "Visuales sugeridos", texto: "Overlay: \"Casa propia → $0/mes, gastos fijos\" vs \"Coliving → $6M/mes\". B-roll de propiedad CTP terminada, gente entrando/saliendo, contraste con casa familiar tradicional.", cta: false },
+    { icon: "🎵", titulo: "Audio", texto: "Track reflexivo al inicio, más animado al entrar el dato del flujo mensual.", cta: false },
+    { icon: "📢", titulo: "CTA", texto: "Verbal + texto en pantalla: \"Seguime para el próximo video\" — genérico, sin mencionar CTP.", cta: true }
+  ],
+  descripcion: "A los dos nos criaron con la misma idea: ahorrá y cómprate la casa donde vas a vivir. A mí me tocó desaprender eso educándome, no porque alguien me lo enseñara distinto.\n\nUna casa para vivir no te genera ni un peso mientras la pagás. Una propiedad pensada para generar flujo te puede dejar millones cada mes — y con ese flujo, más adelante, te podés comprar tu casa propia de contado.\n\nNo se trata de nunca tener casa propia. Se trata de en qué orden la construís.\n\n👉 Seguime, en el próximo video te cuento cómo elegir esa primera propiedad.",
+  hashtags: ["#ConquistaTuPatrimonio","#InversionInmobiliaria","#Flipping20","#ColivingColombia","#LibertadFinanciera","#BienesRaicesColombia"]
+},
+{
+  numero: "Guión 11", titulo: "Por Qué la Mayoría Nunca Invierte",
+  bloque: "🧠 Mentalidad", tipo: "Reflexión Directa · #1",
+  palanca: "Confrontación honesta de excusas (sin regañar, con espejo)", duracion: "48–55 seg",
+  guion: [
+    { parte: "Gancho", timing: "~7 seg", clase: "gancho", texto: "La mayoría de la gente nunca invierte en una propiedad. Y no es porque no tenga con qué. Es por otra razón, y esta te va a incomodar un poco." },
+    { parte: "Relevancia", timing: "~9 seg", clase: "relevancia", texto: "Esto es clave: yo he hablado con cientos de personas, y casi nunca es un tema de plata. Es un tema de excusa disfrazada de razón." },
+    { parte: "Valor", timing: "~28 seg", clase: "valor", texto: "La excusa más común es \"no tengo suficiente capital\" — pero cuando le preguntás cuánto necesitaría, ni siquiera lo ha calculado. La segunda es \"estoy esperando el momento correcto\" — y ese momento nunca llega. La tercera, la más honesta: \"me da miedo perder la plata\". Esa sí es real. Pero ojo con esto: el miedo no se quita esperando, se quita educándote. La gente que sí invierte no es la que tiene más plata — es la que decidió aprender antes de seguir posponiendo." },
+    { parte: "Acción", timing: "~8 seg", clase: "accion", texto: "Si te identificaste con alguna de esas tres, tranquilo, no sos el único — pero ya sabés cuál es tu excusa real. Seguime, que en el próximo video seguimos hablando de esto." }
+  ],
+  notas: [
+    { icon: "⚡", titulo: "Ritmo y energía", texto: "Tono de espejo, no de sermón — como un amigo que te dice la verdad sin juzgarte. Pausado en el gancho, más firme al nombrar las tres excusas.", cta: false },
+    { icon: "😐", titulo: "Expresión", texto: "Empática pero directa — cara de \"te entiendo, pero hablemos claro\" al llegar a la tercera excusa (el miedo).", cta: false },
+    { icon: "🤲", titulo: "Gestos", texto: "Contar con los dedos las tres excusas (1, 2, 3) para que se retengan visualmente.", cta: false },
+    { icon: "🎬", titulo: "Visuales sugeridos", texto: "Sin necesidad de B-roll externo — pieza 100% talking head, apoyada con texto en pantalla resaltando cada excusa a medida que se menciona.", cta: false },
+    { icon: "🎵", titulo: "Audio", texto: "Track reflexivo y bajo, sin subir intensidad — el peso lo lleva la voz, no la música.", cta: false },
+    { icon: "📢", titulo: "CTA", texto: "Verbal + texto en pantalla: \"Seguime para el próximo video\" — genérico, sin mencionar CTP.", cta: true }
+  ],
+  descripcion: "La mayoría de la gente nunca invierte en una propiedad. Y casi nunca es porque no tenga con qué.\n\nSon tres excusas que se repiten una y otra vez — y una de ellas seguramente te suena.\n\nEl miedo no se quita esperando. Se quita educándote.\n\n👉 Seguime, en el próximo video seguimos hablando de esto.",
+  hashtags: ["#ConquistaTuPatrimonio","#LibertadFinanciera","#InversionInmobiliaria","#MentalidadDeInversor","#BienesRaicesColombia"]
+},
+{
+  numero: "Guión 12", titulo: "El Miedo a Invertir (Cómo Superarlo)",
+  bloque: "🧠 Mentalidad", tipo: "Reflexión Directa · #2",
+  palanca: "Validación + reencuadre (el miedo se combate con información, no con valentía)", duracion: "48–55 seg",
+  guion: [
+    { parte: "Gancho", timing: "~6 seg", clase: "gancho", texto: "Si te da miedo invertir en una propiedad, tranquilo — no sos el único, y no es porque seas cobarde." },
+    { parte: "Relevancia", timing: "~9 seg", clase: "relevancia", texto: "Esto es clave: a mí también me dio miedo la primera vez. El problema no es el miedo en sí. El problema es que la mayoría intenta quitárselo con valentía, y eso no funciona." },
+    { parte: "Valor", timing: "~28 seg", clase: "valor", texto: "El miedo a invertir casi siempre viene de una sola cosa: no saber. No saber cómo elegir la propiedad, no saber cómo calcular si es negocio, no saber qué hacer si algo sale mal. Y cuando no sabés, tu cabeza llena esos vacíos con lo peor que se te ocurra. La valentía no te enseña a calcular una propiedad. La información sí. Entre más entendés del negocio, menos espacio le dejás al miedo para inventar cosas." },
+    { parte: "Acción", timing: "~8 seg", clase: "accion", texto: "No se trata de lanzarte a ciegas. Se trata de aprender antes de dar el paso. Seguime, que acá te voy a seguir enseñando cómo se hace, en cristiano." }
+  ],
+  notas: [
+    { icon: "⚡", titulo: "Ritmo y energía", texto: "Cálido y validante en el gancho (sin condescendencia); firme y claro en el valor — no suena a charla motivacional vacía.", cta: false },
+    { icon: "😐", titulo: "Expresión", texto: "Empática y honesta al admitir su propio miedo inicial; convicción tranquila al explicar la solución (educarse).", cta: false },
+    { icon: "🤲", titulo: "Gestos", texto: "Gesto de vacío (manos abiertas) al hablar de \"no saber\"; gesto de cerrar espacio (manos acercándose) al decir \"menos espacio le dejás al miedo\".", cta: false },
+    { icon: "🎬", titulo: "Visuales sugeridos", texto: "Pieza 100% talking head, sin necesidad de B-roll. Opcional: texto en pantalla resaltando \"el miedo no se quita con valentía, se quita con información\".", cta: false },
+    { icon: "🎵", titulo: "Audio", texto: "Track suave y reflexivo, sin subir intensidad — coherente con el tono validante, no motivacional-vacío.", cta: false },
+    { icon: "📢", titulo: "CTA", texto: "Verbal + texto en pantalla: \"Seguime para seguir aprendiendo\" — genérico, sin mencionar CTP.", cta: true }
+  ],
+  descripcion: "Si te da miedo invertir en una propiedad, tranquilo — no sos el único, y no es porque seas cobarde.\n\nEl miedo casi siempre viene de no saber: no saber elegir, no saber calcular, no saber qué hacer si algo sale mal. Y ahí tu cabeza llena esos vacíos con lo peor que se te ocurra.\n\nLa valentía no te enseña a calcular una propiedad. La información sí.\n\n👉 Seguime, acá te sigo enseñando cómo se hace.",
+  hashtags: ["#ConquistaTuPatrimonio","#LibertadFinanciera","#MentalidadDeInversor","#InversionInmobiliaria","#BienesRaicesColombia"]
+},
+{
+  numero: "Guión 13", titulo: "Libertad Financiera ≠ Riqueza",
+  bloque: "🧠 Mentalidad", tipo: "Reflexión Directa · #3",
+  palanca: "Redefinición de meta (aspiración accesible, no lejana)", duracion: "46–54 seg",
+  guion: [
+    { parte: "Gancho", timing: "~6 seg", clase: "gancho", texto: "Vos no necesitás ser millonario para ser libre financieramente. Esas son dos cosas completamente distintas." },
+    { parte: "Relevancia", timing: "~9 seg", clase: "relevancia", texto: "Esto es clave, porque mucha gente descarta la libertad financiera pensando que es solo para el que tiene mucha plata. Y no es así." },
+    { parte: "Valor", timing: "~26 seg", clase: "valor", texto: "Ser rico es tener mucho dinero guardado o mucho patrimonio. Ser libre financieramente es otra cosa: es que tus gastos mensuales ya estén cubiertos por dinero que te entra sin que vos estés trabajando por hora. Eso lo puede lograr alguien con una sola propiedad bien puesta a producir, mucho antes de ser millonario. Yo he visto gente con un coliving dejándole $5, $6 millones al mes — eso les cubre sus gastos y les sobra. Esa persona no es rica todavía. Pero ya es libre. Porque libertad no es cuánto tenés — es si tu tiempo te sigue perteneciendo a vos." },
+    { parte: "Acción", timing: "~8 seg", clase: "accion", texto: "No esperés a ser millonario para empezar a construir eso. Seguime, que te sigo enseñando cómo se hace, en cristiano." }
+  ],
+  notas: [
+    { icon: "⚡", titulo: "Ritmo y energía", texto: "Firme y clarificador desde el gancho — es una corrección de creencia, no una motivación vacía. Tono seguro, sin acelerar.", cta: false },
+    { icon: "😐", titulo: "Expresión", texto: "Convicción tranquila; un gesto de \"esto te va a cambiar la perspectiva\" al llegar a \"libertad no es cuánto tenés\".", cta: false },
+    { icon: "🤲", titulo: "Gestos", texto: "Gesto de separar con las manos (como abriendo dos cajones distintos) al contrastar \"ser rico\" vs \"ser libre\".", cta: false },
+    { icon: "🎬", titulo: "Visuales sugeridos", texto: "Talking head, sin B-roll necesario. Overlay: \"Rico = mucho patrimonio\" / \"Libre = tus gastos cubiertos sin trabajar por hora\".", cta: false },
+    { icon: "🎵", titulo: "Audio", texto: "Track suave y reflexivo, sin picos de intensidad.", cta: false },
+    { icon: "📢", titulo: "CTA", texto: "Verbal + texto en pantalla: \"Seguime para seguir aprendiendo\" — genérico, sin mencionar CTP.", cta: true }
+  ],
+  descripcion: "No necesitás ser millonario para ser libre financieramente. Son dos cosas completamente distintas.\n\nSer rico es tener mucho patrimonio. Ser libre es que tus gastos ya estén cubiertos por dinero que te entra sin que trabajes por hora.\n\nEso lo podés lograr con una sola propiedad bien puesta a producir — mucho antes de ser millonario.\n\n👉 Seguime, te sigo enseñando cómo se hace.",
+  hashtags: ["#ConquistaTuPatrimonio","#LibertadFinanciera","#MentalidadDeInversor","#InversionInmobiliaria","#BienesRaicesColombia"]
+},
+{
+  numero: "Guión 14", titulo: "Por Qué el Empleo No Da Libertad",
+  bloque: "🧠 Mentalidad", tipo: "Reflexión Directa · #4",
+  palanca: "Confrontación de creencia arraigada (sin atacar a quien tiene empleo)", duracion: "46–54 seg",
+  guion: [
+    { parte: "Gancho", timing: "~6 seg", clase: "gancho", texto: "Tener un buen empleo no es lo mismo que ser libre. Y esto no es contra nadie que trabaje — yo también empecé así." },
+    { parte: "Relevancia", timing: "~9 seg", clase: "relevancia", texto: "Esto es clave: un sueldo te da estabilidad. Pero estabilidad y libertad no son lo mismo, y ahí es donde mucha gente se confunde." },
+    { parte: "Valor", timing: "~26 seg", clase: "valor", texto: "Con un empleo, tu ingreso depende de que vos sigas ahí, todos los días, cambiando tu tiempo por plata. El día que dejás de ir a trabajar, ese ingreso se corta — así de simple. Un coliving, en cambio, no te necesita presente para pagarte: la propiedad sigue generando flujo así vos estés dormido, de viaje o haciendo otra cosa. No te digo que renuncies mañana. Te digo que un sueldo resuelve el presente, pero no te construye libertad — y una propiedad que te paga sí." },
+    { parte: "Acción", timing: "~8 seg", clase: "accion", texto: "El empleo puede ser tu punto de partida, no tu techo. Seguime, que te sigo enseñando cómo se construye eso, en cristiano." }
+  ],
+  notas: [
+    { icon: "⚡", titulo: "Ritmo y energía", texto: "Cercano y sin juicio en el gancho (\"yo también empecé así\"); firme y claro en el valor — es una distinción conceptual, no un ataque al empleo.", cta: false },
+    { icon: "😐", titulo: "Expresión", texto: "Empática al inicio, convicción tranquila en el contraste \"empleo vs. propiedad que paga\".", cta: false },
+    { icon: "🤲", titulo: "Gestos", texto: "Gesto de atado (muñecas juntas, como esposas suaves) al hablar de \"cambiar tu tiempo por plata\"; gesto de soltar (manos abriéndose) al hablar de la propiedad generando flujo sin él presente.", cta: false },
+    { icon: "🎬", titulo: "Visuales sugeridos", texto: "Talking head, sin B-roll necesario. Overlay: \"Empleo → tu tiempo = tu ingreso\" vs \"Coliving → flujo sin tu tiempo\".", cta: false },
+    { icon: "🎵", titulo: "Audio", texto: "Track reflexivo, sin subir intensidad — el peso lo lleva el argumento, no la música.", cta: false },
+    { icon: "📢", titulo: "CTA", texto: "Verbal + texto en pantalla: \"Seguime para seguir aprendiendo\" — genérico, sin mencionar CTP.", cta: true }
+  ],
+  descripcion: "Tener un buen empleo no es lo mismo que ser libre. Y esto no es contra nadie que trabaje — yo también empecé así.\n\nCon un empleo, tu ingreso depende de que sigas ahí, cambiando tiempo por plata. Con una propiedad que te paga, el flujo sigue entrando así vos no estés presente.\n\nEl empleo puede ser tu punto de partida. No tiene que ser tu techo.\n\n👉 Seguime, te sigo enseñando cómo se construye eso.",
+  hashtags: ["#ConquistaTuPatrimonio","#LibertadFinanciera","#MentalidadDeInversor","#InversionInmobiliaria","#BienesRaicesColombia"]
+},
+{
+  numero: "Guión 15", titulo: "Mentalidad Inversor vs. Empleado",
+  bloque: "🧠 Mentalidad", tipo: "Contraste Directo · #5",
+  palanca: "Identificación (¿cuál de las dos decisiones tomás vos todos los días?)", duracion: "48–55 seg",
+  guion: [
+    { parte: "Gancho", timing: "~7 seg", clase: "gancho", texto: "Con el mismo sueldo, dos personas pueden terminar en lugares completamente distintos en 5 años. La diferencia no es cuánto ganan — es qué piensan cuando les llega la plata." },
+    { parte: "Relevancia", timing: "~9 seg", clase: "relevancia", texto: "Esto es clave: no es un tema de ingresos, es un tema de decisiones diarias. Y esas decisiones nacen de dos mentalidades distintas." },
+    { parte: "Valor", timing: "~28 seg", clase: "valor", texto: "El empleado, cuando le entra la plata, piensa: '¿qué me puedo dar este mes?' — y la plata sale tan rápido como entró. El inversor, con la misma plata, se pregunta: 'esto que me sobra, ¿dónde lo pongo a producir?'. No es que el inversor no se dé gustos — es que primero mueve la plata, y después se da el gusto con lo que esa plata genera. Uno gasta su sueldo. El otro usa su sueldo para comprarse una fuente de ingreso nueva. Con el tiempo, el empleado sigue dependiendo de un solo sueldo. El inversor ya tiene varias fuentes entrando al tiempo." },
+    { parte: "Acción", timing: "~8 seg", clase: "accion", texto: "No se trata de ganar más — se trata de pensar distinto con lo que ya ganás. Seguime, que te sigo enseñando cómo se construye eso paso a paso." }
+  ],
+  notas: [
+    { icon: "⚡", titulo: "Ritmo y energía", texto: "Reflexivo y directo, sin sonar a regaño — es una observación honesta, no una crítica al que gasta.", cta: false },
+    { icon: "😐", titulo: "Expresión", texto: "Neutral-empática al describir al empleado (sin juicio); convicción tranquila al describir al inversor.", cta: false },
+    { icon: "🤲", titulo: "Gestos", texto: "Gesto de salida rápida (mano deslizándose hacia afuera) al hablar del empleado gastando; gesto de sembrar (mano hacia abajo) al hablar del inversor moviendo la plata.", cta: false },
+    { icon: "🎬", titulo: "Visuales sugeridos", texto: "Talking head, sin B-roll necesario. Overlay: \"Empleado: plata entra → plata sale\" vs \"Inversor: plata entra → plata se pone a producir\".", cta: false },
+    { icon: "🎵", titulo: "Audio", texto: "Track reflexivo, sin subir intensidad — el peso lo lleva el contraste conceptual.", cta: false },
+    { icon: "📢", titulo: "CTA", texto: "Verbal + texto en pantalla: \"Seguime, te sigo enseñando paso a paso\" — genérico, sin mencionar CTP.", cta: true }
+  ],
+  descripcion: "Con el mismo sueldo, dos personas pueden terminar en lugares completamente distintos en 5 años. La diferencia no es cuánto ganan — es qué piensan cuando les llega la plata.\n\nEl empleado gasta su sueldo. El inversor usa su sueldo para comprarse una fuente de ingreso nueva.\n\nNo se trata de ganar más. Se trata de pensar distinto con lo que ya ganás.\n\n👉 Seguime, te sigo enseñando cómo se construye eso paso a paso.",
+  hashtags: ["#ConquistaTuPatrimonio","#MentalidadDeInversor","#LibertadFinanciera","#InversionInmobiliaria","#BienesRaicesColombia"]
+},
+{
+  numero: "Guión 16", titulo: "Cuánto Tiempo Toma Vivir de Flujos",
+  bloque: "🧠 Mentalidad", tipo: "Reflexión Directa · #6",
+  palanca: "Honestidad radical (bajar expectativas falsas sin desmotivar)", duracion: "46–54 seg",
+  guion: [
+    { parte: "Gancho", timing: "~6 seg", clase: "gancho", texto: "Si alguien te dice que en 3 meses ya vas a estar viviendo de flujos, te está mintiendo. Te cuento cuánto se demora esto de verdad." },
+    { parte: "Relevancia", timing: "~9 seg", clase: "relevancia", texto: "Esto es clave: te lo digo así de directo porque prefiero que sepas la verdad a que te ilusionés con algo que no es real." },
+    { parte: "Valor", timing: "~28 seg", clase: "valor", texto: "Primero tenés que educarte y entender bien el modelo — eso, haciéndolo con cabeza, se lleva sus semanas. Después viene buscar la propiedad correcta, que no siempre aparece la primera semana que salís a buscar. Ahí sigue negociar, comprar o arrendar, y remodelar o adecuar — eso también toma tiempo. Recién ahí empieza a entrarte flujo. Entre educarte, encontrar la propiedad y dejarla lista, hablamos de varios meses, no de semanas. Y una sola propiedad, aunque ya te esté dejando flujo, probablemente todavía no te reemplaza el sueldo completo. Para eso necesitás, con el tiempo, más de una." },
+    { parte: "Acción", timing: "~8 seg", clase: "accion", texto: "Esto no es rápido, pero sí es real. Seguime, te sigo enseñando cómo se construye eso paso a paso." }
+  ],
+  notas: [
+    { icon: "⚡", titulo: "Ritmo y energía", texto: "Directo y honesto desde el gancho, sin bajarle la energía al mensaje solo por ser una expectativa menos atractiva — la seguridad va en el tono, no en prometer velocidad.", cta: false },
+    { icon: "😐", titulo: "Expresión", texto: "Seria y transparente, sin sonar desmotivante — cara de \"te estoy cuidando de una mentira\", no de \"esto es muy difícil\".", cta: false },
+    { icon: "🤲", titulo: "Gestos", texto: "Contar con los dedos las etapas (educarte, buscar, remodelar) para dar sensación de proceso real, no de salto mágico.", cta: false },
+    { icon: "🎬", titulo: "Visuales sugeridos", texto: "Talking head, sin B-roll necesario. Overlay con línea de tiempo simple: \"Educarte → Buscar propiedad → Remodelar/Adecuar → Flujo\".", cta: false },
+    { icon: "🎵", titulo: "Audio", texto: "Track calmado y serio, sin urgencia ni dramatismo — coherente con el mensaje de honestidad.", cta: false },
+    { icon: "📢", titulo: "CTA", texto: "Verbal + texto en pantalla: \"Seguime, te sigo enseñando paso a paso\" — genérico, sin mencionar CTP.", cta: true }
+  ],
+  descripcion: "Si alguien te dice que en 3 meses ya vas a estar viviendo de flujos, te está mintiendo.\n\nEducarte, encontrar la propiedad correcta, negociar, remodelar o adecuar — todo eso toma tiempo. Y una sola propiedad probablemente no te reemplaza el sueldo completo desde el primer día.\n\nEsto no es rápido. Pero es real, y con constancia se construye.\n\n👉 Seguime, te sigo enseñando cómo se construye eso paso a paso.",
+  hashtags: ["#ConquistaTuPatrimonio","#LibertadFinanciera","#MentalidadDeInversor","#InversionInmobiliaria","#BienesRaicesColombia"]
+}
+];
+
+let current = 0;
+let currentTab = 'guion';
+
+function render() {
+  const r = reels[current];
+  document.getElementById('counter-current').textContent = current + 1;
+  document.getElementById('counter-total').textContent = reels.length;
+  document.getElementById('progress-fill').style.width = ((current + 1) / reels.length * 100) + '%';
+
+  document.getElementById('f-numero').textContent = r.numero;
+  document.getElementById('f-titulo').textContent = r.titulo;
+  document.getElementById('f-bloque').textContent = r.bloque;
+  document.getElementById('f-tipo').textContent = r.tipo;
+  document.getElementById('f-palanca').textContent = r.palanca;
+  document.getElementById('f-duracion').textContent = r.duracion;
+
+  const meta = document.getElementById('meta');
+  meta.style.animation = 'none';
+  void meta.offsetWidth;
+  meta.style.animation = 'fadeUp 0.4s ease forwards';
+
+  // Tab: Guion
+  const tabGuion = document.getElementById('tab-guion');
+  tabGuion.innerHTML = r.guion.map(p => `
+    <div class="script-block">
+      <div class="script-label label-${p.clase}">${p.parte} <span class="script-timing">${p.timing}</span></div>
+      <div class="script-text ${p.clase}">${p.texto}</div>
+    </div>
+  `).join('');
+
+  // Tab: Notas
+  const tabNotas = document.getElementById('tab-notas');
+  tabNotas.innerHTML = `<div class="notes-grid">` + r.notas.map(n => `
+    <div class="note-card ${n.cta ? 'cta-note' : ''}">
+      <div class="note-head"><span class="note-icon">${n.icon}</span><span class="note-title">${n.titulo}</span></div>
+      <div class="note-text">${n.texto}</div>
+    </div>
+  `).join('') + `</div>`;
+
+  // Tab: Descripcion
+  const tabDesc = document.getElementById('tab-descripcion');
+  tabDesc.innerHTML = `
+    <div class="desc-box">
+      <button class="desc-copy-btn" id="copy-btn" onclick="copyDesc()">Copiar</button>
+      <div class="desc-text">${r.descripcion}</div>
+      <div class="hashtags">${r.hashtags.map(h => `<span class="hashtag">${h}</span>`).join('')}</div>
+    </div>
+  `;
+
+  document.getElementById('btn-prev').disabled = current === 0;
+  const nextBtn = document.getElementById('btn-next');
+  nextBtn.textContent = current === reels.length - 1 ? '✓ Fin' : 'Siguiente →';
+
+  renderDots();
+  [...tabGuion.parentElement.parentElement.querySelectorAll('.tab-content')].forEach(el => el.classList.remove('active'));
+  document.getElementById('tab-' + currentTab).classList.add('active');
+  [...document.querySelectorAll('.tab')].forEach(el => el.classList.toggle('active', el.dataset.tab === currentTab));
+}
+
+function renderDots() {
+  const dots = document.getElementById('dots');
+  dots.innerHTML = reels.map((_, i) => `<button class="dot ${i === current ? 'active' : ''}" onclick="goTo(${i})"></button>`).join('');
+}
+
+function switchTab(tab) {
+  currentTab = tab;
+  [...document.querySelectorAll('.tab-content')].forEach(el => el.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  [...document.querySelectorAll('.tab')].forEach(el => el.classList.toggle('active', el.dataset.tab === tab));
+}
+
+function navigate(dir) {
+  const next = current + dir;
+  if (next < 0 || next > reels.length - 1) return;
+  current = next;
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function goTo(i) {
+  current = i;
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function copyDesc() {
+  const r = reels[current];
+  const text = r.descripcion + '\n\n' + r.hashtags.join(' ');
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('copy-btn');
+    const original = btn.textContent;
+    btn.textContent = '✓ Copiado';
+    setTimeout(() => { btn.textContent = original; }, 2000);
+  });
+}
+
+render();
+</script>
+</body>
+</html>

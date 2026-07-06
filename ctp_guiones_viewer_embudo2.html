@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CTP · Guiones Embudo 2</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+
+:root {
+  --navy:        #0F2544;
+  --navy-light:  #1a3560;
+  --navy-dark:   #091a33;
+  --lime:        #00C96E;
+  --lime-dim:    #00a85c;
+  --lime-soft:   rgba(0,201,110,0.12);
+  --lime-softer: rgba(0,201,110,0.06);
+
+  --white:        #ffffff;
+  --text-primary: #e8edf4;
+  --text-secondary:#8fa3bf;
+  --text-muted:   #5a7494;
+
+  --border:       rgba(255,255,255,0.08);
+  --border-lime:  rgba(0,201,110,0.3);
+
+  --card-bg:    rgba(255,255,255,0.04);
+  --card-hover: rgba(255,255,255,0.07);
+}
+
+* { box-sizing: border-box; }
+html, body {
+  margin: 0; padding: 0;
+  background: var(--navy-dark);
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+}
+
+.header {
+  position: sticky; top: 0; z-index: 50;
+  background: rgba(9,26,51,0.92);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+  padding: 16px 32px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.header-left { display: flex; align-items: center; gap: 10px; }
+.brand-dot {
+  width: 8px; height: 8px;
+  background: var(--lime);
+  border-radius: 50%;
+  animation: pulse 2.5s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.6; transform: scale(0.85); }
+}
+.brand-text { display: flex; flex-direction: column; line-height: 1.2; }
+.brand-name { font-weight: 600; font-size: 14px; color: var(--white); }
+.brand-handle { font-size: 11px; color: var(--text-muted); }
+.counter { font-size: 12px; color: var(--text-secondary); }
+.counter b { color: var(--lime); font-weight: 600; }
+
+.progress-bar  { height: 2px; background: var(--border); }
+.progress-fill { height: 100%; background: var(--lime); transition: width 0.4s ease; }
+
+.main { max-width: 760px; margin: 0 auto; padding: 32px 24px 60px; }
+
+.meta { margin-bottom: 20px; animation: fadeUp 0.4s ease forwards; }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.numero { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; color: var(--lime); text-transform: uppercase; margin-bottom: 8px; }
+.reel-title { font-size: 26px; font-weight: 600; color: var(--white); margin: 0 0 14px 0; line-height: 1.25; }
+
+.tags { display: flex; flex-wrap: wrap; gap: 8px; }
+.tag { font-size: 11px; font-weight: 500; padding: 4px 12px; border-radius: 20px; }
+.tag-bloque  { background: rgba(127,119,221,0.15); color: #a8a1f0; border: 1px solid rgba(127,119,221,0.25); }
+.tag-tipo    { background: var(--lime-softer); color: var(--lime); border: 1px solid var(--border-lime); }
+.tag-palanca { background: rgba(255,255,255,0.06); color: var(--text-secondary); border: 1px solid var(--border); }
+.tag-duracion{ background: rgba(255,255,255,0.06); color: var(--text-secondary); border: 1px solid var(--border); }
+
+.tabs { display: flex; gap: 4px; margin: 24px 0 20px; border-bottom: 1px solid var(--border); }
+.tab {
+  padding: 10px 18px; font-size: 13px; font-weight: 500;
+  color: var(--text-secondary); cursor: pointer;
+  border-bottom: 2px solid transparent; transition: all 0.2s;
+  background: none; border-top: none; border-left: none; border-right: none;
+  font-family: 'Inter', sans-serif;
+}
+.tab:hover { color: var(--white); }
+.tab.active { color: var(--lime); border-bottom-color: var(--lime); }
+
+.tab-content { display: none; animation: fadeUp 0.35s ease forwards; }
+.tab-content.active { display: block; }
+
+.script-block { margin-bottom: 18px; }
+.script-label { display: flex; align-items: baseline; gap: 10px; margin-bottom: 6px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+.script-timing { font-size: 11px; font-weight: 400; color: var(--text-muted); text-transform: none; letter-spacing: 0; }
+.label-gancho     { color: #a8a1f0; }
+.label-relevancia { color: var(--lime); }
+.label-valor      { color: #f0b429; }
+.label-accion     { color: #f08070; }
+.script-text {
+  background: var(--card-bg);
+  border-left: 3px solid var(--text-muted);
+  border-radius: 6px;
+  padding: 14px 16px;
+  font-size: 15px; line-height: 1.6;
+  color: var(--text-primary);
+}
+.script-text.gancho     { border-left-color: #7F77DD; }
+.script-text.relevancia { border-left-color: #00C96E; }
+.script-text.valor      { border-left-color: #f0b429; }
+.script-text.accion     { border-left-color: #f08070; }
+
+.notes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.note-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 16px;
+}
+.note-card .note-head { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.note-card .note-icon { font-size: 16px; }
+.note-card .note-title { font-size: 12px; font-weight: 600; color: var(--white); }
+.note-card .note-text { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+.cta-note {
+  grid-column: 1 / -1;
+  background: var(--lime-softer);
+  border-color: var(--border-lime);
+}
+.cta-note .note-title { color: var(--lime); }
+
+.desc-box {
+  position: relative;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px;
+}
+.desc-copy-btn {
+  position: absolute; top: 16px; right: 16px;
+  background: var(--lime-soft);
+  border: 1px solid var(--border-lime);
+  color: var(--lime);
+  font-size: 11px; font-weight: 600;
+  padding: 6px 14px; border-radius: 20px;
+  cursor: pointer;
+  transition: background 0.2s;
+  font-family: 'Inter', sans-serif;
+}
+.desc-copy-btn:hover { background: rgba(0,201,110,0.2); }
+.desc-text { font-size: 14px; line-height: 1.7; color: var(--text-primary); white-space: pre-line; margin-bottom: 16px; padding-right: 90px; }
+.hashtags { display: flex; flex-wrap: wrap; gap: 6px; }
+.hashtag {
+  font-size: 12px; color: var(--lime);
+  background: var(--lime-softer);
+  padding: 3px 10px; border-radius: 20px;
+  border: 1px solid var(--border-lime);
+}
+
+.nav-row { display: flex; align-items: center; justify-content: space-between; margin-top: 32px; }
+.nav-btn {
+  padding: 12px 24px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  color: var(--text-secondary);
+  font-size: 13px; font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Inter', sans-serif;
+}
+.nav-btn:hover:not(:disabled) { background: var(--card-hover); color: var(--white); }
+.nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+.nav-btn.next {
+  background: var(--lime); border-color: var(--lime); color: var(--navy-dark); font-weight: 600;
+}
+.nav-btn.next:hover:not(:disabled) { background: var(--lime-dim); border-color: var(--lime-dim); }
+
+.dots { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; justify-content: center; max-width: 320px; }
+.dot { width: 6px; height: 6px; border-radius: 50%; background: var(--text-muted); cursor: pointer; transition: all 0.2s; border: none; padding: 0; }
+.dot.active { background: var(--lime); width: 20px; border-radius: 3px; }
+
+@media (max-width: 600px) {
+  .header { padding: 16px 20px; }
+  .main   { padding: 28px 16px 60px; }
+  .reel-title { font-size: 20px; }
+  .notes-grid { grid-template-columns: 1fr; }
+  .cta-note   { grid-column: 1; }
+  .tab        { padding: 10px 14px; font-size: 12px; }
+  .desc-text  { padding-right: 0; }
+  .desc-copy-btn { position: static; display: inline-block; margin-bottom: 12px; }
+  .nav-row { flex-wrap: wrap; gap: 14px; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <div class="brand-dot"></div>
+    <div class="brand-text">
+      <div class="brand-name">Conquista Tu Patrimonio</div>
+      <div class="brand-handle">@el_pingo83 · Embudo 2 (MOFU)</div>
+    </div>
+  </div>
+  <div class="counter">Guión <b id="counter-current">1</b> de <span id="counter-total">10</span></div>
+</div>
+<div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+
+<div class="main">
+  <div class="meta" id="meta">
+    <div class="numero" id="f-numero"></div>
+    <h1 class="reel-title" id="f-titulo"></h1>
+    <div class="tags">
+      <span class="tag tag-bloque" id="f-bloque"></span>
+      <span class="tag tag-tipo" id="f-tipo"></span>
+      <span class="tag tag-palanca" id="f-palanca"></span>
+      <span class="tag tag-duracion" id="f-duracion"></span>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="guion" onclick="switchTab('guion')">Guión</button>
+    <button class="tab" data-tab="notas" onclick="switchTab('notas')">Notas de grabación</button>
+    <button class="tab" data-tab="descripcion" onclick="switchTab('descripcion')">Descripción del post</button>
+  </div>
+
+  <div class="tab-content active" id="tab-guion"></div>
+  <div class="tab-content" id="tab-notas"></div>
+  <div class="tab-content" id="tab-descripcion"></div>
+
+  <div class="nav-row">
+    <button class="nav-btn" id="btn-prev" onclick="navigate(-1)">← Anterior</button>
+    <div class="dots" id="dots"></div>
+    <button class="nav-btn next" id="btn-next" onclick="navigate(1)">Siguiente →</button>
+  </div>
+</div>
+
+<script>
+const reels = [
+{
+  numero: "Guión 01", titulo: "Cómo Calcular la Métrica Dorada en 3 Pasos",
+  bloque: "🎓 Educativo", tipo: "Tutorial Paso a Paso · #1",
+  palanca: "Autoridad técnica + utilidad aplicable de inmediato", duracion: "55–65 seg",
+  guion: [
+    { parte: "Gancho", timing: "~7 seg", clase: "gancho", texto: "Antes de comprar cualquier propiedad para Flipping 2.0, hay un solo cálculo que te dice si es negocio o no. Te lo enseño en 3 pasos." },
+    { parte: "Relevancia", timing: "~9 seg", clase: "relevancia", texto: "La gente se enamora de una casa por cómo se ve, y se les olvida sacar la cuenta antes de comprar. Ese error te puede costar decenas de millones." },
+    { parte: "Valor", timing: "~38 seg", clase: "valor", texto: "Paso 1: calculás el ingreso mensual que te daría la propiedad ya convertida en coliving — sumás lo que pagaría cada habitación o apartaestudio. Por ejemplo, 10 habitaciones a $1.140.000 cada una te dan $11.4 millones brutos al mes. Paso 2: le restás los gastos operativos — administración, servicios de zonas comunes, mantenimiento — que normalmente rondan el 20%. Ahí te queda un ingreso neto de $9.1 millones. Paso 3: dividís ese ingreso neto entre lo que te costó todo el negocio — la compra más la remodelación. Si la casa costó $450 millones y la remodelación $250 millones, tu inversión total es $700 millones. $9.1 millones dividido $700 millones te da 1.3% mensual. Ese es justo nuestro mínimo. Esta propiedad cumple." },
+    { parte: "Acción", timing: "~8 seg", clase: "accion", texto: "Si ese cálculo no te da mínimo 1.3%, no es negocio, así la casa te encante. Seguime, que te sigo enseñando cómo se construye eso paso a paso." }
+  ],
+  notas: [
+    { icon: "⚡", titulo: "Ritmo y energía", texto: "Didáctico y pausado — es un tutorial, no un gancho emocional. Baja un poco la velocidad en el Paso 3 (la división).", cta: false },
+    { icon: "😐", titulo: "Expresión", texto: "Seguro y directo, como un asesor mostrando su propia hoja de cálculo.", cta: false },
+    { icon: "🤲", titulo: "Gestos", texto: "Contar con los dedos los 3 pasos (1, 2, 3); usar la mano como si \"escribiera\" cada cifra en el aire.", cta: false },
+    { icon: "🎬", titulo: "Visuales sugeridos", texto: "Overlay tipo calculadora en pantalla: Ingreso bruto ($11.4M) → Ingreso neto ($9.1M) → Inversión total ($700M) → % mensual (1.3% ✅ cumple).", cta: false },
+    { icon: "🎵", titulo: "Audio", texto: "Track neutro y limpio, bajar volumen durante toda la sección de números.", cta: false },
+    { icon: "📢", titulo: "CTA", texto: "Verbal + texto en pantalla: \"Seguime, te sigo enseñando paso a paso\".", cta: true }
+  ],
+  descripcion: "Antes de comprar cualquier propiedad para Flipping 2.0, hay un solo cálculo que te dice si es negocio o no. Acá te lo enseño en 3 pasos:\n\n1️⃣ Calculá el ingreso mensual bruto (todas las habitaciones/apartaestudios ya rentando).\n2️⃣ Restale los gastos operativos (~20%) para sacar el ingreso neto.\n3️⃣ Dividí ese neto entre la inversión total (compra + remodelación) y multiplicá por 100.\n\nCon $700 millones invertidos ($450M compra + $250M remodelación) y $9.1 millones netos al mes, esta propiedad cumple justo el mínimo: 1.3%.\n\n👉 Guardá este post para cuando vayas a evaluar tu próxima propiedad.",
+  hashtags: ["#ConquistaTuPatrimonio","#Flipping20","#MetricaDorada","#InversionInmobiliaria","#ColivingColombia","#BienesRaicesColombia"]
+},
+{
+  numero: "Guión 02", titulo: "Los 5 Errores Fatales al Invertir",
+  bloque: "🎓 Educativo", tipo: "Lista de Errores · #2",
+  palanca: "Prevención de pérdida", duracion: "60–68 seg",
+  guion: [
+    { parte: "Gancho", timing: "~6 seg", clase: "gancho", texto: "Estos son los 5 errores que le he visto cometer a la gente, y que le cuestan millones. Ojo con esto." },
+    { parte: "Relevancia", timing: "~8 seg", clase: "relevancia", texto: "Ojo con esto: la mayoría de los negocios de Flipping 2.0 no se dañan por mala suerte. Se dañan por errores que se repiten una y otra vez." },
+    { parte: "Valor", timing: "~40 seg", clase: "valor", texto: "Error uno: comprar sin hacerle números — se enamoran de la casa y se les olvida calcular si cumple el mínimo de rentabilidad. Error dos: no revisar la demanda de la zona — armás 10 habitaciones hermosas donde no hay quién las arriende. Error tres: subestimar el presupuesto de remodelación — calculan $220 millones y terminan gastando $290, y ahí se les acaba la plata a mitad de obra. Error cuatro: no dejar un colchón de flujo de caja — arrancan sin nada guardado para el primer mes, cuando la propiedad todavía no está llena al 100%. Y error cinco, el más caro de todos: no dejar bien amarrado el contrato con los arrendatarios — sin cláusulas claras de pago, convivencia y salida, y ahí es donde más plata se pierde cuando algo sale mal." },
+    { parte: "Acción", timing: "~8 seg", clase: "accion", texto: "Cualquiera de estos cinco te puede dañar un negocio que en papel se veía perfecto. Seguime, te sigo enseñando cómo se evita cada uno, paso a paso." }
+  ],
+  notas: [
+    { icon: "⚡", titulo: "Ritmo y energía", texto: "Ritmo ágil pero controlado — marcar una pequeña pausa entre cada error.", cta: false },
+    { icon: "😐", titulo: "Expresión", texto: "Seria y directa, tono de \"te estoy advirtiendo algo real\".", cta: false },
+    { icon: "🤲", titulo: "Gestos", texto: "Contar los 5 errores con los dedos de la mano, uno por uno.", cta: false },
+    { icon: "🎬", titulo: "Visuales sugeridos", texto: "Overlay numerado (1-5) sincronizado con cada error. Íconos: calculadora, mapa, presupuesto, alcancía, contrato.", cta: false },
+    { icon: "🎵", titulo: "Audio", texto: "Track con energía moderada, constante.", cta: false },
+    { icon: "📢", titulo: "CTA", texto: "Verbal + texto en pantalla: \"Seguime, te sigo enseñando paso a paso\".", cta: true }
+  ],
+  descripcion: "Estos son los 5 errores que le he visto cometer a la gente en Flipping 2.0, y que le cuestan millones:\n\n1️⃣ Comprar sin hacerle números a la propiedad.\n2️⃣ No revisar la demanda real de la zona.\n3️⃣ Subestimar el presupuesto de remodelación.\n4️⃣ No dejar un colchón de flujo de caja para el arranque.\n5️⃣ No dejar bien amarrado el contrato con los arrendatarios.\n\nCualquiera de estos cinco te puede dañar un negocio que en papel se veía perfecto.\n\n👉 Guardá este post — te sirve antes de tu próxima compra.",
+  hashtags: ["#ConquistaTuPatrimonio","#Flipping20","#InversionInmobiliaria","#ColivingColombia","#BienesRaicesColombia","#MetricaDorada"]
+},
+{
+  numero: "Guión 03", titulo: "Cómo Remodelar Sin Perder Dinero",
+  bloque: "🎓 Educativo", tipo: "Principios Prácticos · #3",
+  palanca: "Prevención de pérdida + control", duracion: "55–65 seg",
+  guion: [
+    { parte: "Gancho", timing: "~6 seg", clase: "gancho", texto: "La remodelación es donde más plata se pierde en Flipping 2.0. Te doy 3 principios para que no te pase." },
+    { parte: "Relevancia", timing: "~8 seg", clase: "relevancia", texto: "En la práctica funciona así: no es que la remodelación sea cara. Es que la gente la planea mal, y ahí es donde el presupuesto se sale de control." },
+    { parte: "Valor", timing: "~40 seg", clase: "valor", texto: "Primero: cotizá con al menos dos contratistas antes de arrancar, nunca con uno solo. Segundo: siempre dejá un colchón del 15 al 20% sobre lo cotizado, porque en toda remodelación aparece algo que no estaba en el plan. Si cotizaste $250 millones, presupuestá entre $287 y $300 millones, no $250 justos. Tercero: remodelá pensando en el inquilino, no en lo que a vos te gustaría para tu propia casa — acabados de gama alta se ven bonitos, pero no suben lo que podés cobrar de arriendo, solo suben tu gasto. Gastá en lo que el inquilino valora: buena ducha, buen clóset, buena conexión a internet. No en un mármol que nadie te va a pagar de más." },
+    { parte: "Acción", timing: "~8 seg", clase: "accion", texto: "Cotizá con varios, dejá margen, y gastá donde se nota para el que va a pagar arriendo. Seguime, te sigo enseñando esto paso a paso." }
+  ],
+  notas: [
+    { icon: "⚡", titulo: "Ritmo y energía", texto: "Didáctico y práctico, tono de \"consejo de alguien que ya se quemó con esto\".", cta: false },
+    { icon: "😐", titulo: "Expresión", texto: "Directa y segura; complicidad al mencionar \"el mármol que nadie te va a pagar de más\".", cta: false },
+    { icon: "🤲", titulo: "Gestos", texto: "Contar los 3 principios con los dedos; gesto de \"colchón\" al hablar del margen del 15-20%.", cta: false },
+    { icon: "🎬", titulo: "Visuales sugeridos", texto: "Overlay: \"Cotización: $250M → Presupuesto real: $287-300M\". B-roll de remodelación en proceso y acabado terminado simple pero funcional.", cta: false },
+    { icon: "🎵", titulo: "Audio", texto: "Track neutro y práctico, sin dramatismo.", cta: false },
+    { icon: "📢", titulo: "CTA", texto: "Verbal + texto en pantalla: \"Seguime, te sigo enseñando paso a paso\".", cta: true }
+  ],
+  descripcion: "La remodelación es donde más plata se pierde en Flipping 2.0. Acá 3 principios para que no te pase:\n\n1️⃣ Cotizá con mínimo dos contratistas — nunca con uno solo.\n2️⃣ Dejá un colchón del 15-20% sobre lo cotizado. Siempre aparece algo.\n3️⃣ Gastá en lo que el inquilino valora (ducha, clóset, internet), no en acabados que solo te suben el gasto sin subir el arriendo.\n\nNo se trata de gastar poco. Se trata de gastar donde se nota para el que va a pagar.\n\n👉 Guardá este post para tu próxima remodelación.",
+  hashtags: ["#ConquistaTuPatrimonio","#Flipping20","#InversionInmobiliaria","#ColivingColombia","#BienesRaicesColombia","#RemodelacionRentable"]
+},
+{
+  numero: "Guión 04", titulo: "Cómo Calcular el ROI",
+  bloque: "🎓 Educativo", tipo: "Tutorial Paso a Paso · #3",
+  palanca: "Autoridad técnica + claridad numérica", duracion: "55–65 seg",
+  guion: [
+    { parte: "Gancho", timing: "~6 seg", clase: "gancho", texto: "Mucha gente habla de ROI sin saber calcularlo de verdad. Te muestro la fórmula con un caso real." },
+    { parte: "Relevancia", timing: "~9 seg", clase: "relevancia", texto: "Acá está la jugada: el ROI no es solo \"cuánto gano\", es cuánto tiempo se demora esa plata en volver a tu bolsillo. Y eso cambia toda la decisión." },
+    { parte: "Valor", timing: "~36 seg", clase: "valor", texto: "Tomemos la misma propiedad de la que te hablé antes: $450 millones de compra, más $250 millones de remodelación — inversión total de $700 millones. Esa propiedad, convertida en coliving, te deja $9.1 millones netos al mes. Para sacar el ROI anual, multiplicás ese neto por 12: te da $109.2 millones al año. Ese resultado lo dividís entre la inversión total y lo multiplicás por 100: 109.2 dividido 700, por 100, te da 15.6% de retorno anual. Y si querés verlo en tiempo: dividís los $700 millones entre los $9.1 millones mensuales, y te da que en unos 77 meses — casi 6 años y medio — ya recuperaste toda tu inversión. De ahí en adelante, todo lo que entra es ganancia neta, y la propiedad sigue siendo tuya." },
+    { parte: "Acción", timing: "~8 seg", clase: "accion", texto: "Ese es el ROI real: cuánto ganás al año y cuánto tarda en devolverte lo invertido. Seguime, te sigo enseñando cómo se construye eso paso a paso." }
+  ],
+  notas: [
+    { icon: "⚡", titulo: "Ritmo y energía", texto: "Didáctico y pausado — bajar la velocidad en la parte de la división.", cta: false },
+    { icon: "😐", titulo: "Expresión", texto: "Segura y clara, tono de \"te estoy mostrando la cuenta real, no la de marketing\".", cta: false },
+    { icon: "🤲", titulo: "Gestos", texto: "Simular con las manos una \"línea de tiempo\" al hablar de los 77 meses/6.5 años.", cta: false },
+    { icon: "🎬", titulo: "Visuales sugeridos", texto: "Overlay: \"$700M inversión → $9.1M/mes → $109.2M/año → 15.6% ROI anual → 77 meses para recuperar\". Mismo formato visual que el reel de la métrica dorada.", cta: false },
+    { icon: "🎵", titulo: "Audio", texto: "Track neutro y limpio, bajar volumen durante la sección de números.", cta: false },
+    { icon: "📢", titulo: "CTA", texto: "Verbal + texto en pantalla: \"Seguime, te sigo enseñando paso a paso\".", cta: true }
+  ],
+  descripcion: "Mucha gente habla de ROI sin saber calcularlo de verdad. Acá la fórmula aplicada a un caso real:\n\n📌 Inversión total: $700M (compra + remodelación)\n📌 Flujo neto mensual: $9.1M\n📌 Flujo neto anual: $109.2M\n📌 ROI anual: 15.6%\n📌 Tiempo para recuperar la inversión: ~77 meses (6.4 años)\n\nDe ahí en adelante, todo lo que entra es ganancia neta — y la propiedad sigue siendo tuya.\n\n👉 Guardá este post para tu próxima evaluación.",
+  hashtags: ["#ConquistaTuPatrimonio","#Flipping20","#ROI","#InversionInmobiliaria","#ColivingColombia","#BienesRaicesColombia"]
+},
+{
+  numero: "Guión 05", titulo: "Coliving: La Estrategia Que Reduce Riesgo",
+  bloque: "🏛️ Metodología CTP", tipo: "Explicación de Estrategia · #1",
+  palanca: "Seguridad estructural (el modelo protege el flujo por diseño)", duracion: "55–63 seg",
+  guion: [
+    { parte: "Gancho", timing: "~6 seg", clase: "gancho", texto: "El coliving no es solo para meterle más habitaciones a una casa. Es una estrategia para proteger tu flujo. Te explico por qué." },
+    { parte: "Relevancia", timing: "~9 seg", clase: "relevancia", texto: "Hablemos claro: en cualquier negocio de arriendo, el riesgo más grande es la vacancia — que se te vaya el inquilino y te quedes sin ingreso. El coliving ataca ese riesgo desde el diseño mismo del negocio." },
+    { parte: "Valor", timing: "~36 seg", clase: "valor", texto: "Si tenés una sola propiedad arrendada a una sola familia por $3.5 millones, y esa familia se va, tu ingreso ese mes es cero — 100% de tu flujo depende de una sola decisión ajena. Ahora, esa misma propiedad convertida en coliving, con 10 habitaciones independientes, cada una representa solo el 10% de tu ingreso total. Si se te va un inquilino, no perdés el 100%, perdés el 10% — y seguís recibiendo el 90% mientras consigues reemplazo. Entre más divide el activo, menos depende tu flujo de una sola persona. Por eso no es solo un tema de ingreso más alto: es un tema de que el riesgo queda repartido en vez de concentrado." },
+    { parte: "Acción", timing: "~8 seg", clase: "accion", texto: "Por eso en Flipping 2.0 el coliving no es opcional — es la estrategia central para que tu flujo no dependa de una sola persona. Seguime, te sigo enseñando cómo se construye eso paso a paso." }
+  ],
+  notas: [
+    { icon: "⚡", titulo: "Ritmo y energía", texto: "Explicativo y seguro, tono de \"te voy a mostrar la lógica detrás de esto\" — sin urgencia, es una explicación estructural.", cta: false },
+    { icon: "😐", titulo: "Expresión", texto: "Convicción tranquila, especialmente al llegar a \"el riesgo queda repartido en vez de concentrado\".", cta: false },
+    { icon: "🤲", titulo: "Gestos", texto: "Puño cerrado (\"todo concentrado\") al hablar de la renta tradicional; diez dedos abiertos (\"repartido\") al hablar del coliving.", cta: false },
+    { icon: "🎬", titulo: "Visuales sugeridos", texto: "Overlay tipo diagrama: círculo completo (100%) con una sola división para la renta tradicional, vs. círculo dividido en 10 partes iguales (10% cada una) para el coliving.", cta: false },
+    { icon: "🎵", titulo: "Audio", texto: "Track neutro y analítico, sin subir intensidad — el peso está en la claridad del razonamiento.", cta: false },
+    { icon: "📢", titulo: "CTA", texto: "Verbal + texto en pantalla: \"Seguime, te sigo enseñando paso a paso\".", cta: true }
+  ],
+  descripcion: "El coliving no es solo para meterle más habitaciones a una casa. Es una estrategia para proteger tu flujo.\n\nCon una sola renta, si el inquilino se va, perdés el 100% de tu ingreso ese mes. Con un coliving de 10 habitaciones, si se va uno, perdés el 10% — y seguís recibiendo el 90% mientras consigues reemplazo.\n\nNo es solo más ingreso. Es riesgo repartido en vez de concentrado.\n\n👉 Guardá este post — es la lógica detrás de por qué siempre recomendamos multirrenta.",
+  hashtags: ["#ConquistaTuPatrimonio","#ColivingColombia","#Flipping20","#InversionInmobiliaria","#BienesRaicesColombia","#MetricaDorada"]
+},
+{
+  numero: "Guión 06", titulo: "La Métrica Dorada",
+  bloque: "🏛️ Metodología CTP", tipo: "Concepto Central · #2",
+  palanca: "Autoridad de sistema (una sola regla que filtra todo)", duracion: "50–58 seg",
+  guion: [
+    { parte: "Gancho", timing: "~6 seg", clase: "gancho", texto: "En CTP no evaluamos una propiedad por gusto ni por precio. La evaluamos con una sola regla: la métrica dorada. Te explico qué es." },
+    { parte: "Relevancia", timing: "~9 seg", clase: "relevancia", texto: "Sin esta regla, cualquier casa te puede parecer buen negocio. Con esta regla, filtrás en segundos si vale la pena o no." },
+    { parte: "Valor", timing: "~30 seg", clase: "valor", texto: "La métrica dorada es simple: el flujo neto mensual que te deja la propiedad tiene que representar mínimo el 1.3% de lo que invertiste en total — compra más remodelación. Si invertiste $700 millones, necesitás mínimo $9.1 millones netos al mes para que cumpla. Si te da menos de eso, no importa qué tan bonita esté, qué tan barata parezca, o qué tanto te haya gustado — no es negocio para nosotros. Esta regla no la inventamos para complicar las cosas. La usamos porque nos quita la emoción de la decisión y la vuelve un número: cumple o no cumple." },
+    { parte: "Acción", timing: "~8 seg", clase: "accion", texto: "Antes de comprometer tu plata en cualquier propiedad, pasala por esta regla. Seguime, te sigo enseñando cómo se construye eso paso a paso." }
+  ],
+  notas: [
+    { icon: "⚡", titulo: "Ritmo y energía", texto: "Firme y con autoridad de sistema — no es un tutorial de cálculo, es la declaración del principio detrás del cálculo.", cta: false },
+    { icon: "😐", titulo: "Expresión", texto: "Seguro y directo, tono de \"esta es la regla que no se negocia\".", cta: false },
+    { icon: "🤲", titulo: "Gestos", texto: "Gesto de \"filtro\" (mano como colando algo); gesto de balanza (manos subiendo y bajando) al decir \"cumple o no cumple\".", cta: false },
+    { icon: "🎬", titulo: "Visuales sugeridos", texto: "Overlay simple: \"$700M invertidos → mínimo $9.1M/mes → 1.3% ✅\". Pantalla estática, ya que el mensaje es conceptual.", cta: false },
+    { icon: "🎵", titulo: "Audio", texto: "Track neutro y seguro, sin variaciones de intensidad.", cta: false },
+    { icon: "📢", titulo: "CTA", texto: "Verbal + texto en pantalla: \"Seguime, te sigo enseñando paso a paso\".", cta: true }
+  ],
+  descripcion: "En CTP no evaluamos una propiedad por gusto ni por precio. La evaluamos con una sola regla: la métrica dorada.\n\nEl flujo neto mensual tiene que representar mínimo el 1.3% de lo que invertiste en total (compra + remodelación). Si invertiste $700 millones, necesitás mínimo $9.1 millones netos al mes.\n\nSi no cumple, no es negocio — así te haya encantado la casa.\n\nEsta regla no complica las cosas. Las simplifica: cumple o no cumple.\n\n👉 Guardá este post para cuando vayas a evaluar tu próxima propiedad.",
+  hashtags: ["#ConquistaTuPatrimonio","#MetricaDorada","#Flipping20","#InversionInmobiliaria","#ColivingColombia","#BienesRaicesColombia"]
+},
+{
+  numero: "Guión 07", titulo: "Los 3 Pilares de CTP",
+  bloque: "🏛️ Metodología CTP", tipo: "Concepto Central · #3",
+  palanca: "Autoridad de sistema (por qué el modelo es sólido, no solo diferente)", duracion: "55–63 seg",
+  guion: [
+    { parte: "Gancho", timing: "~6 seg", clase: "gancho", texto: "Todo lo que hacemos en CTP se sostiene sobre 3 pilares. No son secretos ni fórmulas mágicas — son la base de por qué esto funciona." },
+    { parte: "Relevancia", timing: "~8 seg", clase: "relevancia", texto: "Pilas con esto: no seguimos esto porque suena bonito. Lo seguimos porque cada pilar nos ha funcionado a nosotros y a cientos de estudiantes." },
+    { parte: "Valor", timing: "~36 seg", clase: "valor", texto: "Primero: decisiones desde los números, no desde la emoción. Una propiedad no se compra porque nos gustó — se compra porque cumple la métrica dorada. Segundo: un modelo de negocio ya aprobado — no estamos inventando nada sobre la marcha, es un sistema que ya probamos nosotros mismos y que ya replicaron nuestros estudiantes, una y otra vez. Y tercero: invertir en bienes raíces, que históricamente ha sido la forma más segura y más comprobada de hacer crecer tu plata — no es una moda, no es un experimento, es un activo real que existe hace siglos y que sigue funcionando." },
+    { parte: "Acción", timing: "~9 seg", clase: "accion", texto: "Números, modelo probado, y el activo más seguro que existe. Esos son los 3 pilares. Seguime, te sigo enseñando cómo se construye eso paso a paso." }
+  ],
+  notas: [
+    { icon: "⚡", titulo: "Ritmo y energía", texto: "Firme y con autoridad de sistema, tono de \"esto no es opinión, es lo que sostiene el modelo\".", cta: false },
+    { icon: "😐", titulo: "Expresión", texto: "Segura y directa; convicción particular al decir \"no es una moda, no es un experimento\".", cta: false },
+    { icon: "🤲", titulo: "Gestos", texto: "Contar los 3 pilares con los dedos; gesto de \"sostener desde abajo\" (manos como columnas).", cta: false },
+    { icon: "🎬", titulo: "Visuales sugeridos", texto: "Overlay tipo columna: tres íconos apareciendo uno por uno — calculadora (números), engranaje/checklist (modelo probado), edificio/casa (bienes raíces).", cta: false },
+    { icon: "🎵", titulo: "Audio", texto: "Track neutro y seguro, sin variaciones bruscas.", cta: false },
+    { icon: "📢", titulo: "CTA", texto: "Verbal + texto en pantalla: \"Seguime, te sigo enseñando paso a paso\".", cta: true }
+  ],
+  descripcion: "Todo lo que hacemos en CTP se sostiene sobre 3 pilares. No son secretos ni fórmulas mágicas — son la base de por qué esto funciona:\n\n1️⃣ Decisiones desde los números, no desde la emoción.\n2️⃣ Un modelo de negocio ya aprobado — probado por nosotros y replicado por nuestros estudiantes.\n3️⃣ Invertir en bienes raíces, históricamente la forma más segura y comprobada de hacer crecer tu plata.\n\nNo inventamos nada sobre la marcha. Seguimos lo que ya funciona.\n\n👉 Guardá este post — es la base de todo lo que enseñamos.",
+  hashtags: ["#ConquistaTuPatrimonio","#Flipping20","#InversionInmobiliaria","#ColivingColombia","#BienesRaicesColombia","#MetodologiaCTP"]
+},
+{
+  numero: "Guión 08", titulo: "Sistema vs. Tips",
+  bloque: "🏛️ Metodología CTP", tipo: "Concepto Central · #4",
+  palanca: "Autoridad de sistema (diferenciación frente a consejos sueltos)", duracion: "50–58 seg",
+  guion: [
+    { parte: "Gancho", timing: "~6 seg", clase: "gancho", texto: "En redes vas a encontrar mil tips sueltos de bienes raíces. Nosotros no enseñamos tips. Enseñamos un sistema. Y esa diferencia es la que decide si te va bien o mal." },
+    { parte: "Relevancia", timing: "~9 seg", clase: "relevancia", texto: "Ojo con esto: un tip suelto te puede servir para un caso puntual, pero no te dice qué hacer antes ni después de ese tip. Un sistema sí." },
+    { parte: "Valor", timing: "~32 seg", clase: "valor", texto: "Un tip te dice, por ejemplo: 'negocia el precio antes de comprar'. Eso está bien, pero no te dice cómo saber si esa propiedad ya era buen negocio antes de negociar, ni qué hacer después si la remodelación se sale del presupuesto, ni cómo gestionar la propiedad una vez tenés inquilinos. Un sistema conecta todo eso: te dice cómo evaluar con la métrica dorada, cómo negociar, cómo remodelar sin perder plata, y cómo operar el coliving después. No son piezas sueltas — es un proceso donde cada paso depende del anterior. Por eso alguien puede saberse 20 tips de bienes raíces y aun así quebrar en su primer negocio: le faltó el sistema completo, no le faltó información." },
+    { parte: "Acción", timing: "~8 seg", clase: "accion", texto: "Por eso no compitas coleccionando tips — aprendé el proceso completo, de principio a fin. Seguime, te sigo enseñando cómo se construye eso paso a paso." }
+  ],
+  notas: [
+    { icon: "⚡", titulo: "Ritmo y energía", texto: "Firme y con autoridad, sin sonar arrogante frente a quienes consumen tips — es una distinción de proceso.", cta: false },
+    { icon: "😐", titulo: "Expresión", texto: "Segura y directa, con convicción particular en \"no le faltó información, le faltó el sistema completo\".", cta: false },
+    { icon: "🤲", titulo: "Gestos", texto: "Gesto de \"piezas sueltas cayendo\" (dedos separándose) al hablar de tips; gesto de \"encadenar\" (manos entrelazándose) al hablar del sistema.", cta: false },
+    { icon: "🎬", titulo: "Visuales sugeridos", texto: "Overlay: puntos sueltos y desconectados (tips) que se conectan en una línea/flujo continuo (sistema: Evaluar → Negociar → Remodelar → Operar).", cta: false },
+    { icon: "🎵", titulo: "Audio", texto: "Track neutro y seguro, sin variaciones bruscas.", cta: false },
+    { icon: "📢", titulo: "CTA", texto: "Verbal + texto en pantalla: \"Seguime, te sigo enseñando paso a paso\".", cta: true }
+  ],
+  descripcion: "En redes vas a encontrar mil tips sueltos de bienes raíces. Nosotros no enseñamos tips. Enseñamos un sistema.\n\nUn tip te dice \"negocia el precio\". Un sistema te dice cómo evaluar la propiedad antes, cómo negociar, cómo remodelar sin perder plata, y cómo operar el coliving después — todo conectado.\n\nPor eso alguien puede saberse 20 tips y aun así quebrar en su primer negocio: no le faltó información, le faltó el proceso completo.\n\n👉 Guardá este post — es la diferencia entre coleccionar consejos y tener un método.",
+  hashtags: ["#ConquistaTuPatrimonio","#Flipping20","#InversionInmobiliaria","#ColivingColombia","#BienesRaicesColombia","#MetodologiaCTP"]
+},
+{
+  numero: "Guión 09", titulo: "\"No Tengo Capital\" → Solución",
+  bloque: "❓ Objeciones / FAQ", tipo: "Objeción Directa · #1",
+  palanca: "Remoción de barrera percibida", duracion: "50–58 seg",
+  guion: [
+    { parte: "Gancho", timing: "~6 seg", clase: "gancho", texto: "\"No tengo capital para invertir en bienes raíces\" — esa es la objeción que más escucho. Y casi siempre está mal calculada." },
+    { parte: "Relevancia", timing: "~9 seg", clase: "relevancia", texto: "La gente piensa en Flipping 2.0 y en los $700 millones, y ahí mismo se cierra la puerta. Pero ese no es el único punto de entrada." },
+    { parte: "Valor", timing: "~32 seg", clase: "valor", texto: "Para Flipping 2.0 sí necesitás un capital fuerte, es cierto. Pero para eso existe Rent to Rent: no comprás la propiedad, la arrendás. Adecuás los espacios, subarrendás por habitaciones, y con un capital mucho más chico —hablamos de $50 a $80 millones, no de $700— ya podés tener tu primer negocio generando flujo. No es la misma escala que Flipping 2.0, pero es la puerta de entrada real para aprender el modelo, generar tu primer flujo, y con ese mismo flujo, más adelante, dar el salto a comprar tu primera propiedad. La objeción de 'no tengo capital' casi nunca es sobre no tener nada — es sobre no saber que existe un punto de entrada más pequeño." },
+    { parte: "Acción", timing: "~8 seg", clase: "accion", texto: "Antes de descartar esto por capital, mirá primero cuál de los dos modelos te queda según lo que tenés hoy. Seguime, te sigo enseñando cómo se construye eso paso a paso." }
+  ],
+  notas: [
+    { icon: "⚡", titulo: "Ritmo y energía", texto: "Empático pero resolutivo — no es un regaño a quien pone la excusa, es una corrección de información.", cta: false },
+    { icon: "😐", titulo: "Expresión", texto: "Comprensiva en el gancho (\"te entiendo, la mayoría piensa esto\"); segura y clara al presentar la solución.", cta: false },
+    { icon: "🤲", titulo: "Gestos", texto: "Gesto de \"puerta cerrada\" (manos juntas) al mencionar los $700M; gesto de \"puerta abierta\" (manos abriéndose) al presentar Rent to Rent.", cta: false },
+    { icon: "🎬", titulo: "Visuales sugeridos", texto: "Overlay: \"Flipping 2.0 → $700M\" tachado/cerrado, junto a \"Rent to Rent → $50-80M\" en verde/abierto. B-roll de propiedad en proceso de adecuación simple.", cta: false },
+    { icon: "🎵", titulo: "Audio", texto: "Track neutro y cercano, sin dramatismo.", cta: false },
+    { icon: "📢", titulo: "CTA", texto: "Verbal + texto en pantalla: \"Seguime, te sigo enseñando paso a paso\".", cta: true }
+  ],
+  descripcion: "\"No tengo capital para invertir en bienes raíces\" — la objeción que más escucho. Y casi siempre está mal calculada.\n\nPara Flipping 2.0 sí necesitás un capital fuerte. Pero para eso existe Rent to Rent: no comprás, arrendás. Con $50 a $80 millones ya podés tener tu primer negocio generando flujo — y desde ahí, más adelante, dar el salto a comprar.\n\nLa objeción real casi nunca es \"no tengo nada\". Es no saber que existe un punto de entrada más pequeño.\n\n👉 Guardá este post si esta era tu excusa.",
+  hashtags: ["#ConquistaTuPatrimonio","#RentToRent","#Flipping20","#InversionInmobiliaria","#ColivingColombia","#BienesRaicesColombia"]
+},
+{
+  numero: "Guión 10", titulo: "\"Es Muy Riesgoso\" → La Verdad",
+  bloque: "❓ Objeciones / FAQ", tipo: "Objeción Directa · #2",
+  palanca: "Contextualización honesta (no negar el riesgo, redimensionarlo)", duracion: "50–58 seg",
+  guion: [
+    { parte: "Gancho", timing: "~6 seg", clase: "gancho", texto: "\"Invertir en bienes raíces es muy riesgoso\" — la escucho todo el tiempo. Y tiene algo de razón, pero no del todo. Te explico." },
+    { parte: "Relevancia", timing: "~9 seg", clase: "relevancia", texto: "Ojo con esto: todo lo que hacés con tu plata tiene riesgo, incluso dejarla quieta en el banco. La pregunta no es si hay riesgo, es qué tan controlado está ese riesgo." },
+    { parte: "Valor", timing: "~32 seg", clase: "valor", texto: "El riesgo real en bienes raíces no es el mercado — es comprar sin hacerle números, comprar en zona sin demanda, o meterte en un negocio sin entender cómo se opera. Eso sí es riesgoso, y ahí sí te podés quemar. Pero cuando comprás con la métrica dorada, verificás la demanda de la zona, y dejás un colchón de presupuesto, el riesgo baja muchísimo. Y con multirrenta baja todavía más, porque no dependés de un solo inquilino. Comparado con meter tu plata en algo que no entendés — cripto, un negocio que no conocés, una acción que no sabés analizar — bienes raíces bien evaluado es de los activos más controlables que existen. El riesgo no está en el ladrillo. Está en cómo lo evaluás antes de comprometer tu plata." },
+    { parte: "Acción", timing: "~8 seg", clase: "accion", texto: "No es que no haya riesgo. Es que se puede reducir casi todo con el método correcto. Seguime, te sigo enseñando cómo se construye eso paso a paso." }
+  ],
+  notas: [
+    { icon: "⚡", titulo: "Ritmo y energía", texto: "Honesto y sereno — no está a la defensiva ni minimizando la preocupación, la está contextualizando con respeto.", cta: false },
+    { icon: "😐", titulo: "Expresión", texto: "Comprensiva en el gancho (\"tiene algo de razón\"); segura y clara en el valor.", cta: false },
+    { icon: "🤲", titulo: "Gestos", texto: "Gesto de \"balanza\" al comparar niveles de riesgo entre activos; gesto de \"reducir\" (manos acercándose) al hablar de bajar el riesgo con el método.", cta: false },
+    { icon: "🎬", titulo: "Visuales sugeridos", texto: "Overlay simple: \"Riesgo sin método\" (alto, en rojo) vs \"Riesgo con métrica dorada + multirrenta\" (bajo, en verde). Sin necesidad de B-roll adicional.", cta: false },
+    { icon: "🎵", titulo: "Audio", texto: "Track neutro y calmado, sin dramatismo.", cta: false },
+    { icon: "📢", titulo: "CTA", texto: "Verbal + texto en pantalla: \"Seguime, te sigo enseñando paso a paso\".", cta: true }
+  ],
+  descripcion: "\"Invertir en bienes raíces es muy riesgoso\" — la escucho todo el tiempo. Y tiene algo de razón, pero no del todo.\n\nEl riesgo real no es el ladrillo. Es comprar sin hacerle números, sin revisar la demanda, o sin entender cómo se opera el negocio. Con la métrica dorada, verificación de zona, y multirrenta, ese riesgo baja muchísimo.\n\nNo es que no haya riesgo en ningún lado. Es que este se puede reducir casi todo con el método correcto.\n\n👉 Guardá este post si esta era tu objeción.",
+  hashtags: ["#ConquistaTuPatrimonio","#Flipping20","#InversionInmobiliaria","#ColivingColombia","#BienesRaicesColombia","#MetricaDorada"]
+}
+];
+
+let current = 0;
+let currentTab = 'guion';
+
+function render() {
+  const r = reels[current];
+  document.getElementById('counter-current').textContent = current + 1;
+  document.getElementById('counter-total').textContent = reels.length;
+  document.getElementById('progress-fill').style.width = ((current + 1) / reels.length * 100) + '%';
+
+  document.getElementById('f-numero').textContent = r.numero;
+  document.getElementById('f-titulo').textContent = r.titulo;
+  document.getElementById('f-bloque').textContent = r.bloque;
+  document.getElementById('f-tipo').textContent = r.tipo;
+  document.getElementById('f-palanca').textContent = r.palanca;
+  document.getElementById('f-duracion').textContent = r.duracion;
+
+  const meta = document.getElementById('meta');
+  meta.style.animation = 'none';
+  void meta.offsetWidth;
+  meta.style.animation = 'fadeUp 0.4s ease forwards';
+
+  const tabGuion = document.getElementById('tab-guion');
+  tabGuion.innerHTML = r.guion.map(p => `
+    <div class="script-block">
+      <div class="script-label label-${p.clase}">${p.parte} <span class="script-timing">${p.timing}</span></div>
+      <div class="script-text ${p.clase}">${p.texto}</div>
+    </div>
+  `).join('');
+
+  const tabNotas = document.getElementById('tab-notas');
+  tabNotas.innerHTML = `<div class="notes-grid">` + r.notas.map(n => `
+    <div class="note-card ${n.cta ? 'cta-note' : ''}">
+      <div class="note-head"><span class="note-icon">${n.icon}</span><span class="note-title">${n.titulo}</span></div>
+      <div class="note-text">${n.texto}</div>
+    </div>
+  `).join('') + `</div>`;
+
+  const tabDesc = document.getElementById('tab-descripcion');
+  tabDesc.innerHTML = `
+    <div class="desc-box">
+      <button class="desc-copy-btn" id="copy-btn" onclick="copyDesc()">Copiar</button>
+      <div class="desc-text">${r.descripcion}</div>
+      <div class="hashtags">${r.hashtags.map(h => `<span class="hashtag">${h}</span>`).join('')}</div>
+    </div>
+  `;
+
+  document.getElementById('btn-prev').disabled = current === 0;
+  const nextBtn = document.getElementById('btn-next');
+  nextBtn.textContent = current === reels.length - 1 ? '✓ Fin' : 'Siguiente →';
+
+  renderDots();
+  [...document.querySelectorAll('.tab-content')].forEach(el => el.classList.remove('active'));
+  document.getElementById('tab-' + currentTab).classList.add('active');
+  [...document.querySelectorAll('.tab')].forEach(el => el.classList.toggle('active', el.dataset.tab === currentTab));
+}
+
+function renderDots() {
+  const dots = document.getElementById('dots');
+  dots.innerHTML = reels.map((_, i) => `<button class="dot ${i === current ? 'active' : ''}" onclick="goTo(${i})"></button>`).join('');
+}
+
+function switchTab(tab) {
+  currentTab = tab;
+  [...document.querySelectorAll('.tab-content')].forEach(el => el.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  [...document.querySelectorAll('.tab')].forEach(el => el.classList.toggle('active', el.dataset.tab === tab));
+}
+
+function navigate(dir) {
+  const next = current + dir;
+  if (next < 0 || next > reels.length - 1) return;
+  current = next;
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function goTo(i) {
+  current = i;
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function copyDesc() {
+  const r = reels[current];
+  const text = r.descripcion + '\n\n' + r.hashtags.join(' ');
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('copy-btn');
+    const original = btn.textContent;
+    btn.textContent = '✓ Copiado';
+    setTimeout(() => { btn.textContent = original; }, 2000);
+  });
+}
+
+render();
+</script>
+</body>
+</html>
