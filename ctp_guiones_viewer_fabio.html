@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CTP · Guiones Fabio Hoyos</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+
+:root {
+  --navy:        #0F2544;
+  --navy-light:  #1a3560;
+  --navy-dark:   #091a33;
+  --lime:        #00C96E;
+  --lime-dim:    #00a85c;
+  --lime-soft:   rgba(0,201,110,0.12);
+  --lime-softer: rgba(0,201,110,0.06);
+
+  --white:        #ffffff;
+  --text-primary: #e8edf4;
+  --text-secondary:#8fa3bf;
+  --text-muted:   #5a7494;
+
+  --border:       rgba(255,255,255,0.08);
+  --border-lime:  rgba(0,201,110,0.3);
+
+  --card-bg:    rgba(255,255,255,0.04);
+  --card-hover: rgba(255,255,255,0.07);
+}
+
+* { box-sizing: border-box; }
+html, body {
+  margin: 0; padding: 0;
+  background: var(--navy-dark);
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+}
+
+.header {
+  position: sticky; top: 0; z-index: 50;
+  background: rgba(9,26,51,0.92);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+  padding: 16px 32px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.header-left { display: flex; align-items: center; gap: 10px; }
+.brand-dot {
+  width: 8px; height: 8px;
+  background: var(--lime);
+  border-radius: 50%;
+  animation: pulse 2.5s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.6; transform: scale(0.85); }
+}
+.brand-text { display: flex; flex-direction: column; line-height: 1.2; }
+.brand-name { font-weight: 600; font-size: 14px; color: var(--white); }
+.brand-handle { font-size: 11px; color: var(--text-muted); }
+.counter { font-size: 12px; color: var(--text-secondary); }
+.counter b { color: var(--lime); font-weight: 600; }
+
+.progress-bar  { height: 2px; background: var(--border); }
+.progress-fill { height: 100%; background: var(--lime); transition: width 0.4s ease; }
+
+.main { max-width: 760px; margin: 0 auto; padding: 32px 24px 60px; }
+
+.meta { margin-bottom: 20px; animation: fadeUp 0.4s ease forwards; }
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.numero { font-size: 11px; font-weight: 600; letter-spacing: 0.12em; color: var(--lime); text-transform: uppercase; margin-bottom: 8px; }
+.reel-title { font-size: 24px; font-weight: 600; color: var(--white); margin: 0 0 14px 0; line-height: 1.25; }
+
+.tags { display: flex; flex-wrap: wrap; gap: 8px; }
+.tag { font-size: 11px; font-weight: 500; padding: 4px 12px; border-radius: 20px; }
+.tag-bloque  { background: rgba(127,119,221,0.15); color: #a8a1f0; border: 1px solid rgba(127,119,221,0.25); }
+.tag-tipo    { background: var(--lime-softer); color: var(--lime); border: 1px solid var(--border-lime); }
+.tag-palanca { background: rgba(255,255,255,0.06); color: var(--text-secondary); border: 1px solid var(--border); }
+.tag-duracion{ background: rgba(255,255,255,0.06); color: var(--text-secondary); border: 1px solid var(--border); }
+.tag-presentador { background: rgba(240,180,41,0.12); color: #f0b429; border: 1px solid rgba(240,180,41,0.3); }
+
+.tabs { display: flex; gap: 4px; margin: 24px 0 20px; border-bottom: 1px solid var(--border); }
+.tab {
+  padding: 10px 18px; font-size: 13px; font-weight: 500;
+  color: var(--text-secondary); cursor: pointer;
+  border-bottom: 2px solid transparent; transition: all 0.2s;
+  background: none; border-top: none; border-left: none; border-right: none;
+  font-family: 'Inter', sans-serif;
+}
+.tab:hover { color: var(--white); }
+.tab.active { color: var(--lime); border-bottom-color: var(--lime); }
+
+.tab-content { display: none; animation: fadeUp 0.35s ease forwards; }
+.tab-content.active { display: block; }
+
+.script-block { margin-bottom: 18px; }
+.script-label { display: flex; align-items: baseline; gap: 10px; margin-bottom: 6px; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+.script-timing { font-size: 11px; font-weight: 400; color: var(--text-muted); text-transform: none; letter-spacing: 0; }
+.label-gancho     { color: #a8a1f0; }
+.label-relevancia { color: var(--lime); }
+.label-valor      { color: #f0b429; }
+.label-accion     { color: #f08070; }
+.script-text {
+  background: var(--card-bg);
+  border-left: 3px solid var(--text-muted);
+  border-radius: 6px;
+  padding: 14px 16px;
+  font-size: 15px; line-height: 1.6;
+  color: var(--text-primary);
+}
+.script-text.gancho     { border-left-color: #7F77DD; }
+.script-text.relevancia { border-left-color: #00C96E; }
+.script-text.valor      { border-left-color: #f0b429; }
+.script-text.accion     { border-left-color: #f08070; }
+
+.notes-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.note-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 16px;
+}
+.note-card .note-head { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.note-card .note-icon { font-size: 16px; }
+.note-card .note-title { font-size: 12px; font-weight: 600; color: var(--white); }
+.note-card .note-text { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+.cta-note {
+  grid-column: 1 / -1;
+  background: var(--lime-softer);
+  border-color: var(--border-lime);
+}
+.cta-note .note-title { color: var(--lime); }
+.warn-note {
+  grid-column: 1 / -1;
+  background: rgba(240,180,41,0.08);
+  border-color: rgba(240,180,41,0.35);
+}
+.warn-note .note-title { color: #f0b429; }
+
+.desc-box {
+  position: relative;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px;
+}
+.desc-copy-btn {
+  position: absolute; top: 16px; right: 16px;
+  background: var(--lime-soft);
+  border: 1px solid var(--border-lime);
+  color: var(--lime);
+  font-size: 11px; font-weight: 600;
+  padding: 6px 14px; border-radius: 20px;
+  cursor: pointer;
+  transition: background 0.2s;
+  font-family: 'Inter', sans-serif;
+}
+.desc-copy-btn:hover { background: rgba(0,201,110,0.2); }
+.desc-text { font-size: 14px; line-height: 1.7; color: var(--text-primary); white-space: pre-line; margin-bottom: 16px; padding-right: 90px; }
+.hashtags { display: flex; flex-wrap: wrap; gap: 6px; }
+.hashtag {
+  font-size: 12px; color: var(--lime);
+  background: var(--lime-softer);
+  padding: 3px 10px; border-radius: 20px;
+  border: 1px solid var(--border-lime);
+}
+
+.nav-row { display: flex; align-items: center; justify-content: space-between; margin-top: 32px; }
+.nav-btn {
+  padding: 12px 24px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--card-bg);
+  color: var(--text-secondary);
+  font-size: 13px; font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Inter', sans-serif;
+}
+.nav-btn:hover:not(:disabled) { background: var(--card-hover); color: var(--white); }
+.nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+.nav-btn.next {
+  background: var(--lime); border-color: var(--lime); color: var(--navy-dark); font-weight: 600;
+}
+.nav-btn.next:hover:not(:disabled) { background: var(--lime-dim); border-color: var(--lime-dim); }
+
+.dots { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; justify-content: center; max-width: 320px; }
+.dot { width: 6px; height: 6px; border-radius: 50%; background: var(--text-muted); cursor: pointer; transition: all 0.2s; border: none; padding: 0; }
+.dot.active { background: var(--lime); width: 20px; border-radius: 3px; }
+
+@media (max-width: 600px) {
+  .header { padding: 16px 20px; }
+  .main   { padding: 28px 16px 60px; }
+  .reel-title { font-size: 19px; }
+  .notes-grid { grid-template-columns: 1fr; }
+  .cta-note, .warn-note { grid-column: 1; }
+  .tab        { padding: 10px 14px; font-size: 12px; }
+  .desc-text  { padding-right: 0; }
+  .desc-copy-btn { position: static; display: inline-block; margin-bottom: 12px; }
+  .nav-row { flex-wrap: wrap; gap: 14px; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <div class="brand-dot"></div>
+    <div class="brand-text">
+      <div class="brand-name">Conquista Tu Patrimonio</div>
+      <div class="brand-handle">Presentador: Fabio Hoyos (tuteo)</div>
+    </div>
+  </div>
+  <div class="counter">Guión <b id="counter-current">1</b> de <span id="counter-total">11</span></div>
+</div>
+<div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+
+<div class="main">
+  <div class="meta" id="meta">
+    <div class="numero" id="f-numero"></div>
+    <h1 class="reel-title" id="f-titulo"></h1>
+    <div class="tags">
+      <span class="tag tag-presentador">🎙️ Fabio Hoyos</span>
+      <span class="tag tag-bloque" id="f-bloque"></span>
+      <span class="tag tag-tipo" id="f-tipo"></span>
+      <span class="tag tag-palanca" id="f-palanca"></span>
+      <span class="tag tag-duracion" id="f-duracion"></span>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="guion" onclick="switchTab('guion')">Guión</button>
+    <button class="tab" data-tab="notas" onclick="switchTab('notas')">Notas de grabación</button>
+    <button class="tab" data-tab="descripcion" onclick="switchTab('descripcion')">Descripción del post</button>
+  </div>
+
+  <div class="tab-content active" id="tab-guion"></div>
+  <div class="tab-content" id="tab-notas"></div>
+  <div class="tab-content" id="tab-descripcion"></div>
+
+  <div class="nav-row">
+    <button class="nav-btn" id="btn-prev" onclick="navigate(-1)">← Anterior</button>
+    <div class="dots" id="dots"></div>
+    <button class="nav-btn next" id="btn-next" onclick="navigate(1)">Siguiente →</button>
+  </div>
+</div>
+
+<script>
+const reels = [
+{
+  numero: "Guión 01 · Embudo 1", titulo: "La Verdad Sobre la Suerte",
+  bloque: "🧠 Mentalidad", tipo: "Reflexión Directa · versión larga",
+  palanca: "Reencuadre de creencia (la suerte es la excusa cómoda para no actuar)", duracion: "~90 seg",
+  guion: [
+    { parte: "Gancho", timing: "~8 seg", clase: "gancho", texto: "La gente ve a alguien viviendo de una propiedad y dice 'qué suerte'. Tú también lo pensaste alguna vez. Te voy a contar la verdad de eso." },
+    { parte: "Relevancia", timing: "~14 seg", clase: "relevancia", texto: "Hablemos claro: la palabra 'suerte' es la excusa perfecta para no tener que cambiar nada. Si es suerte, no depende de ti. Y ahí es donde mucha gente se queda cómoda toda la vida, esperando que le toque." },
+    { parte: "Valor", timing: "~55 seg", clase: "valor", texto: "Lo que la gente ve es el resultado: una casa convertida en coliving, dejando plata todos los meses. Lo que no ve es todo lo que pasó antes. No ve las semanas que esa persona pasó buscando propiedad, ni las que descartó porque no servían. No ve que tuvo que aprender a diferenciar una casa que sí es negocio de una que no. No ve las noches que dudó si arrancar o esperar un mes más. No ve que muchos empezaron con Rent to Rent, con poquito capital, solo para entender cómo funciona el negocio antes de dar el salto a comprar con Flipping 2.0. Lo que ves publicado es el mes doce, cuando ya todo funciona. Lo que no ves es el mes uno, el dos, el tres, cuando esa persona no tenía ni idea de si esto le iba a funcionar, y decidió seguir de todas formas. La suerte no construye eso. La decisión de empezar, sí." },
+    { parte: "Acción", timing: "~10 seg", clase: "accion", texto: "La próxima vez que veas a alguien viviendo de una propiedad, no pienses 'qué suerte'. Piensa 'qué decidió hacer distinto'. Sígueme, te sigo enseñando cómo se construye eso paso a paso." }
+  ],
+  notas: [
+    { icon: "⚡", titulo: "Ritmo y energía", texto: "Reflexivo, con un pequeño quiebre de ritmo en \"y ahí es donde mucha gente se queda cómoda\". En el bloque largo del Valor, variar la cadencia: más lento en las frases \"no ve...\", más firme en \"la suerte no construye eso\".", cta: false },
+    { icon: "😐", titulo: "Expresión", texto: "Empática y honesta, sin sonar a sermón — es una observación, no un regaño.", cta: false },
+    { icon: "🤲", titulo: "Gestos", texto: "Gesto de \"cortina\" (mano tapando/descubriendo) cada vez que dice \"no ve\" — como revelando lo que está detrás del resultado visible.", cta: false },
+    { icon: "🎬", titulo: "Visuales sugeridos", texto: "Talking head con cortes sutiles de plano (medio → cerrado). Overlay opcional: \"Lo que ves: mes 12\" / \"Lo que no ves: mes 1, 2, 3\".", cta: false },
+    { icon: "🎵", titulo: "Audio", texto: "Track reflexivo y constante, sin subir mucho — el peso está en las pausas, no en la música.", cta: false },
+    { icon: "📢", titulo: "CTA", texto: "Verbal + texto en pantalla: \"Sígueme, te sigo enseñando paso a paso\".", cta: true }
+  ],
+  descripcion: "La gente ve a alguien viviendo de una propiedad y dice \"qué suerte\". Pero nadie ve lo que pasó antes.\n\nNo ves las semanas buscando la propiedad correcta. No ves las dudas del mes uno, dos, tres. No ves que muchos empezaron con poquito capital, solo para aprender el negocio antes de dar el salto grande.\n\nLa suerte no construye eso. La decisión de empezar, sí.\n\n👉 Sígueme, te sigo enseñando cómo se construye eso paso a paso.",
+  hashtags: ["#ConquistaTuPatrimonio","#LibertadFinanciera","#MentalidadDeInversor","#InversionInmobiliaria","#BienesRaicesColombia"]
+},
+{
+  numero: "Guión 02 · Embudo 1", titulo: "El Costo de No Invertir Ahora",
+  bloque: "🧠 Mentalidad", tipo: "Reflexión Directa · #8",
+  palanca: "Costo de oportunidad (el precio de no actuar, en números simples)", duracion: "48–56 seg",
+  guion: [
+    { parte: "Gancho", timing: "~6 seg", clase: "gancho", texto: "Postergar tu primera propiedad un año más no es gratis. Te muestro cuánto te está costando de verdad esperar." },
+    { parte: "Relevancia", timing: "~9 seg", clase: "relevancia", texto: "La gente piensa que 'esperar' no cuesta nada, porque no ve la plata salir de su bolsillo. Pero sí sale — solo que sale de la que pudiste haber tenido entrando." },
+    { parte: "Valor", timing: "~26 seg", clase: "valor", texto: "Si hoy tienes una propiedad convertida en coliving dejándote $6 millones al mes, y decides esperar un año más para empezar, ese año que esperaste te costó $72 millones que pudiste haber recibido y no recibiste. No es que pierdas plata de tu bolsillo — es que dejas de recibir la que ya podías estar recibiendo. Y ese año no vuelve: no hay forma de recuperar esos $72 millones después, se fueron con el tiempo que esperaste." },
+    { parte: "Acción", timing: "~8 seg", clase: "accion", texto: "No estoy diciendo que te lances sin aprender. Estoy diciendo que cada mes que postergas sin avanzar, también tiene un precio. Sígueme, te sigo enseñando cómo se construye eso paso a paso." }
+  ],
+  notas: [
+    { icon: "⚡", titulo: "Ritmo y energía", texto: "Directo y sereno, sin alarmismo — es un dato que invita a reflexionar, no un susto para presionar.", cta: false },
+    { icon: "😐", titulo: "Expresión", texto: "Seria y calmada, con énfasis en \"ese año no vuelve\".", cta: false },
+    { icon: "🤲", titulo: "Gestos", texto: "Gesto de \"reloj\"/tiempo pasando (mano moviéndose de izquierda a derecha); gesto de \"vacío\" (manos abiertas) al decir \"no vuelve\".", cta: false },
+    { icon: "🎬", titulo: "Visuales sugeridos", texto: "Overlay simple: \"$6M/mes → 12 meses → $72M no recibidos\". Talking head, sin B-roll adicional.", cta: false },
+    { icon: "🎵", titulo: "Audio", texto: "Track reflexivo y calmado, sin urgencia sonora.", cta: false },
+    { icon: "📢", titulo: "CTA", texto: "Verbal + texto en pantalla: \"Sígueme, te sigo enseñando paso a paso\".", cta: true }
+  ],
+  descripcion: "Postergar tu primera propiedad un año más no es gratis.\n\nSi una propiedad te puede dejar $6 millones al mes, y esperas un año más para empezar, ese año te costó $72 millones que pudiste haber recibido y no recibiste. No sale de tu bolsillo — pero tampoco entra al tuyo.\n\nY ese año no vuelve.\n\n👉 Sígueme, te sigo enseñando cómo se construye eso paso a paso.",
+  hashtags: ["#ConquistaTuPatrimonio","#LibertadFinanciera","#MentalidadDeInversor","#InversionInmobiliaria","#BienesRaicesColombia"]
+},
+{
+  numero: "Guión 03 · Embudo 1", titulo: "Por Qué el Coliving Es el Modelo Que el Mercado Está Pidiendo",
+  bloque: "📊 Comparativas", tipo: "Explicación de Tendencia · #11 (ya grabado)",
+  palanca: "Validación con datos (DANE) + urgencia de mercado real", duracion: "~155–165 seg",
+  guion: [
+    { parte: "Gancho", timing: "~10 seg", clase: "gancho", texto: "Yo sé que uno sueña con comprarse una casa y le parece la mejor inversión en bienes raíces. Pero no, no siempre es así." },
+    { parte: "Relevancia", timing: "~28 seg", clase: "relevancia", texto: "Muy pocas personas tienen hoy en día para alquilar una casa grande. Y cada vez las familias son más pequeñas. Entonces, una pareja de novios o un estudiante no necesita tanto espacio para vivir — empezando porque prácticamente nunca están en la casa. Además, el porcentaje de rentabilidad en una casa tradicional es muy bajito, casi que te deja más plata invertir ese dinero en un CDT, que también es un muy mal negocio. Pero mira que ahí es donde viene la oportunidad." },
+    { parte: "Valor", timing: "~100 seg", clase: "valor", texto: "Desde hace varios años se está desarrollando un nuevo modelo de vivienda, y se llama Coliving. Es básicamente dividir una casa tradicional en varios apartamentos más pequeños. Es una propiedad que va a tener muy buenos acabados, y en donde, a diferencia de un inquilinato de muy mala calidad, vas a proveer espacios comunes increíbles: zonas de comida, zonas de lavado, zonas de entretenimiento, barbecue, terraza y muchos amenities más. Con este modelo de vivienda, las personas que vivan allí van a mejorar muchísimo su estilo de vida. Hay que tener algo claro: este tipo de vivienda no es para todo el mundo. Pero, por ejemplo, imagínate un joven o una persona que está buscando independizarse y que no tiene para alquilar una propiedad grande. Su prioridad no va a ser la cantidad de espacio requerido — va a priorizar la comodidad, la ubicación. Y seguramente va a pasar la mayor parte de su tiempo por fuera, estudiando. ¿Y sabes qué es lo más loco? Que hoy en Colombia no hay muchas propiedades con estas características, y es justo lo que el mercado está buscando. Cada vez que se abre uno de estos —y ya se han abierto muchos en varias ciudades del país— se rentan demasiado rápido, porque ese modelo de comunidad es lo que las personas están buscando. Y esto no es una tendencia pasajera: fíjate en los datos que arroja el DANE, se proyecta que para el 2035 las familias sean todavía más pequeñas. Y claro, eso te permite a ti, como inversionista en bienes raíces, generar una rentabilidad muchísimo más alta: puedes dividir una propiedad en múltiples rentas. Las personas ahora buscan practicidad, y entre ser prácticos está vivir cerca a todo lo necesario para mantener un excelente estilo de vida —universidades, trabajo, comercio— sin tener que pagar arriendos carísimos." },
+    { parte: "Acción", timing: "~14 seg", clase: "accion", texto: "Si quieres saber la mejor manera de sacarle provecho a esto en bienes raíces, sígueme — te voy a seguir mostrando cómo se hace, paso a paso." }
+  ],
+  notas: [
+    { icon: "⚡", titulo: "Ritmo y energía", texto: "Conversacional y sostenido — al ser un guion largo (2:40 aprox.), la energía no puede ser plana todo el tiempo; sube ligeramente en \"¿Y sabes qué es lo más loco?\" y en el dato del DANE.", cta: false },
+    { icon: "😐", titulo: "Expresión", texto: "Cercana y reflexiva en el gancho/relevancia; genuina curiosidad y convicción en el tramo del DANE y la demanda real.", cta: false },
+    { icon: "🤲", titulo: "Gestos", texto: "Gesto de \"espacio dividiéndose\" (manos separándose) al explicar el coliving; enumerar amenities con la mano abriéndose.", cta: false },
+    { icon: "🎬", titulo: "Visuales sugeridos", texto: "B-roll real de una propiedad coliving ya rentada: zonas comunes, terraza, zona de lavado. Overlay del dato del DANE en el momento exacto en que se menciona.", cta: false },
+    { icon: "🎵", titulo: "Audio", texto: "Track conversacional de fondo, bajo volumen constante.", cta: false },
+    { icon: "📢", titulo: "CTA", texto: "Verbal + texto en pantalla: \"Sígueme, te sigo mostrando cómo se hace paso a paso\" — CTA de seguimiento, ya no de comentario/DM.", cta: true }
+  ],
+  descripcion: "Yo sé que uno sueña con comprarse una casa y le parece la mejor inversión en bienes raíces. Pero no siempre es así.\n\nLas familias son cada vez más pequeñas, y muy pocas personas necesitan (o pueden pagar) una casa grande. Ahí es donde entra el coliving: dividir una propiedad tradicional en varios espacios, con buenos acabados y zonas comunes reales, pensada para quien prioriza comodidad y ubicación sobre metros cuadrados.\n\nNo es una moda — los datos del DANE proyectan que para 2035 las familias van a ser todavía más pequeñas. Eso es más demanda real para este modelo, y más rentabilidad para quien invierte así.\n\n👉 Sígueme, te sigo mostrando cómo sacarle provecho a esto paso a paso.",
+  hashtags: ["#ConquistaTuPatrimonio","#ColivingColombia","#InversionInmobiliaria","#BienesRaicesColombia","#Flipping20"]
+},
+{
+  numero: "Guión 04 · Embudo 1", titulo: "Las 3 Tendencias de Vivienda Que se Están Llevando el Mercado",
+  bloque: "📊 Comparativas", tipo: "Explicación de Tendencia · #12 (ya grabado)",
+  palanca: "Urgencia de adaptación + datos de mercado (DANE/arrendatarios)", duracion: "~75–85 seg",
+  guion: [
+    { parte: "Gancho", timing: "~7 seg", clase: "gancho", texto: "El que no se adapte ahora a las nuevas tendencias del mercado, ya perdió. Mira cómo cambian las cosas." },
+    { parte: "Relevancia", timing: "~15 seg", clase: "relevancia", texto: "Antes todos queríamos ser propietarios. Inclusive hay gente que hoy en día todavía piensa en eso. Pero resulta que en el año 2023, más del 40% de los hogares en Colombia eran arrendatarios — es increíble. Y hoy, en 2026, esa tendencia sigue igual o ha aumentado." },
+    { parte: "Valor", timing: "~50 seg", clase: "valor", texto: "Esto solamente tiene una respuesta: el mercado inmobiliario cambió. Hay tres tipos de vivienda relativamente nuevos que se están llevando todo el mercado. El primero: los colivings, donde tienes tu habitación privada, pero compartes espacios comunes con más personas y creas comunidad — y de paso pagas muchísimo menos. Este modelo es ideal para nómadas digitales y para jóvenes que quieren ahorrar. Segundo: los edificios multifamily, edificios completos de apartamentos para rentar, con todo incluido — gimnasio, coworking — mejor dicho, como un hotel, pero muchísimo más barato. Y tercero: las rentas cortas, estilo Airbnb, con flexibilidad total y la posibilidad de ganar muchísimo más que con un arriendo normal." },
+    { parte: "Acción", timing: "~8 seg", clase: "accion", texto: "¿Y por qué estos negocios están en auge? Porque te mueves cuando quieres, conoces gente nueva, y le dices chao a las hipotecas eternas." }
+  ],
+  notas: [
+    { icon: "⚡", titulo: "Ritmo y energía", texto: "Fuerte desde el gancho — es una afirmación categórica (\"ya perdió\"). Se mantiene ágil durante los 3 puntos del Valor, con una pequeña pausa entre cada tendencia.", cta: false },
+    { icon: "😐", titulo: "Expresión", texto: "Directa y segura en el gancho; casi didáctica al enumerar las 3 tendencias.", cta: false },
+    { icon: "🤲", titulo: "Gestos", texto: "Contar las 3 tendencias con los dedos (1, 2, 3); gesto de \"libertad/movimiento\" al decir \"te mueves cuando quieres\".", cta: false },
+    { icon: "🎬", titulo: "Visuales sugeridos", texto: "Overlay con el dato clave: \"40% de hogares en Colombia son arrendatarios (2023) ↑ 2024\". Cortes de B-roll por cada tendencia si hay material.", cta: false },
+    { icon: "🎵", titulo: "Audio", texto: "Track con energía sostenida, sin caídas de intensidad.", cta: false },
+    { icon: "📢", titulo: "CTA", texto: "Este guion cierra con la idea de libertad/beneficio, sin invitación explícita a seguir. Evaluar si conviene sumar un CTA verbal al final.", cta: true }
+  ],
+  descripcion: "El que no se adapte ahora a las nuevas tendencias del mercado, ya perdió.\n\nEn 2023, más del 40% de los hogares en Colombia eran arrendatarios — y hoy, en 2026, esa tendencia sigue igual o ha aumentado. El mercado inmobiliario cambió, y hay 3 modelos que se están llevando todo:\n\n1️⃣ Coliving — habitación privada, espacios comunes, mucho más barato.\n2️⃣ Edificios multifamily — apartamentos completos con todo incluido, como un hotel pero más económico.\n3️⃣ Rentas cortas estilo Airbnb — flexibilidad total y mayor ganancia que un arriendo tradicional.\n\nTe mueves cuando quieres, conoces gente nueva, y le dices chao a las hipotecas eternas.",
+  hashtags: ["#ConquistaTuPatrimonio","#ColivingColombia","#InversionInmobiliaria","#BienesRaicesColombia","#Flipping20"]
+},
+{
+  numero: "Guión 05 · Embudo 1", titulo: "El Peor Error: Comprar Vivienda con Tus Ahorros",
+  bloque: "📊 Comparativas", tipo: "Tumba-Mitos · #3 (ya grabado)",
+  palanca: "Reencuadre de creencia (el ahorro \"seguro\" en realidad detiene tu plata)", duracion: "~55–65 seg",
+  guion: [
+    { parte: "Gancho", timing: "~6 seg", clase: "gancho", texto: "El peor error que puedes cometer es comprar vivienda con tus ahorros. Te muestro por qué con un ejemplo." },
+    { parte: "Relevancia", timing: "~10 seg", clase: "relevancia", texto: "Digamos que tienes $300 millones ahorrados. Si pones esos $300 millones todos en comprar un apartamento para vivir, hasta ahí llegaron tus ahorros — no va a pasar nada más con esa plata." },
+    { parte: "Valor", timing: "~30 seg", clase: "valor", texto: "Lo que haría yo: prefiero buscar cómo apalancarme para entrar en una propiedad que no se vea tan bonita, pero que sea grande y esté ubicada en un buen sector. Y con esos mismos $300 millones, en vez de meterlos en un inmueble para vivir, los invierto en la remodelación de espacios y lo vuelvo un coliving, poniendo esa propiedad a rentar. Con esas rentas no solo pago los gastos fijos y el préstamo, sino que además me queda un excedente mensual. ¿Qué quiere decir esto? Que no solo voy a duplicar o multiplicar mis ahorros con el tiempo, sino que además convertí mi propiedad en un activo que genera ingresos extra mes tras mes, y no me deja deudas encima." },
+    { parte: "Acción", timing: "~8 seg", clase: "accion", texto: "Si sabes de alguien que está perdiendo sus ahorros metiéndolos todos en comprar una casa o un apartamento para vivir, mándale ya este video." }
+  ],
+  notas: [
+    { icon: "⚡", titulo: "Ritmo y energía", texto: "Directo desde el gancho, tono de \"te voy a mostrar un error caro\" — más explicativo y cercano en el ejemplo del Valor.", cta: false },
+    { icon: "😐", titulo: "Expresión", texto: "Seguridad y convicción, especialmente en \"¿Qué quiere decir esto?\".", cta: false },
+    { icon: "🤲", titulo: "Gestos", texto: "Gesto de \"detener\" (mano plantada) al decir \"hasta ahí llegaron tus ahorros\"; gesto de \"crecer/multiplicar\" (manos abriéndose hacia arriba).", cta: false },
+    { icon: "🎬", titulo: "Visuales sugeridos", texto: "Overlay simple: \"$300M en apartamento para vivir → $0 adicional\" vs \"$300M en remodelación de coliving → renta + excedente mensual\".", cta: false },
+    { icon: "🎵", titulo: "Audio", texto: "Track neutro y directo, sin dramatismo.", cta: false },
+    { icon: "📢", titulo: "CTA", texto: "Cierra con un CTA de \"compartir\" (\"mándale ya este video\") en vez de \"sígueme\" — formato orientado a viralización.", cta: true }
+  ],
+  descripcion: "El peor error que puedes cometer es comprar vivienda con tus ahorros.\n\nSi tienes $300 millones y los metes todos en un apartamento para vivir, ahí se quedan — no producen nada más. Pero si te apalancas para comprar una propiedad grande en buena ubicación, y esos mismos $300 millones los inviertes en remodelarla y convertirla en coliving, esa propiedad paga el préstamo, cubre los gastos, y te deja un excedente mensual. Multiplicas tus ahorros y ganas un activo, en vez de dejarlos quietos en una sola compra.\n\n👉 Si conoces a alguien metiendo todos sus ahorros en comprar para vivir, mándale este video.",
+  hashtags: ["#ConquistaTuPatrimonio","#ColivingColombia","#InversionInmobiliaria","#BienesRaicesColombia","#Flipping20"]
+},
+{
+  numero: "Guión 06 · Embudo 1", titulo: "Olvídate de Comprar Propiedades Nuevas y Costosas",
+  bloque: "📊 Comparativas", tipo: "Tumba-Mitos · #4 (ya grabado)",
+  palanca: "Reencuadre de creencia (lo nuevo y caro no es el camino a la rentabilidad)", duracion: "~45–52 seg",
+  guion: [
+    { parte: "Gancho", timing: "~7 seg", clase: "gancho", texto: "Si estás camino a la libertad financiera a través de bienes raíces, olvídate de comprar propiedades nuevas y costosas. Por ahí no es el camino." },
+    { parte: "Relevancia", timing: "~9 seg", clase: "relevancia", texto: "Con esa misma plata que ibas a invertir en esa propiedad nueva, busca una propiedad con descuento y trata de sacarle la mayor rentabilidad posible para empezar en este negocio." },
+    { parte: "Valor", timing: "~24 seg", clase: "valor", texto: "Cuando compras una propiedad nueva carísima y la metes en renta tradicional, lo que estás haciendo es perdiendo plata. ¿Por qué? Porque la renta tradicional ya no funciona. Lo único que funciona ahorita es maximizar la rentabilidad, y esto se hace buscando casas con buen precio y tratando de acomodar las habitaciones que tenga, para que cada una de ellas sea un activo y empiece a generar su propia renta." },
+    { parte: "Acción", timing: "~7 seg", clase: "accion", texto: "No busques lo nuevo y caro. Busca lo que tenga descuento y potencial de espacio." }
+  ],
+  notas: [
+    { icon: "⚡", titulo: "Ritmo y energía", texto: "Directo y confrontativo desde el gancho (\"olvídate de...\"), tono de corrección de creencia común.", cta: false },
+    { icon: "😐", titulo: "Expresión", texto: "Seria y convencida, especialmente al decir \"lo que estás haciendo es perdiendo plata\".", cta: false },
+    { icon: "🤲", titulo: "Gestos", texto: "Gesto de \"descartar\" (mano rechazando hacia el lado) al mencionar propiedades nuevas y costosas; gesto de \"dividir en partes\" al hablar de cada habitación como activo.", cta: false },
+    { icon: "🎬", titulo: "Visuales sugeridos", texto: "Overlay/split: propiedad nueva y cara tachada vs. propiedad con descuento + habitaciones divididas generando renta cada una.", cta: false },
+    { icon: "🎵", titulo: "Audio", texto: "Track directo y sin dramatismo, sostenido en energía moderada.", cta: false },
+    { icon: "📢", titulo: "CTA", texto: "Cierra con una recomendación práctica en vez de un \"sígueme\".", cta: true }
+  ],
+  descripcion: "Si estás camino a la libertad financiera a través de bienes raíces, olvídate de comprar propiedades nuevas y costosas. Por ahí no es el camino.\n\nLa renta tradicional en una propiedad cara ya no rinde. Lo que funciona es buscar casas con buen precio y descuento, y sacarles el máximo aprovechando cada espacio: que cada habitación sea su propio activo generando renta.\n\nNo busques lo nuevo y caro. Busca lo que tenga descuento y potencial de espacio.",
+  hashtags: ["#ConquistaTuPatrimonio","#ColivingColombia","#InversionInmobiliaria","#BienesRaicesColombia","#Flipping20"]
+},
+{
+  numero: "Guión 07 · Embudo 1", titulo: "Esto Es Lo Que las Constructoras No Quieren Que Sepas",
+  bloque: "📊 Comparativas", tipo: "Tumba-Mitos · #5 (ya grabado)",
+  palanca: "Revelación de costo oculto (caso numérico paso a paso)", duracion: "~70–78 seg",
+  guion: [
+    { parte: "Gancho", timing: "~7 seg", clase: "gancho", texto: "Esto es lo que las constructoras no quieren que sepas. Vamos a poner un caso de la vida real." },
+    { parte: "Relevancia", timing: "~8 seg", clase: "relevancia", texto: "Supongamos que un apartamento te cuesta $200 millones de pesos, y la cuota inicial son $60 millones, que vas a pagar durante tres años — el tiempo de entrega de tu inmueble." },
+    { parte: "Valor", timing: "~40 seg", clase: "valor", texto: "Entonces tenemos $60 millones divididos en tres años. Esto nos da una cuota mensual de $1.600.000 pesos. Y luego de pagar esta cantidad de dinero, te va a tocar conseguir otros $140 millones, los cuales muy probablemente serán pagados con un crédito hipotecario. Cabe aclarar que no estamos teniendo en cuenta los gastos de impuesto predial, ni las cuotas de administración, ni los gastos de escrituración. Ahora te pregunto: ¿cuánto tuviste de ganancia en estos 10 años? Por esta razón, siempre decimos que comprar casa propia ya no es una buena inversión." },
+    { parte: "Acción", timing: "~9 seg", clase: "accion", texto: "Si quieres tener la libertad financiera que tenemos en CTP, empieza a seguir todos nuestros consejos." }
+  ],
+  notas: [
+    { icon: "⚡", titulo: "Ritmo y energía", texto: "Directo y revelador desde el gancho, ritmo pausado y numérico en el Valor — es un caso con cifras, necesita claridad más que velocidad.", cta: false },
+    { icon: "😐", titulo: "Expresión", texto: "Seria y reveladora, con un pico de énfasis en la pregunta \"¿cuánto tuviste de ganancia en estos 10 años?\".", cta: false },
+    { icon: "🤲", titulo: "Gestos", texto: "Contar con los dedos o simular una cuenta en el aire al mencionar cada cifra ($200M, $60M, $1.6M, $140M).", cta: false },
+    { icon: "🎬", titulo: "Visuales sugeridos", texto: "Overlay tipo desglose de gastos apareciendo cifra por cifra: $200M → $60M inicial → $1.6M/mes x 3 años → $140M crédito hipotecario → (+ impuestos, administración, escrituración no incluidos).", cta: false },
+    { icon: "🎵", titulo: "Audio", texto: "Track neutro, bajar volumen durante todo el desglose numérico.", cta: false },
+    { icon: "⚠️", titulo: "Ajuste de presentador", texto: "La versión original mencionaba \"Camilo o yo\" en tercera persona. Se removió la mención directa a Camilo y se generalizó a \"en CTP\", ya que este guion lo graba Fabio.", cta: true }
+  ],
+  descripcion: "Esto es lo que las constructoras no quieren que sepas.\n\nUn apartamento de $200 millones: $60 millones de cuota inicial (pagados en 3 años, a $1.6M/mes), más $140 millones que casi siempre terminan en crédito hipotecario. Y eso sin contar predial, administración ni escrituración.\n\n¿Cuánto ganaste realmente en todo ese tiempo? Por eso decimos que comprar casa propia ya no es una buena inversión.",
+  hashtags: ["#ConquistaTuPatrimonio","#InversionInmobiliaria","#BienesRaicesColombia","#LibertadFinanciera"]
+},
+{
+  numero: "Guión 08 · Embudo 2", titulo: "Cómo Identificar una Propiedad Dorada",
+  bloque: "🎓 Educativo", tipo: "Tutorial Paso a Paso · #4 (versión larga)",
+  palanca: "Autoridad técnica + criterio aplicable de inmediato", duracion: "~90 seg",
+  guion: [
+    { parte: "Gancho", timing: "~7 seg", clase: "gancho", texto: "No toda casa vieja es una propiedad dorada. Te enseño los 4 criterios que reviso antes de decir que sí a un negocio." },
+    { parte: "Relevancia", timing: "~10 seg", clase: "relevancia", texto: "En la práctica funciona así: si te saltas alguno de estos 4 puntos, puedes terminar comprando una casa que nunca te va a dar la rentabilidad que buscas, así se vea perfecta." },
+    { parte: "Valor", timing: "~62 seg", clase: "valor", texto: "Primero: ubicación con demanda real. Busca zonas donde de verdad haya gente necesitando arriendo — cerca de universidades, zonas de trabajo, sectores en crecimiento. Sin demanda, por más bonita que quede la remodelación, no hay quién pague. Segundo: espacio subutilizado. Patios grandes, garajes que no se usan, salas sobredimensionadas — esos son los metros cuadrados que se convierten en habitaciones nuevas. Entre más espacio desperdiciado tenga la casa, más unidades le puedes sacar. Tercero: revisa la estructura. Si tiene muchos muros de carga que no se pueden tocar, tu capacidad de ampliar se limita, así el patio se vea grande. Y cuarto, el filtro final: corre la métrica dorada. Con el precio de compra, más lo que te va a costar la remodelación, calcula cuánto necesitas de flujo neto mensual para llegar al 1.3%. Por ejemplo: con $450 millones de compra y $250 de remodelación, tu inversión total es $700 millones, y necesitas mínimo $9.1 millones netos al mes. Calcula si esa casa, ya optimizada con más habitaciones, te puede dar eso. Si cumple los cuatro — demanda, espacio, estructura y métrica dorada — ahí sí es una propiedad dorada. Si le falla uno solo, sigue buscando." },
+    { parte: "Acción", timing: "~9 seg", clase: "accion", texto: "No busques la casa más bonita. Busca la que cumpla estos 4 puntos. Sígueme, te sigo enseñando cómo se construye eso paso a paso." }
+  ],
+  notas: [
+    { icon: "⚡", titulo: "Ritmo y energía", texto: "Didáctico, con ritmo de checklist — marcar una pequeña pausa entre cada uno de los 4 criterios.", cta: false },
+    { icon: "😐", titulo: "Expresión", texto: "Segura y metódica, como repasando una lista que ya domina de memoria.", cta: false },
+    { icon: "🤲", titulo: "Gestos", texto: "Contar los 4 criterios con los dedos (1, 2, 3, 4).", cta: false },
+    { icon: "🎬", titulo: "Visuales sugeridos", texto: "Overlay tipo checklist apareciendo criterio por criterio: \"✅ Demanda de zona\", \"✅ Espacio subutilizado\", \"✅ Estructura ampliable\", \"✅ Métrica dorada (1.3%)\".", cta: false },
+    { icon: "🎵", titulo: "Audio", texto: "Track neutro y constante, bajar volumen en la sección de números.", cta: false },
+    { icon: "📢", titulo: "CTA", texto: "Verbal + texto en pantalla: \"Sígueme, te sigo enseñando paso a paso\".", cta: true }
+  ],
+  descripcion: "No toda casa vieja es una propiedad dorada. Estos son los 4 criterios que se revisan antes de decir que sí a un negocio:\n\n1️⃣ Ubicación con demanda real — zona donde de verdad haya gente buscando arriendo.\n2️⃣ Espacio subutilizado — patios, garajes, salas de más que se puedan convertir en habitaciones.\n3️⃣ Estructura ampliable — sin muros de carga que limiten la remodelación.\n4️⃣ Métrica dorada — el número tiene que dar mínimo 1.3% mensual.\n\nSi cumple los 4, es una propiedad dorada. Si le falla uno solo, sigue buscando.\n\n👉 Guarda este post para tu próxima búsqueda.",
+  hashtags: ["#ConquistaTuPatrimonio","#Flipping20","#MetricaDorada","#InversionInmobiliaria","#ColivingColombia","#BienesRaicesColombia"]
+},
+{
+  numero: "Guión 09 · Embudo 2", titulo: "La Peor Propiedad en el Mejor Barrio",
+  bloque: "🎓 Educativo", tipo: "Principio de Selección · #5 (ya grabado)",
+  palanca: "Reencuadre de creencia (lo que no se puede cambiar pesa más que lo que sí)", duracion: "~55–62 seg",
+  guion: [
+    { parte: "Gancho", timing: "~7 seg", clase: "gancho", texto: "Hay un dicho en bienes raíces que dice que básicamente tienes que encontrar la peor propiedad en el mejor barrio." },
+    { parte: "Relevancia", timing: "~12 seg", clase: "relevancia", texto: "Tú puedes cambiar todo, absolutamente todo lo que está dentro del inmueble: remodelarlo, reorganizarlo, aprovechar muchísimo mejor los espacios. Lo que no puedes cambiar o modificar es el lugar donde se encuentra esa propiedad." },
+    { parte: "Valor", timing: "~26 seg", clase: "valor", texto: "Lo más rentable es encontrar las peores propiedades en las mejores ubicaciones, remodelarlas, mejorarlas, y después rentarlas. Pero si empiezas a comprar las mejores propiedades en los peores barrios, o en un lugar que no es adecuado, vas a empezar a tener problemas — vas a empezar a tener malos inquilinos. Entonces no te enamores de la propiedad en sí, enamórate de la ubicación. Una vez defines la ubicación, vas a poder empezar a ver propiedades que nadie cree, pero son las más rentables." },
+    { parte: "Acción", timing: "~8 seg", clase: "accion", texto: "Mientras tú buscas la casa perfecta, los inversionistas inteligentes están comprando las peores casas en las mejores ubicaciones. ¿Hasta cuándo vas a seguir perdiendo estas oportunidades?" }
+  ],
+  notas: [
+    { icon: "⚡", titulo: "Ritmo y energía", texto: "Firme y con autoridad de principio, sube ligeramente la intensidad en la pregunta final.", cta: false },
+    { icon: "😐", titulo: "Expresión", texto: "Segura y directa; convicción particular en \"no te enamores de la propiedad, enamórate de la ubicación\".", cta: false },
+    { icon: "🤲", titulo: "Gestos", texto: "Gesto de \"todo cambia\" (manos girando) al hablar de remodelar; gesto de \"fijo/inamovible\" (mano plantada) al decir \"lo que no puedes cambiar es la ubicación\".", cta: false },
+    { icon: "🎬", titulo: "Visuales sugeridos", texto: "B-roll de una propiedad en mal estado por fuera pero en buena ubicación, contrastado con el resultado ya remodelado.", cta: false },
+    { icon: "🎵", titulo: "Audio", texto: "Track con energía moderada, subiendo levemente hacia la pregunta de cierre.", cta: false },
+    { icon: "📢", titulo: "CTA", texto: "Cierra con pregunta retórica en vez de un \"sígueme\" explícito — funciona como CTA emocional/reflexivo.", cta: true }
+  ],
+  descripcion: "Hay un dicho en bienes raíces: encuentra la peor propiedad en el mejor barrio.\n\nPuedes cambiar todo lo que está dentro de un inmueble — remodelarlo, reorganizarlo, aprovechar mejor los espacios. Lo único que no puedes cambiar es la ubicación.\n\nNo te enamores de la propiedad. Enamórate de la ubicación. Ahí es donde están las oportunidades que nadie más está viendo.",
+  hashtags: ["#ConquistaTuPatrimonio","#Flipping20","#InversionInmobiliaria","#ColivingColombia","#BienesRaicesColombia"]
+},
+{
+  numero: "Guión 10 · Embudo 2", titulo: "Aprende a Jugar con la Plata de los Demás",
+  bloque: "🎓 Educativo", tipo: "Concepto Técnico · #6 (ya grabado)",
+  palanca: "Autoridad técnica (apalancamiento explicado en simple)", duracion: "~60–68 seg",
+  guion: [
+    { parte: "Gancho", timing: "~7 seg", clase: "gancho", texto: "Ya es hora de que aprendas a jugar con la plata de los demás. Las inversiones en bienes raíces hay que verlas como un juego, al cual le tienes que aprender las reglas." },
+    { parte: "Relevancia", timing: "~10 seg", clase: "relevancia", texto: "Porque si no aprendes esas reglas, te quedas por fuera del juego. Mira esto: en el mundo de los bienes raíces se le llama apalancamiento financiero — ve aprendiendo esta palabra técnica para que la entiendas." },
+    { parte: "Valor", timing: "~35 seg", clase: "valor", texto: "Es muy fácil: es pedirle dinero prestado a los bancos e invertir esos fondos en una propiedad que tenga la métrica dorada y que rinda al menos 1.3%. Ahora, ¿qué necesitas tener para lograr esto? Tienes que empezar a construir una muy buena trayectoria tributaria, y una muy buena trayectoria crediticia. El mercado, los servicios, y todo lo que puedas pagar, págalo con la tarjeta de crédito — eso sí, a una cuota. Y acuérdate que lo más importante es aprender a presentar el proyecto, para que el banco entienda que ese dinero que estás pidiendo prestado para la inversión, no te lo vas a mecatear en cositas." },
+    { parte: "Acción", timing: "~9 seg", clase: "accion", texto: "Ya sabes cómo es esta vuelta: entender las reglas del juego para usar el dinero de otro. Y acuérdate que no necesitas tener mucho dinero para empezar a disfrutar de la libertad financiera." }
+  ],
+  notas: [
+    { icon: "⚡", titulo: "Ritmo y energía", texto: "Directo y didáctico, con un toque de complicidad (\"ve aprendiendo esta palabra técnica\").", cta: false },
+    { icon: "😐", titulo: "Expresión", texto: "Segura y cercana, con énfasis en \"no te lo vas a mecatear en cositas\".", cta: false },
+    { icon: "🤲", titulo: "Gestos", texto: "Gesto de \"construir\" (manos apilando) al hablar de trayectoria tributaria y crediticia; gesto de \"presentar\" al hablar de presentar el proyecto al banco.", cta: false },
+    { icon: "🎬", titulo: "Visuales sugeridos", texto: "Overlay simple: \"Apalancamiento = pedir prestado + invertir en propiedad con métrica dorada (1.3%+)\". Íconos de banco, tarjeta de crédito, documento de proyecto.", cta: false },
+    { icon: "🎵", titulo: "Audio", texto: "Track neutro y didáctico, sin variaciones bruscas.", cta: false },
+    { icon: "📢", titulo: "CTA", texto: "Cierra con reafirmación conceptual en vez de un CTA de seguimiento explícito.", cta: true }
+  ],
+  descripcion: "Ya es hora de que aprendas a jugar con la plata de los demás. Las inversiones en bienes raíces hay que verlas como un juego al que le tienes que aprender las reglas.\n\nSe llama apalancamiento financiero: pedirle dinero prestado al banco e invertirlo en una propiedad que cumpla la métrica dorada (mínimo 1.3% mensual). Para lograrlo, necesitas buena trayectoria tributaria y crediticia, y saber presentar bien el proyecto.\n\nNo necesitas tener mucho dinero para empezar a disfrutar de la libertad financiera. Necesitas saber usar el dinero de otro.",
+  hashtags: ["#ConquistaTuPatrimonio","#Flipping20","#MetricaDorada","#InversionInmobiliaria","#ColivingColombia","#BienesRaicesColombia"]
+},
+{
+  numero: "Guión 11 · Embudo 2", titulo: "Cuidado con los Contratos Que Firmas",
+  bloque: "🎓 Educativo", tipo: "Concepto Legal/Técnico · #7 (ya grabado)",
+  palanca: "Protección/prevención (proteger tu plata en la letra chica)", duracion: "~55–62 seg",
+  guion: [
+    { parte: "Gancho", timing: "~6 seg", clase: "gancho", texto: "Ten mucho cuidado con los contratos que firmas. Te voy a contar algo que casi nadie revisa antes de firmar." },
+    { parte: "Relevancia", timing: "~9 seg", clase: "relevancia", texto: "Existe un tipo de contrato en el que te puedes encontrar una cláusula que se llama 'todo costo'. ¿Qué quiere decir eso? Que como contratista tienes que poner absolutamente todo." },
+    { parte: "Valor", timing: "~28 seg", clase: "valor", texto: "En el contrato 'todo costo', tú como contratista pones materiales, personal y demás — todo va por tu cuenta, a un solo costo que ya estipulaste desde el inicio. Pero hay otra cláusula, la de 'solo servicios', en la que tú prestas únicamente el servicio: todos los costos de materiales y la puesta a punto de la actividad, antes de que tú entres, van por cuenta de la persona que te está contratando. Son dos formas de contratación completamente distintas, y firmar una pensando que era la otra te puede salir carísimo." },
+    { parte: "Acción", timing: "~9 seg", clase: "accion", texto: "Ojo con lo que vas a firmar. Siempre te recomendamos tener clara qué tipo de contratación te están haciendo y qué cláusulas lleva ese contrato, para que no vayas a salir perdiendo. Si te gusta este contenido de contratos o quieres que amplíe más la información, coméntame acá abajo, que te voy a estar leyendo." }
+  ],
+  notas: [
+    { icon: "⚡", titulo: "Ritmo y energía", texto: "Cercano y de advertencia amigable, tono de \"te voy a cuidar de algo que casi nadie revisa\" — pausado en la explicación de las dos cláusulas.", cta: false },
+    { icon: "😐", titulo: "Expresión", texto: "Seria y protectora, con complicidad al decir \"ojo con lo que vas a firmar\".", cta: false },
+    { icon: "🤲", titulo: "Gestos", texto: "Gesto de \"todo en una mano\" (puño cerrado) al explicar \"todo costo\"; gesto de \"repartir entre dos manos\" al explicar \"solo servicios\".", cta: false },
+    { icon: "🎬", titulo: "Visuales sugeridos", texto: "Overlay tipo comparación: \"Todo Costo → contratista pone todo, un solo precio\" vs \"Solo Servicios → materiales van por cuenta del contratante\". Apoyo con imagen de un contrato/documento.", cta: false },
+    { icon: "🎵", titulo: "Audio", texto: "Track neutro y cercano, sin dramatismo.", cta: false },
+    { icon: "📢", titulo: "CTA", texto: "Cierra pidiendo comentarios para ampliar el tema — CTA de engagement/interacción.", cta: true }
+  ],
+  descripcion: "Ten mucho cuidado con los contratos que firmas para tu remodelación.\n\nExiste la cláusula de \"todo costo\" — donde el contratista pone materiales, personal y todo, a un solo precio ya estipulado. Y existe la cláusula de \"solo servicios\" — donde el contratista cobra solo su trabajo, y los materiales van por cuenta tuya como contratante.\n\nConfundir una con la otra te puede salir carísimo. Antes de firmar, ten clara cuál de las dos estás aceptando.\n\n👉 Si te interesa este tipo de contenido de contratos, comenta acá abajo y ampliamos el tema.",
+  hashtags: ["#ConquistaTuPatrimonio","#Flipping20","#RemodelacionRentable","#InversionInmobiliaria","#BienesRaicesColombia"]
+}
+];
+
+let current = 0;
+let currentTab = 'guion';
+
+function render() {
+  const r = reels[current];
+  document.getElementById('counter-current').textContent = current + 1;
+  document.getElementById('counter-total').textContent = reels.length;
+  document.getElementById('progress-fill').style.width = ((current + 1) / reels.length * 100) + '%';
+
+  document.getElementById('f-numero').textContent = r.numero;
+  document.getElementById('f-titulo').textContent = r.titulo;
+  document.getElementById('f-bloque').textContent = r.bloque;
+  document.getElementById('f-tipo').textContent = r.tipo;
+  document.getElementById('f-palanca').textContent = r.palanca;
+  document.getElementById('f-duracion').textContent = r.duracion;
+
+  const meta = document.getElementById('meta');
+  meta.style.animation = 'none';
+  void meta.offsetWidth;
+  meta.style.animation = 'fadeUp 0.4s ease forwards';
+
+  const tabGuion = document.getElementById('tab-guion');
+  tabGuion.innerHTML = r.guion.map(p => `
+    <div class="script-block">
+      <div class="script-label label-${p.clase}">${p.parte} <span class="script-timing">${p.timing}</span></div>
+      <div class="script-text ${p.clase}">${p.texto}</div>
+    </div>
+  `).join('');
+
+  const tabNotas = document.getElementById('tab-notas');
+  tabNotas.innerHTML = `<div class="notes-grid">` + r.notas.map(n => `
+    <div class="note-card ${n.cta ? (n.icon === '⚠️' ? 'warn-note' : 'cta-note') : ''}">
+      <div class="note-head"><span class="note-icon">${n.icon}</span><span class="note-title">${n.titulo}</span></div>
+      <div class="note-text">${n.texto}</div>
+    </div>
+  `).join('') + `</div>`;
+
+  const tabDesc = document.getElementById('tab-descripcion');
+  tabDesc.innerHTML = `
+    <div class="desc-box">
+      <button class="desc-copy-btn" id="copy-btn" onclick="copyDesc()">Copiar</button>
+      <div class="desc-text">${r.descripcion}</div>
+      <div class="hashtags">${r.hashtags.map(h => `<span class="hashtag">${h}</span>`).join('')}</div>
+    </div>
+  `;
+
+  document.getElementById('btn-prev').disabled = current === 0;
+  const nextBtn = document.getElementById('btn-next');
+  nextBtn.textContent = current === reels.length - 1 ? '✓ Fin' : 'Siguiente →';
+
+  renderDots();
+  [...document.querySelectorAll('.tab-content')].forEach(el => el.classList.remove('active'));
+  document.getElementById('tab-' + currentTab).classList.add('active');
+  [...document.querySelectorAll('.tab')].forEach(el => el.classList.toggle('active', el.dataset.tab === currentTab));
+}
+
+function renderDots() {
+  const dots = document.getElementById('dots');
+  dots.innerHTML = reels.map((_, i) => `<button class="dot ${i === current ? 'active' : ''}" onclick="goTo(${i})"></button>`).join('');
+}
+
+function switchTab(tab) {
+  currentTab = tab;
+  [...document.querySelectorAll('.tab-content')].forEach(el => el.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  [...document.querySelectorAll('.tab')].forEach(el => el.classList.toggle('active', el.dataset.tab === tab));
+}
+
+function navigate(dir) {
+  const next = current + dir;
+  if (next < 0 || next > reels.length - 1) return;
+  current = next;
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function goTo(i) {
+  current = i;
+  render();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function copyDesc() {
+  const r = reels[current];
+  const text = r.descripcion + '\n\n' + r.hashtags.join(' ');
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.getElementById('copy-btn');
+    const original = btn.textContent;
+    btn.textContent = '✓ Copiado';
+    setTimeout(() => { btn.textContent = original; }, 2000);
+  });
+}
+
+render();
+</script>
+</body>
+</html>
