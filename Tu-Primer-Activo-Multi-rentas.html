@@ -1,0 +1,653 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Tu Primer Activo · Multi-rentas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800;900&family=Inter:wght@400;500;600;700&family=Kaushan+Script&display=swap">
+<style>
+/* Estilo alineado con conquistatupatrimonio (navy profundo, amarillo dorado, Montserrat en mayúsculas con palabra acento en script). Layout: una historia vertical para celular. Cada escena es un escenario fijo (sticky) cuya animación avanza con el scroll; el texto cambia por pasos debajo. */
+:root{
+  color-scheme: dark;
+  --out:#050913;
+  --bg:#0A1020;
+  --surface:#0F1729;
+  --surface-2:#131D33;
+  --line:#22304D;
+  --fg:#F5F7FB;
+  --muted:#9AA6BF;
+  --dim:#5D6B88;
+  --gold:#EDB52A;
+  --gold-soft:#F8D77B;
+  --gold-deep:#9A7418;
+  --red:#E5634B;
+  --green:#56C48D;
+  --wa:#25D366;
+  --f-display:"Montserrat","Helvetica Neue",Arial,sans-serif;
+  --f-body:"Inter","Helvetica Neue",Arial,sans-serif;
+  --f-mono:"Inter","Helvetica Neue",Arial,sans-serif;
+  --f-script:"Kaushan Script","Brush Script MT",cursive;
+  --hdr:58px;
+}
+*{box-sizing:border-box}
+body{background:var(--out);color:var(--fg);font-family:var(--f-body);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;margin:0}
+.app{max-width:520px;margin:0 auto;background:var(--bg);position:relative;box-shadow:0 0 0 1px var(--line)}
+a{color:inherit}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:6px}
+svg text{font-family:var(--f-display);font-weight:600}
+
+/* ---------- header ---------- */
+.hdr{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;height:var(--hdr);display:flex;align-items:center;gap:12px;padding-inline:16px;background:rgba(10,16,32,.92);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.logo{display:flex;align-items:center;gap:7px;text-decoration:none;flex:none}
+.logo svg{width:22px;height:24px}
+.logo span{font-family:var(--f-display);font-weight:900;font-size:10.5px;line-height:1.05;letter-spacing:.02em;color:var(--fg);text-transform:uppercase}
+.method{flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.dots{display:flex;gap:5px}
+.dots i{width:18px;height:5px;border-radius:3px;background:var(--line);transition:background .3s}
+.dots i.on{background:var(--gold)}
+.mlabel{font-family:var(--f-mono);font-size:10px;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.hdr-wa{flex:none;width:36px;height:36px;border-radius:50%;background:var(--gold);display:grid;place-items:center;color:#1A1206}
+.hdr-wa svg{width:18px;height:18px}
+.prog{position:absolute;left:0;bottom:-1px;height:2px;width:0;background:var(--gold)}
+
+/* ---------- hero ---------- */
+.hero{min-height:calc(100vh - var(--hdr));min-height:calc(100svh - var(--hdr));display:flex;flex-direction:column;justify-content:space-between;gap:24px;padding:28px 20px 28px}
+.eyebrow{font-family:var(--f-display);font-weight:700;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+.script{font-family:var(--f-script);font-weight:400;color:var(--gold);text-transform:none;letter-spacing:0;font-size:1.08em;line-height:1}
+.hero h1{font-family:var(--f-display);font-weight:900;font-size:clamp(38px,10.5vw,54px);line-height:1.02;letter-spacing:-.01em;text-transform:uppercase;margin:12px 0 0;text-wrap:balance}
+.hero h1 em{font-style:normal;color:var(--gold);font-family:var(--f-script);font-weight:400;text-transform:none;font-size:1.05em;letter-spacing:0}
+.hero p{color:var(--muted);font-size:17px;margin:14px 0 0;max-width:34ch}
+.hero-vis{display:flex;justify-content:center}
+.hero-vis svg{width:min(260px,70%);height:auto}
+.cue{display:flex;flex-direction:column;align-items:center;gap:6px;font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;color:var(--muted)}
+.cue svg{width:20px;height:20px;color:var(--gold);animation:bob 1.6s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(6px)}}
+
+/* ---------- scenes ---------- */
+.scene{position:relative;height:calc(var(--len) * 100vh);height:calc(var(--len) * 100svh)}
+.sticky{position:sticky;top:calc(var(--hdr) + env(safe-area-inset-top,0px));height:calc(100vh - var(--hdr));height:calc(100svh - var(--hdr));overflow:hidden}
+.stage{height:100%;display:flex;flex-direction:column;gap:10px;padding:18px 20px 22px}
+.stage-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.chip{font-family:var(--f-display);font-weight:700;font-size:10px;letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--line);border-radius:999px;padding:4px 10px;color:var(--muted);white-space:nowrap}
+.chip.red{color:var(--red);border-color:rgba(229,99,75,.4)}
+.chip.gold{color:var(--gold);border-color:var(--gold-deep)}
+.vis{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;position:relative}
+.vis svg{width:100%;height:100%;max-height:100%;overflow:visible}
+.caps{position:relative;min-height:132px;flex:none}
+.cap{position:absolute;left:0;right:0;bottom:0;font-family:var(--f-display);font-weight:700;font-size:21px;line-height:1.28;letter-spacing:-.005em;text-wrap:balance;opacity:0;transform:translateY(14px);transition:opacity .45s ease, transform .45s ease;pointer-events:none}
+.cap.on{opacity:1;transform:none}
+.cap g,.cap .g{color:var(--gold)}
+.cap .r{color:var(--red)}
+@media (max-height:700px){ .cap{font-size:19px} .caps{min-height:112px} .stage{padding-block:12px 16px} }
+@media (prefers-reduced-motion: reduce){ .cap{transition:none} .cue svg{animation:none} }
+
+/* counters & ledgers */
+.counter{font-family:var(--f-display);font-weight:900;font-size:clamp(44px,13vw,64px);line-height:1;letter-spacing:-.02em;color:var(--gold);font-variant-numeric:tabular-nums;text-align:center}
+.counter small{display:block;font-family:var(--f-mono);font-weight:400;font-size:11px;letter-spacing:.14em;color:var(--muted);margin-top:8px}
+.ledger{flex:none;border:1px solid var(--line);background:var(--surface);border-radius:14px;padding:6px 14px;font-variant-numeric:tabular-nums}
+.lrow{display:flex;justify-content:space-between;gap:10px;padding:5px 0;font-size:14px;border-bottom:1px solid var(--line);opacity:.12;transition:opacity .3s}
+.lrow.on{opacity:1}
+.lrow span{color:var(--muted)}
+.lrow b{font-family:var(--f-mono);font-weight:600;font-variant-numeric:tabular-nums}
+.lrow.neg b{color:var(--red)}
+.lrow.tot{border-bottom:0;padding-top:7px}
+.lrow.tot span{color:var(--fg);font-weight:700}
+.lrow.tot b{font-family:var(--f-display);font-weight:900;font-size:19px}
+.duo{flex:none;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.duo .k{font-family:var(--f-mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase}
+.duo .v{font-family:var(--f-display);font-weight:900;font-size:24px;line-height:1.1;font-variant-numeric:tabular-nums}
+.duo > div{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--surface)}
+.yr{font-family:var(--f-mono);font-size:12px;letter-spacing:.14em;color:var(--muted)}
+
+/* ---------- close ---------- */
+.close{padding:72px 20px 40px;display:flex;flex-direction:column;gap:20px;background:radial-gradient(80% 50% at 50% 20%,rgba(237,181,42,.16),transparent 70%)}
+.close h2{font-family:var(--f-display);font-weight:900;font-size:clamp(34px,10vw,46px);line-height:1.04;letter-spacing:-.01em;margin:0;text-wrap:balance}
+.close h2 em{font-style:normal;color:var(--gold);font-family:var(--f-script);font-weight:400;font-size:1.1em}
+.close p{margin:0;color:var(--muted);font-size:17px}
+.recap{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.recap li{display:grid;grid-template-columns:34px 1fr;gap:10px;align-items:baseline;border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--surface)}
+.recap b{font-family:var(--f-display);font-weight:800;font-size:12px;color:var(--gold)}
+.recap span{font-size:15px;color:var(--muted)}
+.recap strong{color:var(--fg)}
+.btn-wa{display:flex;align-items:center;justify-content:center;gap:10px;background:var(--gold);color:#1A1206;text-decoration:none;font-family:var(--f-display);font-weight:800;font-size:15px;letter-spacing:.04em;text-transform:uppercase;padding:18px 20px;border-radius:10px;box-shadow:0 12px 32px -12px rgba(237,181,42,.55)}
+.btn-wa svg{width:22px;height:22px}
+.waline{display:flex;justify-content:center;align-items:center;gap:10px;font-family:var(--f-mono);font-size:13px;color:var(--muted);flex-wrap:wrap}
+.waline button{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:5px 10px;font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;color:var(--muted)}
+.legal{font-size:12px;color:var(--dim);line-height:1.6;margin-top:12px}
+.progs{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.prog-card{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.prog-card.hl{border-color:var(--gold)}
+.prog-card .tag{font-family:var(--f-display);font-weight:800;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+.prog-card b{font-family:var(--f-display);font-weight:900;font-size:20px}
+.prog-card span:last-child{font-size:13px;color:var(--muted);line-height:1.45}
+@media (max-width:360px){ .progs{grid-template-columns:1fr} }
+footer{padding:24px 20px 32px;text-align:center;font-family:var(--f-mono);font-size:10px;letter-spacing:.14em;color:var(--dim)}
+</style>
+
+<div class="app">
+<header class="hdr">
+  <a class="logo" href="#inicio" aria-label="Conquista Tu Patrimonio"><svg viewBox="0 0 22 24" aria-hidden="true"><path d="M11 1 L21 5 V12 C21 18 16 22 11 23 C6 22 1 18 1 12 V5 Z" fill="none" stroke="#EDB52A" stroke-width="2"/><path d="M6 15 L11 7 L16 15" fill="none" stroke="#EDB52A" stroke-width="2" stroke-linejoin="round"/></svg><span>Conquista tu<br>patrimonio</span></a>
+  <div class="method" aria-label="Avance en el método CTP">
+    <div class="dots" id="dots"><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="mlabel" id="mlabel">Método CTP · 5 pasos</div>
+  </div>
+  <a class="hdr-wa js-wa" href="#" target="_blank" rel="noopener" aria-label="Escribir por WhatsApp">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2c-1.5 0-3-.4-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3Z"/></svg>
+  </a>
+  <i class="prog" id="prog"></i>
+</header>
+
+<main>
+<!-- ============ HERO ============ -->
+<section class="hero" id="inicio">
+  <div>
+    <span class="eyebrow">★ Modelo de multi-rentas · Historia en 8 escenas</span>
+    <h1>Construye tu primer <em>activo.</em> El que te paga toda la vida.</h1>
+    <p>Mira cómo una propiedad tradicional se convierte en una máquina de flujo de efectivo. Renta tradicional frente a la renta acelerada del modelo de multi-rentas, paso a paso.</p>
+  </div>
+  <div class="hero-vis">
+    <svg viewBox="0 0 220 230" aria-hidden="true">
+      <line x1="110" y1="4" x2="110" y2="24" stroke="#22304D" stroke-width="2"/>
+      <circle cx="110" cy="6" r="4" fill="#EDB52A"/>
+      <rect x="40" y="24" width="140" height="18" rx="4" fill="#131D33" stroke="#22304D"/>
+      <rect x="30" y="42" width="160" height="168" fill="#131D33" stroke="#22304D"/>
+      <g id="heroWins"></g>
+      <rect x="18" y="210" width="184" height="16" fill="none" stroke="#9A7418"/>
+    </svg>
+  </div>
+  <div class="cue">DESLIZA PARA EMPEZAR
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+  </div>
+</section>
+
+<!-- ============ ESCENA 1 · CAPITAL ============ -->
+<section class="scene" data-scene="capital" style="--len:3">
+  <div class="sticky"><div class="stage">
+    <div class="stage-top"><span class="eyebrow">Escena 1 · El punto de partida</span></div>
+    <div class="counter" id="capNum">$0<small>TU CAPITAL</small></div>
+    <div class="vis">
+      <svg viewBox="0 0 360 260" aria-hidden="true"><g id="bars"></g><line x1="40" y1="246" x2="320" y2="246" stroke="#22304D" stroke-width="2"/></svg>
+    </div>
+    <div class="caps">
+      <p class="cap" data-at="0">Llevas años trabajando. Cada peso que tienes te costó tiempo.</p>
+      <p class="cap" data-at=".34">Ahorraste, apretaste, invertiste. Hoy tienes <span class="g">$130 millones</span>.</p>
+      <p class="cap" data-at=".7">Y una pregunta: ¿cómo los pones a trabajar para que te paguen <span class="g">toda la vida</span>?</p>
+    </div>
+  </div></div>
+</section>
+
+<!-- ============ ESCENA 2 · LA CASA ============ -->
+<section class="scene" data-scene="casa" style="--len:4">
+  <div class="sticky"><div class="stage">
+    <div class="stage-top"><span class="eyebrow">Escena 2 · La casa</span><span class="chip gold" id="casaChip">Identificación</span></div>
+    <div class="vis">
+      <svg viewBox="0 0 360 360" aria-hidden="true">
+        <g fill="none" stroke="#EDB52A" stroke-width="3" stroke-linejoin="round">
+          <path id="hRoof" pathLength="1" d="M40 140 L180 50 L320 140"/>
+          <path id="hBody" pathLength="1" d="M62 126 V285 H298 V126"/>
+          <path id="hDoor" pathLength="1" d="M160 285 V215 H200 V285"/>
+          <path id="hW1" pathLength="1" d="M88 170 H140 V212 H88 Z"/>
+          <path id="hW2" pathLength="1" d="M220 170 H272 V212 H220 Z"/>
+        </g>
+        <g id="hTags" opacity="0">
+          <text x="180" y="30" text-anchor="middle" font-size="12" fill="#9AA6BF" letter-spacing="1.5">CASA DE 180 m² · CERCA DE UNA UNIVERSIDAD</text>
+        </g>
+        <g id="price" opacity="0">
+          <rect x="226" y="68" width="104" height="40" rx="8" fill="#0F1729" stroke="#EDB52A"/>
+          <text x="278" y="94" text-anchor="middle" font-size="17" fill="#F8D77B" font-weight="500">$260 M</text>
+        </g>
+        <g id="fin" opacity="0">
+          <text x="40" y="314" font-size="11" fill="#EDB52A" letter-spacing="1">TÚ · 30%</text>
+          <text x="320" y="314" text-anchor="end" font-size="11" fill="#9AA6BF" letter-spacing="1">BANCO · 70%</text>
+          <rect x="40" y="322" width="280" height="26" rx="6" fill="#131D33" stroke="#22304D"/>
+          <rect id="finMe" x="40" y="322" width="0" height="26" rx="6" fill="#EDB52A"/>
+          <rect id="finBank" x="124" y="322" width="0" height="26" rx="0" fill="#2B3A5C"/>
+          <text id="finMeT" x="48" y="340" font-size="11" fill="#1A1206" opacity="0">$78 M</text>
+          <text id="finBankT" x="312" y="340" text-anchor="end" font-size="11" fill="#F8D77B" opacity="0">$182 M</text>
+        </g>
+      </svg>
+    </div>
+    <div class="caps">
+      <p class="cap" data-at="0">Buscas con método y la encuentras: una casa vieja de 180 m², a tres cuadras de una universidad.</p>
+      <p class="cap" data-at=".3">Vale <span class="g">$260 millones</span>. Es más de lo que tienes, y está bien.</p>
+      <p class="cap" data-at=".52">El banco pone el 70%. Tus $130 millones cubren la cuota inicial, la remodelación y los gastos.</p>
+      <p class="cap" data-at=".82">Ya controlas un activo de $260 millones. Ahora viene la decisión que lo cambia todo.</p>
+    </div>
+  </div></div>
+</section>
+
+<!-- ============ ESCENA 3 · BIFURCACIÓN ============ -->
+<section class="scene" data-scene="fork" style="--len:2.5">
+  <div class="sticky"><div class="stage">
+    <div class="stage-top"><span class="eyebrow">Escena 3 · Dos caminos</span></div>
+    <div class="vis">
+      <svg viewBox="0 0 360 360" aria-hidden="true">
+        <path id="fTrunk" pathLength="1" d="M180 350 L180 236" fill="none" stroke="#9AA6BF" stroke-width="6" stroke-linecap="round"/>
+        <path id="fLeft" pathLength="1" d="M180 236 C180 170 72 168 72 70" fill="none" stroke="#E5634B" stroke-width="6" stroke-linecap="round"/>
+        <path id="fRight" pathLength="1" d="M180 236 C180 170 288 168 288 70" fill="none" stroke="#EDB52A" stroke-width="6" stroke-linecap="round"/>
+        <g id="fLabels" opacity="0">
+          <text x="72" y="44" text-anchor="middle" font-size="12" fill="#E5634B" letter-spacing="1">RENTA</text>
+          <text x="72" y="60" text-anchor="middle" font-size="12" fill="#E5634B" letter-spacing="1">TRADICIONAL</text>
+          <text x="288" y="44" text-anchor="middle" font-size="12" fill="#EDB52A" letter-spacing="1">RENTA</text>
+          <text x="288" y="60" text-anchor="middle" font-size="12" fill="#EDB52A" letter-spacing="1">ACELERADA</text>
+        </g>
+        <circle id="fYou" cx="180" cy="350" r="9" fill="#F5F7FB"/>
+        <text id="fYouT" x="196" y="354" font-size="11" fill="#F5F7FB" letter-spacing="1">TÚ</text>
+      </svg>
+    </div>
+    <div class="caps">
+      <p class="cap" data-at="0">Aquí casi todo el mundo toma el mismo camino.</p>
+      <p class="cap" data-at=".5">Vamos a recorrer los dos, con <span class="g">la misma casa y el mismo crédito</span>.</p>
+    </div>
+  </div></div>
+</section>
+
+<!-- ============ ESCENA 4 · TRADICIONAL ============ -->
+<section class="scene" data-scene="trad" style="--len:4.5">
+  <div class="sticky"><div class="stage">
+    <div class="stage-top"><span class="eyebrow">Escena 4 · Camino 1</span><span class="chip red">Renta tradicional</span></div>
+    <div class="vis">
+      <svg viewBox="0 0 360 260" aria-hidden="true">
+        <polygon points="50,104 180,30 310,104" fill="#131D33" stroke="#22304D" stroke-width="2"/>
+        <rect x="70" y="104" width="220" height="140" fill="#131D33" stroke="#22304D" stroke-width="2"/>
+        <rect x="162" y="180" width="36" height="64" fill="#0A1020" stroke="#22304D"/>
+        <rect id="tW1" x="92" y="134" width="50" height="40" rx="3" fill="#1A2540" stroke="#22304D"/>
+        <rect id="tW2" x="218" y="134" width="50" height="40" rx="3" fill="#1A2540" stroke="#22304D"/>
+        <line x1="20" y1="244" x2="340" y2="244" stroke="#22304D" stroke-width="2"/>
+        <g id="family">
+          <g fill="#F5F7FB"><circle cx="-14" cy="206" r="7"/><rect x="-21" y="215" width="14" height="27" rx="6"/></g>
+          <g fill="#F5F7FB"><circle cx="6" cy="204" r="7.5"/><rect x="-1.5" y="213" width="15" height="29" rx="6"/></g>
+          <g fill="#9AA6BF"><circle cx="24" cy="218" r="5"/><rect x="19" y="225" width="10" height="17" rx="5"/></g>
+        </g>
+        <text id="tSign" x="180" y="20" text-anchor="middle" font-size="11" fill="#E5634B" letter-spacing="1.5" opacity="0">SE ARRIENDA</text>
+      </svg>
+    </div>
+    <div class="ledger" id="tLedger">
+      <div class="lrow" data-at=".34"><span id="tL1">Arriendo · 1 familia</span><b id="tIn">+$2.500.000</b></div>
+      <div class="lrow neg" data-at=".46"><span>Cuota del crédito</span><b>−$2.400.000</b></div>
+      <div class="lrow neg" data-at=".53"><span>Predial y seguros</span><b>−$250.000</b></div>
+      <div class="lrow tot" data-at=".6"><span>Te queda al mes</span><b id="tNet" style="color:var(--red)">−$150.000</b></div>
+    </div>
+    <div class="caps">
+      <p class="cap" data-at="0">Camino 1. Arriendas la casa completa a <span class="r">una sola familia</span>.</p>
+      <p class="cap" data-at=".34">Te pagan $2,5 millones al mes. Suena bien, hasta que haces la cuenta.</p>
+      <p class="cap" data-at=".6">La cuota y el predial se lo comen todo. <span class="r">Pones plata cada mes</span> para tener un inquilino.</p>
+      <p class="cap" data-at=".76">Y el mes que la familia se va, tu ingreso es <span class="r">cero</span>. Pagas todo tú.</p>
+    </div>
+  </div></div>
+</section>
+
+<!-- ============ ESCENA 5 · ACELERADA ============ -->
+<section class="scene" data-scene="acel" style="--len:5.5">
+  <div class="sticky"><div class="stage">
+    <div class="stage-top"><span class="eyebrow">Escena 5 · Camino 2</span><span class="chip gold" id="aChip">Adecuación</span></div>
+    <div class="vis">
+      <svg viewBox="0 0 360 290" aria-hidden="true">
+        <text x="180" y="18" text-anchor="middle" font-size="11" fill="#9AA6BF" letter-spacing="1.5" id="aTitle">PLANO · MISMA CASA DE 180 m²</text>
+        <g id="aRooms"></g>
+        <g id="aOld" opacity="1">
+          <text x="180" y="150" text-anchor="middle" font-size="12" fill="#5D6B88" letter-spacing="1">3 HABITACIONES · 1 CONTRATO</text>
+        </g>
+        <g fill="none" stroke="#EDB52A" stroke-width="3" stroke-linecap="round" id="aWalls">
+          <path pathLength="1" d="M100 30 V150"/>
+          <path pathLength="1" d="M180 30 V150"/>
+          <path pathLength="1" d="M260 30 V150"/>
+          <path pathLength="1" d="M20 150 H340"/>
+          <path pathLength="1" d="M100 150 V270"/>
+          <path pathLength="1" d="M180 150 V270"/>
+          <path pathLength="1" d="M260 150 V270"/>
+        </g>
+        <rect x="20" y="30" width="320" height="240" fill="none" stroke="#EDB52A" stroke-width="4"/>
+      </svg>
+    </div>
+    <div class="ledger" id="aLedger">
+      <div class="lrow" data-at=".68"><span id="aL1">Arriendos · 7 de 7</span><b id="aIn">+$6.300.000</b></div>
+      <div class="lrow neg" data-at=".7"><span>Cuota y predial</span><b>−$2.650.000</b></div>
+      <div class="lrow neg" data-at=".72"><span>Servicios, internet y aseo</span><b>−$1.200.000</b></div>
+      <div class="lrow neg" data-at=".74"><span>Gestión (8%)</span><b id="aMg">−$504.000</b></div>
+      <div class="lrow tot" data-at=".76"><span>Te queda al mes</span><b id="aNet" style="color:var(--gold)">+$1.946.000</b></div>
+    </div>
+    <div class="caps">
+      <p class="cap" data-at="0">Camino 2: renta acelerada. Aplicas el modelo de multi-rentas y la conviertes en un coliving: <span class="g">7 habitaciones privadas</span> y una zona común.</p>
+      <p class="cap" data-at=".33">Las publicas con fotos profesionales en varios canales. Se llenan <span class="g">una a una</span>.</p>
+      <p class="cap" data-at=".67">Cada habitación paga su parte. Haz la misma cuenta.</p>
+      <p class="cap" data-at=".86">Si se va un inquilino, la casa <span class="g">sigue dejando plata</span> mientras llega el reemplazo.</p>
+    </div>
+  </div></div>
+</section>
+
+<!-- ============ ESCENA 6 · CADA MES ============ -->
+<section class="scene" data-scene="mes" style="--len:3.5">
+  <div class="sticky"><div class="stage">
+    <div class="stage-top"><span class="eyebrow">Escena 6 · La cuenta del mes</span><span class="chip" id="mChip">Mes normal</span></div>
+    <div class="vis">
+      <svg viewBox="0 0 360 340" aria-hidden="true">
+        <text x="105" y="20" text-anchor="middle" font-size="11" fill="#E5634B" letter-spacing="1">TRADICIONAL</text>
+        <text x="255" y="20" text-anchor="middle" font-size="11" fill="#EDB52A" letter-spacing="1">ACELERADA</text>
+        <line x1="24" y1="140" x2="336" y2="140" stroke="#5D6B88" stroke-width="1.5"/>
+        <text x="28" y="134" font-size="10" fill="#5D6B88">$0</text>
+        <rect id="bT" x="70" y="140" width="70" height="0" rx="4" fill="#E5634B"/>
+        <rect id="bA" x="220" y="140" width="70" height="0" rx="4" fill="#EDB52A"/>
+        <text id="bTt" x="105" y="160" text-anchor="middle" font-size="13" fill="#F5F7FB"></text>
+        <text id="bAt" x="255" y="130" text-anchor="middle" font-size="13" fill="#F5F7FB"></text>
+      </svg>
+    </div>
+    <div class="caps">
+      <p class="cap" data-at="0">Misma casa. Mismo crédito. <span class="g">Un mes normal.</span></p>
+      <p class="cap" data-at=".45">Ahora, un mes en el que <span class="r">alguien se va</span>.</p>
+      <p class="cap" data-at=".75">La diferencia no es la propiedad. <span class="g">Es el modelo.</span></p>
+    </div>
+  </div></div>
+</section>
+
+<!-- ============ ESCENA 7 · TODA LA VIDA ============ -->
+<section class="scene" data-scene="vida" style="--len:4.5">
+  <div class="sticky"><div class="stage">
+    <div class="stage-top"><span class="eyebrow">Escena 7 · Toda la vida</span><span class="yr" id="yr">AÑO 0</span></div>
+    <div class="duo">
+      <div><div class="k" style="color:var(--red)">Tradicional</div><div class="v" id="vT">$0</div></div>
+      <div><div class="k" style="color:var(--gold)">Acelerada</div><div class="v" id="vA" style="color:var(--gold)">$0</div></div>
+    </div>
+    <div class="vis">
+      <svg viewBox="0 0 360 300" aria-hidden="true" id="chart">
+        <g id="grid"></g>
+        <line id="y15" x1="190" y1="22" x2="190" y2="262" stroke="#5D6B88" stroke-dasharray="4 4" opacity="0"/>
+        <text id="y15t" x="194" y="36" font-size="10" fill="#9AA6BF" opacity="0">CRÉDITO PAGADO</text>
+        <polyline id="lT" fill="none" stroke="#E5634B" stroke-width="3" stroke-linejoin="round" points=""/>
+        <polyline id="lA" fill="none" stroke="#EDB52A" stroke-width="3.5" stroke-linejoin="round" points=""/>
+        <circle id="dT" r="5" fill="#E5634B"/>
+        <circle id="dA" r="6" fill="#EDB52A"/>
+      </svg>
+    </div>
+    <div class="caps">
+      <p class="cap" data-at="0">Ahora deja correr el tiempo. Esto es lo que te queda en el bolsillo, año tras año.</p>
+      <p class="cap" data-at=".4">Año 15: terminas de pagar el crédito. Desde ahí, <span class="g">toda la renta es tuya</span>.</p>
+      <p class="cap" data-at=".8">En 30 años, la misma casa te deja <span class="g">más del doble</span> con multi-rentas.</p>
+    </div>
+  </div></div>
+</section>
+
+<!-- ============ ESCENA 8 · REPLICAR ============ -->
+<section class="scene" data-scene="rep" style="--len:3.5">
+  <div class="sticky"><div class="stage">
+    <div class="stage-top"><span class="eyebrow">Escena 8 · El siguiente</span><span class="chip gold" id="rChip">1 activo</span></div>
+    <div class="vis">
+      <svg viewBox="0 0 360 260" aria-hidden="true"><g id="sky"></g><line x1="10" y1="240" x2="350" y2="240" stroke="#9A7418" stroke-width="2"/></svg>
+    </div>
+    <div class="caps">
+      <p class="cap" data-at="0">Con el flujo del primero y un activo a tu nombre como respaldo, <span class="g">vas por el segundo</span>.</p>
+      <p class="cap" data-at=".42">¿Aún no tienes la cuota inicial? Empieza con <span class="g">Rent to Rent</span>: arriendas, adecúas y subarriendas por habitaciones sin comprar.</p>
+      <p class="cap" data-at=".76">Un mismo método, cinco pasos, para el primer activo y para todos los que siguen.</p>
+    </div>
+  </div></div>
+</section>
+
+<!-- ============ CIERRE ============ -->
+<section class="close" id="cierre">
+  <span class="eyebrow">Tu turno</span>
+  <h2>DA EL PRIMER <em>paso</em></h2>
+  <p>Escríbenos y un asesor te ayuda a elegir el mejor camino para construir tu primer activo con el modelo de multi-rentas.</p>
+  <ol class="recap">
+    <li><b>01</b><span><strong>Identificación.</strong> La propiedad correcta, donde hay demanda.</span></li>
+    <li><b>02</b><span><strong>Apalancamiento.</strong> Crédito o contrato para controlar más de lo que pones.</span></li>
+    <li><b>03</b><span><strong>Adecuación.</strong> Más rentas por metro cuadrado.</span></li>
+    <li><b>04</b><span><strong>Atracción.</strong> Habitaciones llenas, rápido y con buen filtro.</span></li>
+    <li><b>05</b><span><strong>Operación.</strong> Flujo que aguanta aunque alguien se vaya.</span></li>
+  </ol>
+  <div class="progs">
+    <div class="prog-card"><span class="tag">Programa</span><b>CTP Pro</b><span>Conquista Tu Patrimonio Pro: programa online con acompañamiento para llevarte a tu primera inversión de alta rentabilidad.</span></div>
+    <div class="prog-card hl"><span class="tag">Exclusivo</span><b>ATP</b><span>Acelera Tu Patrimonio: mentoría 1 a 1 para escalar tu portafolio más rápido.</span></div>
+  </div>
+  <a class="btn-wa js-wa" href="#" target="_blank" rel="noopener">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2c-1.5 0-3-.4-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3Z"/></svg>
+    Quiero más información
+  </a>
+  <div class="waline">WhatsApp: <span id="waNum">+57 323 350 2267</span> <button id="waCopy" type="button">Copiar</button></div>
+  <p class="legal">Todas las cifras son ilustrativas y sirven para explicar el modelo: casa de $260 millones, crédito del 70% con cuota de $2.400.000, arriendo tradicional de $2.500.000 y 7 habitaciones de $900.000. La gráfica de 30 años asume 6 de 7 habitaciones ocupadas. No incluyen incrementos anuales, valorización ni meses vacíos en la renta tradicional. No son una promesa de rentabilidad ni una asesoría financiera o legal; los resultados dependen de la propiedad, la ciudad, la normativa, el crédito y la operación.</p>
+</section>
+<footer>© 2026 CONQUISTA TU PATRIMONIO · @EL_PINGO83</footer>
+</main>
+</div>
+
+<script>
+(function(){
+  /* ====== WhatsApp ====== */
+  var WA_NUMBER = "573233502267";
+  var WA_TEXT = "Hola, vi la historia de cómo construir un primer activo con renta acelerada y quiero saber cómo empezar.";
+  var waUrl = "https://wa.me/" + WA_NUMBER + "?text=" + encodeURIComponent(WA_TEXT);
+  document.querySelectorAll(".js-wa").forEach(function(a){ a.href = waUrl; });
+  document.getElementById("waCopy").addEventListener("click", function(){
+    var b = this, done = function(){ b.textContent = "Copiado"; setTimeout(function(){ b.textContent = "Copiar"; }, 1600); };
+    var sel = function(){ var r = document.createRange(); r.selectNodeContents(document.getElementById("waNum")); var s = getSelection(); s.removeAllRanges(); s.addRange(r); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText("+" + WA_NUMBER).then(done, sel); else sel();
+  });
+
+  /* ====== helpers ====== */
+  var NS = "http://www.w3.org/2000/svg";
+  var $ = function(id){ return document.getElementById(id); };
+  var clamp = function(v,a,b){ return Math.max(a, Math.min(b, v)); };
+  var seg = function(p,a,b){ return clamp((p-a)/(b-a), 0, 1); };
+  var ease = function(t){ return t<.5 ? 2*t*t : 1 - Math.pow(-2*t+2,2)/2; };
+  var lerp = function(a,b,t){ return a + (b-a)*t; };
+  var money = function(n){ var s = Math.round(Math.abs(n)).toLocaleString("es-CO"); return (n < 0 ? "−$" : "+$") + s; };
+  var mill = function(n){ return (n < 0 ? "−$" : "$") + Math.round(Math.abs(n)).toLocaleString("es-CO") + " M"; };
+  function el(tag, attrs, parent){ var e = document.createElementNS(NS, tag); for (var k in attrs) e.setAttribute(k, attrs[k]); if (parent) parent.appendChild(e); return e; }
+  function draw(path, t){ path.style.strokeDasharray = "1"; path.style.strokeDashoffset = String(1 - t); }
+
+  /* ====== hero building windows ====== */
+  var hw = $("heroWins"), heroW = [];
+  for (var r = 0; r < 6; r++) for (var c = 0; c < 4; c++) heroW.push(el("rect", {x: 44 + c*34, y: 52 + r*26, width: 24, height: 16, rx: 2, fill: "#EDB52A"}, hw));
+  if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    setInterval(function(){
+      var w = heroW[Math.floor(Math.random()*heroW.length)];
+      w.setAttribute("fill", "#1A2540");
+      setTimeout(function(){ w.setAttribute("fill", "#EDB52A"); }, 1300 + Math.random()*1000);
+    }, 700);
+  }
+
+  /* ====== scene 1: capital bars ====== */
+  var barsG = $("bars"), goldBars = [];
+  var stackPos = [[0,0],[1,0],[2,0],[3,0],[0.5,1],[1.5,1],[2.5,1],[1,2],[2,2],[1.5,3]];
+  stackPos.forEach(function(sp){
+    var g = el("g", {}, barsG);
+    el("rect", {x: 70 + sp[0]*56, y: 214 - sp[1]*34, width: 52, height: 30, rx: 4, fill: "#EDB52A", stroke: "#F8D77B", "stroke-width": 1.5}, g);
+    el("rect", {x: 78 + sp[0]*56, y: 219 - sp[1]*34, width: 36, height: 5, rx: 2, fill: "#F8D77B", opacity: .7}, g);
+    goldBars.push(g);
+  });
+
+  /* ====== scene 5: rooms ====== */
+  var ROOMS = [[20,30],[100,30],[180,30],[260,30],[20,150],[100,150],[180,150]];
+  var roomEls = ROOMS.map(function(rc, i){
+    var g = el("g", {}, $("aRooms"));
+    var rect = el("rect", {x: rc[0]+6, y: rc[1]+6, width: 68, height: 108, rx: 4, fill: "#EDB52A", "fill-opacity": 0}, g);
+    var t = el("text", {x: rc[0]+40, y: rc[1]+64, "text-anchor": "middle", "font-size": 13, fill: "#5D6B88", opacity: 0}, g);
+    t.textContent = "H" + (i+1);
+    return {rect: rect, t: t};
+  });
+  var zc = el("text", {x: 300, y: 214, "text-anchor": "middle", "font-size": 10, fill: "#9AA6BF", opacity: 0, "letter-spacing": 1}, $("aRooms"));
+  zc.textContent = "ZONA";
+  var zc2 = el("text", {x: 300, y: 228, "text-anchor": "middle", "font-size": 10, fill: "#9AA6BF", opacity: 0, "letter-spacing": 1}, $("aRooms"));
+  zc2.textContent = "COMÚN";
+  var walls = Array.prototype.slice.call($("aWalls").children);
+
+  /* ====== scene 7: chart ====== */
+  var X = function(y){ return 40 + y*10; };
+  var Y = function(v){ return 262 - (v + 60)/960 * 236; };
+  var tradCum = function(y){ return y <= 15 ? -1.8*y : -27 + 27*(y-15); };
+  var acelCum = function(y){ return y <= 15 ? 13.416*y : 201.24 + 42.216*(y-15); };
+  [0,300,600,900].forEach(function(v){
+    el("line", {x1: 40, x2: 340, y1: Y(v), y2: Y(v), stroke: v === 0 ? "#5D6B88" : "#22304D", "stroke-width": 1}, $("grid"));
+    el("text", {x: 36, y: Y(v)+4, "text-anchor": "end", "font-size": 9, fill: "#5D6B88"}, $("grid")).textContent = v === 0 ? "$0" : "$" + v + "M";
+  });
+  [0,10,20,30].forEach(function(y){ el("text", {x: X(y), y: 280, "text-anchor": "middle", "font-size": 9, fill: "#5D6B88"}, $("grid")).textContent = "AÑO " + y; });
+
+  /* ====== scene 8: skyline ====== */
+  var SKY = [[24,70,150],[106,62,196],[180,78,128],[270,66,172]];
+  var skyEls = SKY.map(function(s){
+    var g = el("g", {}, $("sky"));
+    var body = el("rect", {x: s[0], y: 240, width: s[1], height: 0, fill: "#131D33", stroke: "#EDB52A", "stroke-width": 1.5}, g);
+    var wins = [];
+    var cols = Math.floor((s[1]-12)/16);
+    for (var r = 0; r*22 + 28 < s[2]; r++) for (var c = 0; c < cols; c++) {
+      wins.push({e: el("rect", {x: s[0]+8 + c*16, y: 240 - s[2] + 12 + r*22, width: 10, height: 12, rx: 1.5, fill: "#EDB52A", opacity: 0}, g), y: 240 - s[2] + 12 + r*22});
+    }
+    return {body: body, h: s[2], wins: wins};
+  });
+
+  /* ====== method dots ====== */
+  var METHOD = ["01 · Identificación","02 · Apalancamiento","03 · Adecuación","04 · Atracción","05 · Operación"];
+  var dots = Array.prototype.slice.call(document.querySelectorAll("#dots i"));
+
+  /* ====== renderers ====== */
+  var R = {
+    capital: function(p){
+      var v = Math.round(130 * ease(seg(p, .05, .62)));
+      $("capNum").firstChild.nodeValue = "$" + v + " millones";
+      goldBars.forEach(function(g, i){
+        var t = seg(p, .05 + i*.055, .12 + i*.055);
+        g.setAttribute("opacity", t);
+        g.setAttribute("transform", "translate(0," + ((1-t)*-40) + ")");
+      });
+    },
+    casa: function(p){
+      draw($("hRoof"), seg(p, 0, .1)); draw($("hBody"), seg(p, .06, .18)); draw($("hDoor"), seg(p, .14, .22));
+      draw($("hW1"), seg(p, .18, .25)); draw($("hW2"), seg(p, .2, .27));
+      $("hTags").setAttribute("opacity", seg(p, .2, .28));
+      $("price").setAttribute("opacity", seg(p, .3, .38));
+      $("fin").setAttribute("opacity", seg(p, .48, .54));
+      var f = ease(seg(p, .52, .74));
+      $("finMe").setAttribute("width", 84*f);
+      $("finBank").setAttribute("x", 40 + 84); $("finBank").setAttribute("width", 196*seg(p, .6, .78));
+      $("finMeT").setAttribute("opacity", seg(p, .66, .7)); $("finBankT").setAttribute("opacity", seg(p, .74, .78));
+      $("casaChip").textContent = p > .5 ? "Apalancamiento" : "Identificación";
+    },
+    fork: function(p){
+      draw($("fTrunk"), seg(p, 0, .3)); draw($("fLeft"), seg(p, .28, .6)); draw($("fRight"), seg(p, .28, .6));
+      $("fLabels").setAttribute("opacity", seg(p, .5, .62));
+      var cy = lerp(350, 236, ease(seg(p, .05, .32)));
+      $("fYou").setAttribute("cy", cy); $("fYouT").setAttribute("y", cy + 4);
+    },
+    trad: function(p){
+      var fx, fo;
+      if (p < .5) { fx = lerp(-60, 180, ease(seg(p, .04, .28))); fo = 1 - seg(p, .27, .33); }
+      else { fx = lerp(180, 420, ease(seg(p, .78, .96))); fo = seg(p, .76, .79) * (1 - seg(p, .93, .99)); }
+      $("family").setAttribute("transform", "translate(" + fx + ",0)");
+      $("family").setAttribute("opacity", fo);
+      var lit = p > .3 && p < .8;
+      ["tW1","tW2"].forEach(function(id){ $(id).setAttribute("fill", lit ? "#EDB52A" : "#1A2540"); $(id).setAttribute("stroke", lit ? "#F8D77B" : (p >= .8 ? "#E5634B" : "#22304D")); });
+      $("tSign").setAttribute("opacity", p >= .8 ? 1 : 0);
+      ledger("tLedger", p);
+      var empty = p >= .8;
+      $("tL1").textContent = empty ? "Arriendo · casa vacía" : "Arriendo · 1 familia";
+      $("tIn").textContent = empty ? "$0" : "+$2.500.000";
+      $("tIn").style.color = empty ? "var(--red)" : "";
+      $("tNet").textContent = empty ? "−$2.650.000" : "−$150.000";
+    },
+    acel: function(p){
+      var wt = seg(p, .02, .3);
+      walls.forEach(function(w, i){ draw(w, seg(wt, i/7, (i+1)/7)); });
+      $("aOld").setAttribute("opacity", 1 - seg(p, .02, .1));
+      var labels = seg(p, .26, .32);
+      zc.setAttribute("opacity", labels); zc2.setAttribute("opacity", labels);
+      var fill = seg(p, .35, .64), k = Math.min(7, Math.floor(fill * 7.999));
+      var occ = p > .86 ? 6 : k;
+      roomEls.forEach(function(r, i){
+        r.t.setAttribute("opacity", labels);
+        var on = i < occ, vacant = p > .86 && i === 2;
+        r.rect.setAttribute("fill-opacity", on && !vacant ? .85 : 0);
+        r.rect.setAttribute("stroke", vacant ? "#E5634B" : "none");
+        r.rect.setAttribute("stroke-dasharray", vacant ? "5 4" : "");
+        r.t.setAttribute("fill", on && !vacant ? "#1A1206" : (vacant ? "#E5634B" : "#5D6B88"));
+      });
+      if (p > .86) { roomEls[2].rect.setAttribute("fill-opacity", 0); }
+      ledger("aLedger", p);
+      var rooms = p > .86 ? 6 : 7, inc = rooms * 900000, net = inc - 2650000 - 1200000 - inc*.08;
+      $("aL1").textContent = "Arriendos · " + rooms + " de 7";
+      $("aIn").textContent = money(inc); $("aMg").textContent = money(-inc*.08); $("aNet").textContent = money(net);
+      $("aChip").textContent = p < .33 ? "Adecuación" : p < .67 ? "Atracción" : "Operación";
+      $("aTitle").textContent = p < .33 ? "PLANO · MISMA CASA DE 180 m²" : "OCUPACIÓN · " + (p > .86 ? 6 : k) + " DE 7";
+    },
+    mes: function(p){
+      var g = ease(seg(p, .04, .32)), v = ease(seg(p, .45, .62));
+      var t = lerp(-.15, -2.65, v), a = lerp(1.946, 1.118, v);
+      var S = 64;
+      var th = Math.abs(t)*S*g, ah = Math.abs(a)*S*g;
+      $("bT").setAttribute("y", 140); $("bT").setAttribute("height", th);
+      $("bA").setAttribute("y", 140 - ah); $("bA").setAttribute("height", ah);
+      $("bTt").setAttribute("y", 140 + th + 18); var vac = v >= .5;
+      $("bTt").textContent = g > .9 ? money(vac ? -2650000 : -150000) : "";
+      $("bAt").setAttribute("y", 140 - ah - 10); $("bAt").textContent = g > .9 ? money(vac ? 1118000 : 1946000) : "";
+      $("mChip").textContent = p < .45 ? "Mes normal" : "Mes con un inquilino menos";
+      $("mChip").className = "chip" + (p < .45 ? "" : " red");
+    },
+    vida: function(p){
+      var yrs = 30 * ease(seg(p, .04, .9));
+      var ptsT = [], ptsA = [];
+      for (var y = 0; y <= Math.floor(yrs); y++) { ptsT.push(X(y) + "," + Y(tradCum(y))); ptsA.push(X(y) + "," + Y(acelCum(y))); }
+      ptsT.push(X(yrs) + "," + Y(tradCum(yrs))); ptsA.push(X(yrs) + "," + Y(acelCum(yrs)));
+      $("lT").setAttribute("points", ptsT.join(" ")); $("lA").setAttribute("points", ptsA.join(" "));
+      $("dT").setAttribute("cx", X(yrs)); $("dT").setAttribute("cy", Y(tradCum(yrs)));
+      $("dA").setAttribute("cx", X(yrs)); $("dA").setAttribute("cy", Y(acelCum(yrs)));
+      var m15 = yrs >= 15 ? 1 : 0;
+      $("y15").setAttribute("opacity", m15); $("y15t").setAttribute("opacity", m15);
+      $("yr").textContent = "AÑO " + Math.floor(yrs);
+      $("vT").textContent = mill(tradCum(yrs)); $("vT").style.color = tradCum(yrs) < 0 ? "var(--red)" : "var(--fg)";
+      $("vA").textContent = mill(acelCum(yrs));
+    },
+    rep: function(p){
+      var n = 0;
+      skyEls.forEach(function(b, i){
+        var t = i === 0 ? 1 : ease(seg(p, .08 + (i-1)*.24, .26 + (i-1)*.24));
+        if (t > .5) n++;
+        var h = b.h * t;
+        b.body.setAttribute("y", 240 - h); b.body.setAttribute("height", h);
+        b.wins.forEach(function(w){ w.e.setAttribute("opacity", w.y >= 240 - h + 4 ? 1 : 0); });
+      });
+      $("rChip").textContent = n + (n === 1 ? " activo" : " activos");
+    }
+  };
+
+  function ledger(id, p){
+    Array.prototype.forEach.call($(id).children, function(row){ row.classList.toggle("on", p >= +row.getAttribute("data-at")); });
+  }
+
+  /* ====== scroll engine ====== */
+  var scenes = Array.prototype.map.call(document.querySelectorAll(".scene"), function(s){
+    return {el: s, id: s.getAttribute("data-scene"), caps: Array.prototype.slice.call(s.querySelectorAll(".cap")), p: 0};
+  });
+  var hdrH = function(){ return document.querySelector(".hdr").getBoundingClientRect().bottom; };
+  var ticking = false;
+  function frame(){
+    ticking = false;
+    var vh = window.innerHeight, top = hdrH();
+    scenes.forEach(function(s){
+      var r = s.el.getBoundingClientRect();
+      var total = s.el.offsetHeight - (vh - top);
+      var p = clamp((top - r.top) / Math.max(1, total), 0, 1);
+      if (r.bottom < -vh || r.top > vh * 2) { s.p = p; return; }
+      s.p = p;
+      R[s.id](p);
+      var active = 0;
+      s.caps.forEach(function(c, i){ if (p >= +c.getAttribute("data-at")) active = i; });
+      s.caps.forEach(function(c, i){ c.classList.toggle("on", i === active); });
+    });
+    var get = function(id){ for (var i = 0; i < scenes.length; i++) if (scenes[i].id === id) return scenes[i]; };
+    var pc = get("casa"), pa = get("acel");
+    var passedCasa = pc.el.getBoundingClientRect().top < top + 1;
+    var passedAcel = pa.el.getBoundingClientRect().top < top + 1;
+    var lit = [passedCasa && pc.p > .02, passedCasa && pc.p > .5, passedAcel && pa.p > .02, passedAcel && pa.p > .33, passedAcel && pa.p > .67];
+    var last = -1;
+    dots.forEach(function(d, i){ d.classList.toggle("on", lit[i]); if (lit[i]) last = i; });
+    $("mlabel").textContent = last < 0 ? "Método CTP · 5 pasos" : METHOD[last];
+    var doc = document.documentElement, max = doc.scrollHeight - vh;
+    $("prog").style.width = (max > 0 ? clamp(window.scrollY / max, 0, 1) * 100 : 0) + "%";
+  }
+  function onScroll(){ if (!ticking) { ticking = true; requestAnimationFrame(frame); } }
+  window.addEventListener("scroll", onScroll, {passive: true});
+  window.addEventListener("resize", onScroll);
+  // initial: render every scene at its current position so nothing waits on a scroll
+  scenes.forEach(function(s){ R[s.id](0); s.caps[0] && s.caps[0].classList.add("on"); });
+  frame();
+})();
+</script>
+
+</body></html>
