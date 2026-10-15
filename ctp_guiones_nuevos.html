@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guiones CTP · Lotes 1 y 2</title>
+<style>
+:root{--navy:#0F2544;--navy-light:#1a3560;--navy-dark:#091a33;--lime:#00C96E;--lime-dim:#00a85c;--lime-soft:rgba(0,201,110,.12);--lime-softer:rgba(0,201,110,.06);--white:#fff;--text-primary:#e8edf4;--text-secondary:#8fa3bf;--text-muted:#5a7494;--border:rgba(255,255,255,.08);--border-lime:rgba(0,201,110,.3);--card-bg:rgba(255,255,255,.04);--card-hover:rgba(255,255,255,.07)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--navy-dark);color:var(--text-primary);font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;min-height:100vh}
+.header{position:sticky;top:0;z-index:10;background:rgba(9,26,51,.95);backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
+.header-inner{display:flex;justify-content:space-between;align-items:center;padding:18px 32px;max-width:900px;margin:0 auto}
+.brand{display:flex;align-items:center;gap:10px}
+.brand-dot{width:8px;height:8px;background:var(--lime);border-radius:50%;animation:pulse 2.5s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(.85)}}
+.brand-name{font-weight:600;font-size:14px;color:var(--white)}
+.brand-handle{font-size:12px;color:var(--text-muted)}
+.counter{font-size:13px;color:var(--text-secondary)}.counter b{color:var(--lime)}
+.progress-bar{height:2px;background:var(--border)}.progress-fill{height:100%;background:var(--lime);transition:width .4s ease}
+.main{max-width:900px;margin:0 auto;padding:40px 32px 80px}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.reel-num{color:var(--lime);text-transform:uppercase;font-size:11px;font-weight:600;letter-spacing:.08em;margin-bottom:8px}
+.reel-title{color:var(--white);font-size:26px;font-weight:600;line-height:1.25;margin-bottom:16px}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px}
+.tag{font-size:11px;font-weight:500;padding:4px 12px;border-radius:20px}
+.tag-bloque{background:rgba(127,119,221,.15);color:#a8a1f0;border:1px solid rgba(127,119,221,.25)}
+.tag-tipo{background:var(--lime-softer);color:var(--lime);border:1px solid var(--border-lime)}
+.tag-palanca,.tag-duracion{background:rgba(255,255,255,.06);color:var(--text-secondary);border:1px solid var(--border)}
+.tabs{display:flex;gap:4px;border-bottom:1px solid var(--border);margin-bottom:28px}
+.tab{background:none;border:none;color:var(--text-secondary);font:inherit;font-size:13px;font-weight:500;padding:12px 18px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
+.tab:hover{color:var(--white)}.tab.active{color:var(--lime);border-bottom-color:var(--lime)}
+.panel{display:none}.panel.active{display:block}
+.block{margin-bottom:24px}
+.block-label{display:flex;gap:10px;align-items:baseline;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
+.block-label span{color:var(--text-muted);font-weight:400;text-transform:none;letter-spacing:0}
+.label-gancho{color:#a8a1f0}.label-relevancia{color:var(--lime)}.label-valor{color:#f0b429}.label-accion{color:#f08070}
+.script-text{font-size:15px;line-height:1.75;white-space:pre-line;padding:14px 18px;background:var(--card-bg);border-radius:0 8px 8px 0;border-left:3px solid}
+.script-text.gancho{border-color:#7F77DD}.script-text.relevancia{border-color:#00C96E}.script-text.valor{border-color:#f0b429}.script-text.accion{border-color:#f08070}
+.notes-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.note{background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:16px 18px}
+.note:hover{background:var(--card-hover)}
+.note-title{font-size:13px;font-weight:600;color:var(--white);margin-bottom:6px}
+.note-text{font-size:13px;line-height:1.6;color:var(--text-secondary);white-space:pre-line}
+.cta-note{grid-column:1/-1;background:var(--lime-softer);border-color:var(--border-lime)}
+.cta-note .note-text{color:var(--text-primary)}
+.desc-box{position:relative;background:var(--card-bg);border:1px solid var(--border);border-radius:10px;padding:24px 20px 20px}
+.desc-text{font-size:14px;line-height:1.7;white-space:pre-line;padding-right:90px}
+.desc-copy-btn{position:absolute;top:16px;right:16px;background:var(--lime-soft);border:1px solid var(--border-lime);color:var(--lime);font:inherit;font-size:11px;font-weight:600;padding:6px 14px;border-radius:20px;cursor:pointer;transition:background .2s}
+.desc-copy-btn:hover{background:rgba(0,201,110,.2)}
+.hashtags{display:flex;flex-wrap:wrap;gap:6px;margin-top:18px}
+.hashtag{font-size:12px;color:var(--lime);background:var(--lime-softer);padding:3px 10px;border-radius:20px;border:1px solid var(--border-lime)}
+.nav{display:flex;justify-content:space-between;align-items:center;margin-top:44px;gap:12px}
+.nav-btn{padding:12px 24px;border-radius:8px;border:1px solid var(--border);background:var(--card-bg);color:var(--text-secondary);font:inherit;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s}
+.nav-btn:hover:not(:disabled){background:var(--card-hover);color:var(--white)}
+.nav-btn:disabled{opacity:.3;cursor:not-allowed}
+.nav-btn.next{background:var(--lime);border-color:var(--lime);color:var(--navy-dark);font-weight:600}
+.nav-btn.next:hover:not(:disabled){background:var(--lime-dim);border-color:var(--lime-dim)}
+.dots{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:center}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--text-muted);cursor:pointer;transition:all .2s}
+.dot.active{background:var(--lime);width:20px;border-radius:3px}
+.decide{display:flex;gap:8px;align-items:center;margin:-12px 0 28px;flex-wrap:wrap}
+.decide-label{font-size:11px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em;margin-right:4px}
+.dec-btn{font:inherit;font-size:12px;font-weight:600;padding:6px 16px;border-radius:20px;border:1px solid var(--border);background:var(--card-bg);color:var(--text-secondary);cursor:pointer;transition:all .2s}
+.dec-btn:hover{color:var(--white)}
+.dec-btn.on.si{background:var(--lime-soft);border-color:var(--lime);color:var(--lime)}
+.dec-btn.on.no{background:rgba(240,128,112,.15);border-color:#f08070;color:#f08070}
+.dec-btn.on.rev{background:rgba(240,180,41,.15);border-color:#f0b429;color:#f0b429}
+.summary-btn{font:inherit;font-size:12px;font-weight:600;padding:6px 14px;border-radius:20px;border:1px solid var(--border-lime);background:var(--lime-softer);color:var(--lime);cursor:pointer;margin-left:12px}
+.summary{display:none}.summary.active{display:block}
+.sum-head{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+.sum-title{font-size:22px;font-weight:600;color:var(--white)}
+.sum-counts{font-size:13px;color:var(--text-secondary)}
+.sum-table{width:100%;border-collapse:collapse;font-size:13px}
+.sum-table th{text-align:left;color:var(--text-muted);font-weight:500;font-size:11px;text-transform:uppercase;letter-spacing:.06em;padding:8px 10px;border-bottom:1px solid var(--border)}
+.sum-table td{padding:10px;border-bottom:1px solid var(--border);vertical-align:middle}
+.sum-table tr{cursor:pointer}.sum-table tr:hover td{background:var(--card-hover)}
+.pill{font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;white-space:nowrap}
+.pill.si{background:var(--lime-soft);color:var(--lime)}.pill.no{background:rgba(240,128,112,.15);color:#f08070}.pill.rev{background:rgba(240,180,41,.15);color:#f0b429}.pill.none{background:rgba(255,255,255,.06);color:var(--text-muted)}
+.sum-actions{display:flex;gap:8px}
+@media (max-width:600px){.sum-table .hide-m{display:none}.summary-btn{margin-left:0}}
+@media (max-width:600px){.header-inner{padding:16px 20px}.main{padding:28px 16px 60px}.reel-title{font-size:20px}.notes-grid{grid-template-columns:1fr}.cta-note{grid-column:1}.tab{padding:10px 14px;font-size:12px}.desc-text{padding-right:0;padding-top:24px}.nav-btn{padding:10px 14px}}
+</style>
+</head>
+<body>
+<header class="header">
+  <div class="header-inner">
+    <div class="brand"><div class="brand-dot"></div><div><div class="brand-name">Conquista Tu Patrimonio</div><div class="brand-handle">@el_pingo83</div></div></div>
+    <div style="display:flex;align-items:center;flex-wrap:wrap;gap:4px"><div class="counter">Guión <b id="cur">1</b> de <span id="tot"></span></div><button class="summary-btn" id="sumBtn" onclick="toggleSummary()">Resumen</button></div>
+  </div>
+  <div class="progress-bar"><div class="progress-fill" id="prog"></div></div>
+</header>
+<main class="main">
+  <section class="summary" id="summary">
+    <div class="sum-head"><div><div class="sum-title">Guiones nuevos: qué grabamos</div><div class="sum-counts" id="sumCounts"></div></div>
+      <div class="sum-actions"><button class="desc-copy-btn" style="position:static" onclick="copyDecisions(this)">Copiar decisiones</button><button class="nav-btn" onclick="toggleSummary()">Volver</button></div></div>
+    <table class="sum-table"><thead><tr><th>#</th><th>Guion</th><th class="hide-m">Tipo</th><th class="hide-m">Largo</th><th>Decisión</th></tr></thead><tbody id="sumBody"></tbody></table>
+  </section>
+  <div id="detail">
+  <div id="meta"></div>
+  <div class="decide" id="decide"></div>
+  <div class="tabs">
+    <button class="tab active" data-tab="guion" onclick="switchTab('guion')">Guión</button>
+    <button class="tab" data-tab="notas" onclick="switchTab('notas')">Notas de grabación</button>
+    <button class="tab" data-tab="desc" onclick="switchTab('desc')">Descripción del post</button>
+  </div>
+  <div class="panel active" id="p-guion"></div>
+  <div class="panel" id="p-notas"></div>
+  <div class="panel" id="p-desc"></div>
+  <div class="nav">
+    <button class="nav-btn" id="prev" onclick="navigate(-1)">← Anterior</button>
+    <div class="dots" id="dots"></div>
+    <button class="nav-btn next" id="next" onclick="navigate(1)">Siguiente →</button>
+  </div>
+  </div>
+</main>
+<script>
+const reels = [{"numero": "Guión 01 · N02", "titulo": "Si tuviera 300 millones ahorrados", "bloque": "🧠 Educativo", "tipo": "#27 Si empezara de cero", "palanca": "Qué hacer con los ahorros en vez de comprar vivienda", "duracion": "~66 seg", "guion": [{"parte": "Gancho", "timing": "~5 seg", "clase": "gancho", "texto": "Trescientos millones en tu apartamento no te pagan nada.\nSi hoy los tuviera ahorrados, esto es lo que haría."}, {"parte": "Relevancia", "timing": "~7 seg", "clase": "relevancia", "texto": "Primero, lo que no haría: meterlos todos en el apartamento para vivir.\nAhí se quedan quietos. Hasta ahí llegaron tus ahorros.\nLo que sí haría."}, {"parte": "Valor", "timing": "~48 seg", "clase": "valor", "texto": "Uno: buscaría una casa grande, en un buen sector, aunque no sea bonita.\nLa peor casa del mejor barrio.\nDos: la compraría con crédito hipotecario.\nEl banco presta hasta el setenta por ciento de la compra.\nCon una parte de los trescientos millones pongo el resto,\ny lo demás va a la remodelación, para convertirla en coliving.\nTres: la pondría a rentar por habitaciones.\nCon esa renta pago la cuota del crédito, los gastos fijos,\ny me queda un excedente cada mes.\n¿Y cómo sé si da? Con nuestra métrica dorada de Flipping dos punto cero.\nEl flujo neto tiene que llegar, mínimo,\nal uno coma tres por ciento mensual de la inversión total.\nOjo: de la inversión total, lo que cuesta la casa más la remodelación.\nSi da, la propiedad paga la cuota y todavía deja utilidad.\nY mientras tanto, la casa sigue siendo tuya y se valoriza.\nAsí, los trescientos millones no se quedan quietos.\nSe convierten en un activo que te paga todos los meses."}, {"parte": "Acción", "timing": "~6 seg", "clase": "accion", "texto": "Si querés que seamos tus mentores en este camino de construir patrimonio,\ncomentá PATRIMONIO y te mandamos toda la información."}], "notas": [{"icon": "⚡", "titulo": "Ritmo y energía", "texto": "Regrabación del contenido nuevo (idea del reel 001 en formato del 002). ~66 s a unas 210 palabras por minuto (el ritmo de Camilo con guion). El hook tiene que estar dicho en 2.6 s. Cada línea del guion es un corte o un cambio de plano.", "cta": false}, {"icon": "😐", "titulo": "Expresión", "texto": "Convencido y cercano, como aconsejando a un amigo.", "cta": false}, {"icon": "🤲", "titulo": "Gestos", "texto": "Marcar uno, dos, tres; mano abierta en 'no te pagan nada'.", "cta": false}, {"icon": "🎬", "titulo": "Visuales y texto en pantalla", "texto": "Tarjetas: 0:00 300 MILLONES QUIETOS · 0:05 LO QUE NO HARÍA · 0:13 1. CASA GRANDE, BUEN SECTOR · 0:18 2. CRÉDITO HASTA EL 70% · 0:26 RESTO: REMODELACIÓN · 0:29 3. RENTA POR HABITACIONES · 0:42 FLUJO NETO ≥ 1,3% · 0:49 CUOTA PAGA + UTILIDAD · 0:57 UN ACTIVO QUE PAGA · 1:01 COMENTA PATRIMONIO\n\nMáximo seis palabras por tarjeta, dentro de la zona segura (ni arriba de y=230 ni abajo de y=1440, libres los 230 px de la derecha). Subtítulos quemados.\n\nNotas: Toma la idea del reel 001 de Fabio ('el peor error es comprar vivienda con tus ahorros', 2,6 mil vistas) y la cuenta con el formato del reel 002 de Camilo ('si hoy... esto es lo que haría', el mejor de la cuenta). Usa lo confirmado sobre el crédito hipotecario: financia la compra y la remodelación va con capital propio (los 300 millones). Confirmado por el equipo: los bancos prestan hasta el 70% de la compra; el resto sale de los 300 millones y lo que queda va a la remodelación. No dice cómo se presenta la propiedad ante el banco (regla de CLAUDE.md).", "cta": false}, {"icon": "🎵", "titulo": "Audio", "texto": "Voz a cámara, limpia. Si hay música, de fondo, baja y sin letra para que no tape la voz. Casi todos miran sin sonido primero: los subtítulos cargan el video.", "cta": false}, {"icon": "📢", "titulo": "CTA", "texto": "Decirlo a cámara, sin apuro: \"Si querés que seamos tus mentores en este camino de construir patrimonio, comentá PATRIMONIO y te mandamos toda la información.\" La tarjeta COMENTA PATRIMONIO queda en pantalla hasta el final. El comentario dispara el DM con la información y el paso a WhatsApp con el setter para agendar la llamada.", "cta": true}], "descripcion": "300 millones metidos en el apartamento para vivir no te pagan nada.\n\nLo que haríamos con esos ahorros: buscar una casa grande en un buen sector y comprarla con crédito hipotecario (el banco presta hasta el 70%). Con una parte de los 300 millones se pone el resto de la compra, y lo demás va a la remodelación para convertirla en coliving.\n\nLa métrica dorada de Flipping 2.0 dice si da: el flujo neto tiene que llegar al menos al 1,3% mensual de la inversión total (compra más remodelación). Así la propiedad paga la cuota, deja utilidad y sigue siendo tuya mientras se valoriza.\n\nSi quieres que seamos tus mentores en este camino de construir patrimonio, comenta PATRIMONIO y te enviamos toda la información.", "hashtags": ["#Flipping20", "#ColivingColombia", "#InversionInmobiliaria", "#CreditoHipotecario"]}, {"numero": "Guión 02 · N04", "titulo": "Por qué un propietario se asocia contigo", "bloque": "🧠 Educativo", "tipo": "Reencuadre", "palanca": "Por qué el dueño acepta el rent to rent", "duracion": "~44 seg", "guion": [{"parte": "Gancho", "timing": "~3 seg", "clase": "gancho", "texto": "El dueño no quiere administrar su casa. Ahí está tu negocio."}, {"parte": "Relevancia", "timing": "~7 seg", "clase": "relevancia", "texto": "Mucha gente me pregunta por qué un propietario aceptaría un rent to rent,\no por qué se asociaría conmigo.\nPorque le resuelvo dos problemas."}, {"parte": "Valor", "timing": "~29 seg", "clase": "valor", "texto": "Uno: la mayoría de propietarios no quiere administrar.\nAdministrar demanda tiempo, trabajo y conocimiento,\ny ellos no lo tienen o no lo quieren poner.\nDos: están cansados de la renta tradicional.\nInquilinos que no cuidan la casa\ny se van dejándola peor de como la recibieron.\nCon este modelo pasa lo contrario.\nPara que la casa siga rentada, yo necesito tenerla en buen estado.\nEse es mi negocio.\nEntonces el dueño recibe su renta,\nno tiene que administrar, y su propiedad se cuida.\nAsí le hablás cuando lo llamás.\nNo le estás pidiendo un favor. Le estás resolviendo un problema."}, {"parte": "Acción", "timing": "~6 seg", "clase": "accion", "texto": "Si querés que seamos tus mentores en este camino de construir patrimonio,\ncomentá PATRIMONIO y te mandamos toda la información."}], "notas": [{"icon": "⚡", "titulo": "Ritmo y energía", "texto": "Regrabación del contenido nuevo (paso 3 del reel 002). ~44 s a unas 210 palabras por minuto (el ritmo de Camilo con guion). El hook tiene que estar dicho en 3.1 s. Cada línea del guion es un corte o un cambio de plano.", "cta": false}, {"icon": "😐", "titulo": "Expresión", "texto": "Seguro y empático con el propietario.", "cta": false}, {"icon": "🤲", "titulo": "Gestos", "texto": "Contar los dos problemas con los dedos; mano abierta en 'le estás resolviendo un problema'.", "cta": false}, {"icon": "🎬", "titulo": "Visuales y texto en pantalla", "texto": "Tarjetas: 0:00 EL DUEÑO NO QUIERE ADMINISTRAR · 0:09 2 PROBLEMAS · 0:10 1. NO QUIERE ADMINISTRAR · 0:17 2. CANSADO DE LA RENTA TRADICIONAL · 0:25 LA CASA SE CUIDA · 0:35 NO ES UN FAVOR: ES UNA SOLUCIÓN · 0:39 COMENTA PATRIMONIO\n\nMáximo seis palabras por tarjeta, dentro de la zona segura (ni arriba de y=230 ni abajo de y=1440, libres los 230 px de la derecha). Subtítulos quemados.\n\nNotas: Con la información del equipo: los propietarios no quieren administrar (tiempo, trabajo, conocimiento), están cansados de la renta tradicional donde no cuidan la propiedad, y en este modelo quien opera necesita mantener la casa en buen estado para que siga rentada. Desarrolla el paso 3 del reel 002 ('intentaría que el mismo dueño se asocie conmigo').", "cta": false}, {"icon": "🎵", "titulo": "Audio", "texto": "Voz a cámara, limpia. Si hay música, de fondo, baja y sin letra para que no tape la voz. Casi todos miran sin sonido primero: los subtítulos cargan el video.", "cta": false}, {"icon": "📢", "titulo": "CTA", "texto": "Decirlo a cámara, sin apuro: \"Si querés que seamos tus mentores en este camino de construir patrimonio, comentá PATRIMONIO y te mandamos toda la información.\" La tarjeta COMENTA PATRIMONIO queda en pantalla hasta el final. El comentario dispara el DM con la información y el paso a WhatsApp con el setter para agendar la llamada.", "cta": true}], "descripcion": "¿Por qué un propietario aceptaría un rent to rent o se asociaría contigo?\n\nPorque le resuelves dos problemas. La mayoría no quiere administrar, porque demanda tiempo y conocimiento. Y muchos están cansados de la renta tradicional, con inquilinos que no cuidan la propiedad.\n\nEn este modelo, para mantener la casa rentada hay que tenerla en buen estado. El dueño recibe su renta, no administra y su propiedad se cuida.\n\nSi quieres que seamos tus mentores en este camino de construir patrimonio, comenta PATRIMONIO y te enviamos toda la información.", "hashtags": ["#RentToRent", "#ColivingColombia", "#InversionInmobiliaria"]}, {"numero": "Guión 03 · N01", "titulo": "El filtro antes de comprar una casa", "bloque": "🧠 Educativo", "tipo": "#11 Lista con favorito", "palanca": "El filtro prometido en el reel 003", "duracion": "~70 seg", "guion": [{"parte": "Gancho", "timing": "~5 seg", "clase": "gancho", "texto": "Antes de comprar cualquier casa, la pasamos por cuatro filtros.\nPorque la misma plata puede comprar una casa"}, {"parte": "Relevancia", "timing": "~9 seg", "clase": "relevancia", "texto": "que deja dos coma ocho millones al mes, o una que deja seis.\nSon promedios de nuestros proyectos y de nuestros estudiantes.\nY la diferencia está en estas cuatro preguntas."}, {"parte": "Valor", "timing": "~51 seg", "clase": "valor", "texto": "Uno: ¿hay demanda real?\nQue haya gente buscando arriendo en esa zona.\nCerca de universidades, de zonas de trabajo, en sectores que están creciendo.\nSin demanda, por más bonita que quede la casa, no hay quién pague.\nDos: ¿tiene espacios desperdiciados?\nPatios grandes, garajes que no se usan, salas enormes.\nAhí es donde salen las habitaciones nuevas.\nEntre más espacio desperdiciado, más habitaciones le sacás.\nTres: ¿la estructura deja ampliar?\nSi tiene muchos muros de carga que no se pueden tocar,\naunque el patio se vea grande, no vas a poder crecer.\nCuatro, el filtro final: la métrica dorada.\nSumás lo que cuesta la casa más la remodelación.\nEl flujo neto mensual tiene que llegar, mínimo,\nal uno coma tres por ciento de esa suma.\nPor ejemplo: cuatrocientos cincuenta millones de compra\ny doscientos cincuenta de remodelación son setecientos millones.\nNecesitás mínimo nueve millones cien mil pesos netos al mes.\nSi la casa cumple los cuatro, se compra.\nSi le falta uno solo, seguimos buscando.\nLa casa que deja seis millones no era más bonita. Pasó el filtro."}, {"parte": "Acción", "timing": "~6 seg", "clase": "accion", "texto": "Si querés que seamos tus mentores en este camino de construir patrimonio,\ncomentá PATRIMONIO y te mandamos toda la información."}], "notas": [{"icon": "⚡", "titulo": "Ritmo y energía", "texto": "Regrabación del contenido nuevo (cumple lo prometido en el reel 003). ~70 s a unas 210 palabras por minuto (el ritmo de Camilo con guion). El hook tiene que estar dicho en 2.9 s. Cada línea del guion es un corte o un cambio de plano.", "cta": false}, {"icon": "😐", "titulo": "Expresión", "texto": "Seguro y ordenado; la cuenta del final con calma.", "cta": false}, {"icon": "🤲", "titulo": "Gestos", "texto": "Contar los cuatro filtros con los dedos; señalar patio, garaje y muros si se graba en una casa.", "cta": false}, {"icon": "🎬", "titulo": "Visuales y texto en pantalla", "texto": "Ideal grabarlo recorriendo una casa real: señalar el patio, el garaje, un muro de carga.\n\nTarjetas: 0:00 4 FILTROS ANTES DE COMPRAR · 0:03 2,8M vs 6M AL MES · 0:09 PROMEDIO DE NUESTROS PROYECTOS · 0:14 1. DEMANDA REAL · 0:24 2. ESPACIOS DESPERDICIADOS · 0:32 3. ESTRUCTURA · 0:40 4. MÉTRICA DORADA · 0:47 1,3% MENSUAL · 0:51 700M → 9,1M AL MES · 0:59 SI FALTA UNO, NO SE COMPRA · 1:05 COMENTA PATRIMONIO\n\nMáximo seis palabras por tarjeta, dentro de la zona segura (ni arriba de y=230 ni abajo de y=1440, libres los 230 px de la derecha). Subtítulos quemados.\n\nNotas: Cumple lo que prometió el reel 003 ('en el próximo video te muestro cuál es ese filtro'), el segundo mejor reel de la cuenta. Los cuatro criterios salen del reel 005 (Fabio) y la métrica dorada de Flipping 2.0 (1,3%) de CLAUDE.md. El ejemplo 450 + 250 = 700 millones → 9,1 millones al mes también es del 005. Las cifras 2,8 y 6 millones son los promedios del reel 003 y se presentan como promedio.", "cta": false}, {"icon": "🎵", "titulo": "Audio", "texto": "Voz a cámara, limpia. Si hay música, de fondo, baja y sin letra para que no tape la voz. Casi todos miran sin sonido primero: los subtítulos cargan el video.", "cta": false}, {"icon": "📢", "titulo": "CTA", "texto": "Decirlo a cámara, sin apuro: \"Si querés que seamos tus mentores en este camino de construir patrimonio, comentá PATRIMONIO y te mandamos toda la información.\" La tarjeta COMENTA PATRIMONIO queda en pantalla hasta el final. El comentario dispara el DM con la información y el paso a WhatsApp con el setter para agendar la llamada.", "cta": true}], "descripcion": "Con la misma plata, una casa puede dejar 2,8 millones al mes y otra 6 millones.\n\nSon promedios de nuestros proyectos y estudiantes.\n\nLa diferencia es el filtro antes de comprar:\n\n1. Demanda real en la zona.\n2. Espacios desperdiciados que se pueden convertir en habitaciones.\n3. Una estructura que deje ampliar.\n4. La métrica dorada: el flujo neto mensual tiene que llegar al 1,3% de la compra más la remodelación. Con 700 millones de inversión, mínimo 9,1 millones netos al mes.\n\nSi le falta uno, se sigue buscando.\n\nSi quieres que seamos tus mentores en este camino de construir patrimonio, comenta PATRIMONIO y te enviamos toda la información.", "hashtags": ["#Flipping20", "#ColivingColombia", "#MetricaDorada", "#InversionInmobiliaria"]}, {"numero": "Guión 04 · N03", "titulo": "Cómo se diseña un coliving de verdad", "bloque": "🧠 Educativo", "tipo": "Open loop cumplido (reel 011)", "palanca": "Diseño por metro cuadrado que renta", "duracion": "~49 seg", "guion": [{"parte": "Gancho", "timing": "~6 seg", "clase": "gancho", "texto": "Un coliving no se diseña metiendo camas.\nSe diseña por metro cuadrado que renta.\nTe cuento cómo lo pensamos nosotros."}, {"parte": "Relevancia", "timing": "~9 seg", "clase": "relevancia", "texto": "La meta es sacarle a la casa la mayor cantidad de espacios rentables,\nsin sacrificar la comodidad de quien va a vivir ahí.\nPorque un cuarto incómodo se desocupa rápido."}, {"parte": "Valor", "timing": "~29 seg", "clase": "valor", "texto": "Entonces miramos cada metro.\nEse patio, ¿puede ser una habitación?\nEsa sala enorme, ¿se puede dividir?\nY según lo que da la casa, se define el tipo de espacio.\nAlgunas habitaciones con baño privado, otras sin baño.\nAlgunas con cocina, y otras tipo apartaestudio.\nY además, zonas comunes de verdad: cocina equipada, sala, un lugar para trabajar.\nTodo pasa por la aprobación de un arquitecto y un ingeniero\nque trabajan con nuestra metodología.\nOjo con esto: más habitaciones no siempre es mejor.\nLa casa que más renta es la que tiene más espacios rentables\ny donde la gente quiere quedarse."}, {"parte": "Acción", "timing": "~6 seg", "clase": "accion", "texto": "Si querés que seamos tus mentores en este camino de construir patrimonio,\ncomentá PATRIMONIO y te mandamos toda la información."}], "notas": [{"icon": "⚡", "titulo": "Ritmo y energía", "texto": "Regrabación del contenido nuevo (lo que prometió el reel 011). ~49 s a unas 210 palabras por minuto (el ritmo de Camilo con guion). El hook tiene que estar dicho en 2.0 s. Cada línea del guion es un corte o un cambio de plano.", "cta": false}, {"icon": "😐", "titulo": "Expresión", "texto": "Didáctico, mostrando el espacio con orgullo.", "cta": false}, {"icon": "🤲", "titulo": "Gestos", "texto": "Señalar el patio y la sala al preguntar; abrir la mano en 'zonas comunes de verdad'.", "cta": false}, {"icon": "🎬", "titulo": "Visuales y texto en pantalla", "texto": "Ideal grabarlo en un proyecto real, recorriendo una habitación con baño, una sin baño y un apartaestudio.\n\nTarjetas: 0:02 POR METRO CUADRADO QUE RENTA · 0:06 MÁS ESPACIOS RENTABLES · 0:09 SIN SACRIFICAR COMODIDAD · 0:15 ¿PATIO = HABITACIÓN? · 0:23 CON BAÑO · SIN BAÑO · 0:25 APARTAESTUDIOS · 0:27 ZONAS COMUNES REALES · 0:31 ARQUITECTO + INGENIERO · 0:35 MÁS CUARTOS ≠ MÁS RENTA · 0:43 COMENTA PATRIMONIO\n\nMáximo seis palabras por tarjeta, dentro de la zona segura (ni arriba de y=230 ni abajo de y=1440, libres los 230 px de la derecha). Subtítulos quemados.\n\nNotas: Cumple lo que prometió el reel 011 ('en el próximo video te muestro cómo se diseñó un coliving de verdad'). Con la información del equipo: maximizar los metros cuadrados que rentan sin sacrificar comodidad, mezcla de tipos de espacio según la casa, y aprobación de arquitecto e ingeniero. Zonas comunes, del reel 011. Por pedido del equipo NO menciona que la distribución se define de forma empírica.", "cta": false}, {"icon": "🎵", "titulo": "Audio", "texto": "Voz a cámara, limpia. Si hay música, de fondo, baja y sin letra para que no tape la voz. Casi todos miran sin sonido primero: los subtítulos cargan el video.", "cta": false}, {"icon": "📢", "titulo": "CTA", "texto": "Decirlo a cámara, sin apuro: \"Si querés que seamos tus mentores en este camino de construir patrimonio, comentá PATRIMONIO y te mandamos toda la información.\" La tarjeta COMENTA PATRIMONIO queda en pantalla hasta el final. El comentario dispara el DM con la información y el paso a WhatsApp con el setter para agendar la llamada.", "cta": true}], "descripcion": "Un coliving no se diseña metiendo camas. Se diseña por metro cuadrado que renta.\n\nLa meta es sacarle a la casa la mayor cantidad de espacios rentables sin sacrificar la comodidad: habitaciones con y sin baño, algunas con cocina o tipo apartaestudio, y zonas comunes de verdad. Todo con la aprobación de un arquitecto y un ingeniero.\n\nMás habitaciones no siempre es mejor. La casa que más renta es la que tiene más espacios rentables y donde la gente quiere quedarse.\n\nSi quieres que seamos tus mentores en este camino de construir patrimonio, comenta PATRIMONIO y te enviamos toda la información.", "hashtags": ["#ColivingColombia", "#Multirrenta", "#InversionInmobiliaria"]}, {"numero": "Guión 05 · N05", "titulo": "Cómo llenamos las habitaciones", "bloque": "💰 Prueba", "tipo": "Costo", "palanca": "Llenar habitaciones con marketing digital", "duracion": "~38 seg", "guion": [{"parte": "Gancho", "timing": "~5 seg", "clase": "gancho", "texto": "Una habitación vacía te cuesta plata todos los días.\nNosotros llenamos un edificio de treinta habitaciones en dos semanas."}, {"parte": "Relevancia", "timing": "~6 seg", "clase": "relevancia", "texto": "Por eso, en nuestros coliving no esperamos a que los inquilinos lleguen solos.\nSalimos a buscarlos.\n¿Cómo? Con marketing digital."}, {"parte": "Valor", "timing": "~21 seg", "clase": "valor", "texto": "Uno: publicamos cada habitación en Marketplace.\nDos: anuncios en Facebook y en Instagram.\nTres: campañas publicitarias cuando hay que llenar una casa rápido.\nAsí llenamos ese edificio de treinta habitaciones en dos semanas.\nObvio, depende del tamaño de cada proyecto, pero el sistema es el mismo.\nOjo con esto.\nLa mejor casa, bien adecuada y bien ubicada, sin marketing se queda vacía.\nY cada mes con habitaciones vacías es plata que no entra."}, {"parte": "Acción", "timing": "~6 seg", "clase": "accion", "texto": "Si querés que seamos tus mentores en este camino de construir patrimonio,\ncomentá PATRIMONIO y te mandamos toda la información."}], "notas": [{"icon": "⚡", "titulo": "Ritmo y energía", "texto": "Regrabación del contenido nuevo (paso 5 del reel 002). ~38 s a unas 210 palabras por minuto (el ritmo de Camilo con guion). El hook tiene que estar dicho en 2.6 s. Cada línea del guion es un corte o un cambio de plano.", "cta": false}, {"icon": "😐", "titulo": "Expresión", "texto": "Práctico y rápido; es una sola idea.", "cta": false}, {"icon": "🤲", "titulo": "Gestos", "texto": "Mostrar el celular con Marketplace o un anuncio en pantalla.", "cta": false}, {"icon": "🎬", "titulo": "Visuales y texto en pantalla", "texto": "Tarjetas: 0:00 UNA HABITACIÓN VACÍA CUESTA · 0:03 30 HABITACIONES EN 2 SEMANAS · 0:09 SALIMOS A BUSCARLOS · 0:11 1. MARKETPLACE · 0:13 2. FACEBOOK E INSTAGRAM · 0:15 3. CAMPAÑAS · 0:25 SIN MARKETING, VACÍA · 0:32 COMENTA PATRIMONIO\n\nMáximo seis palabras por tarjeta, dentro de la zona segura (ni arriba de y=230 ni abajo de y=1440, libres los 230 px de la derecha). Subtítulos quemados.\n\nNotas: Con la información del equipo: llenan con marketing digital (Marketplace, anuncios en Facebook e Instagram y campañas publicitarias). Desarrolla el paso 5 del reel 002 ('saldría a llenar las habitaciones con estrategias de marketing efectivas'). Caso real confirmado por el equipo: un edificio de 30 habitaciones lleno en dos semanas (depende del tamaño de cada proyecto, y el guion lo aclara). Ideal mostrar en pantalla una publicación real de Marketplace o un anuncio (sin datos de inquilinos). Es corto a propósito: es una sola idea.", "cta": false}, {"icon": "🎵", "titulo": "Audio", "texto": "Voz a cámara, limpia. Si hay música, de fondo, baja y sin letra para que no tape la voz. Casi todos miran sin sonido primero: los subtítulos cargan el video.", "cta": false}, {"icon": "📢", "titulo": "CTA", "texto": "Decirlo a cámara, sin apuro: \"Si querés que seamos tus mentores en este camino de construir patrimonio, comentá PATRIMONIO y te mandamos toda la información.\" La tarjeta COMENTA PATRIMONIO queda en pantalla hasta el final. El comentario dispara el DM con la información y el paso a WhatsApp con el setter para agendar la llamada.", "cta": true}], "descripcion": "Llenamos un edificio de 30 habitaciones en dos semanas.\n\nUna habitación vacía cuesta plata todos los días, por eso no esperamos a que los inquilinos lleguen solos.\n\nLlenamos las habitaciones con marketing digital: publicaciones en Marketplace, anuncios en Facebook e Instagram y campañas publicitarias cuando hay que llenar una casa rápido.\n\nSi quieres que seamos tus mentores en este camino de construir patrimonio, comenta PATRIMONIO y te enviamos toda la información.", "hashtags": ["#ColivingColombia", "#RentToRent", "#InversionInmobiliaria"]}];
+let current = 0;
+let currentTab = 'guion';
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const LABELS = {si:'Sí', no:'No', rev:'Revisar'};
+let decisions = {};
+try { decisions = JSON.parse(localStorage.getItem('ctp-decisiones-nuevos') || '{}') || {}; } catch (e) { decisions = {}; }
+const keyOf = r => r.numero.split('·').pop().trim();
+function saveDecisions(){ try { localStorage.setItem('ctp-decisiones-nuevos', JSON.stringify(decisions)); } catch (e) {} }
+function decide(v){
+  const k = keyOf(reels[current]);
+  if (decisions[k] === v) delete decisions[k]; else decisions[k] = v;
+  saveDecisions(); renderDecide(); renderSummary();
+}
+function renderDecide(){
+  const d = decisions[keyOf(reels[current])];
+  document.getElementById('decide').innerHTML = '<span class="decide-label">Decisión</span>' +
+    ['si','rev','no'].map(v => `<button class="dec-btn ${v}${d === v ? ' on' : ''}" onclick="decide('${v}')">${LABELS[v]}</button>`).join('');
+}
+function renderSummary(){
+  const c = {si:0, no:0, rev:0, none:0};
+  document.getElementById('sumBody').innerHTML = reels.map((r, i) => {
+    const d = decisions[keyOf(r)] || 'none'; c[d]++;
+    return `<tr onclick="goTo(${i}); toggleSummary(false)"><td>${esc(keyOf(r))}</td><td>${esc(r.titulo)}</td><td class="hide-m">${esc(r.bloque)}</td><td class="hide-m">${esc(r.duracion)}</td><td><span class="pill ${d}">${d === 'none' ? 'Sin decidir' : LABELS[d]}</span></td></tr>`;
+  }).join('');
+  document.getElementById('sumCounts').textContent = `${c.si} sí · ${c.rev} por revisar · ${c.no} no · ${c.none} sin decidir`;
+}
+function toggleSummary(force){
+  const el = document.getElementById('summary');
+  const show = typeof force === 'boolean' ? force : !el.classList.contains('active');
+  el.classList.toggle('active', show);
+  document.getElementById('detail').style.display = show ? 'none' : '';
+  document.getElementById('sumBtn').textContent = show ? 'Ver guiones' : 'Resumen';
+  if (show) renderSummary();
+  window.scrollTo({top:0});
+}
+function copyDecisions(btn){
+  const lines = reels.map(r => { const d = decisions[keyOf(r)]; return `${keyOf(r)} · ${r.titulo}: ${d ? LABELS[d] : 'sin decidir'}`; });
+  const text = lines.join('\n');
+  const done = () => { btn.textContent = '✓ Copiado'; setTimeout(() => btn.textContent = 'Copiar decisiones', 2000); };
+  if (navigator.clipboard && window.isSecureContext) { navigator.clipboard.writeText(text).then(done); }
+  else { const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); done(); }
+}
+function animate(el){ el.style.animation='none'; void el.offsetWidth; el.style.animation='fadeUp 0.4s ease forwards'; }
+function render(){
+  const r = reels[current];
+  document.getElementById('cur').textContent = current + 1;
+  document.getElementById('tot').textContent = reels.length;
+  document.getElementById('prog').style.width = ((current + 1) / reels.length * 100) + '%';
+  const meta = document.getElementById('meta');
+  meta.innerHTML = `<div class="reel-num">${esc(r.numero)}</div><h1 class="reel-title">${esc(r.titulo)}</h1>
+    <div class="tags"><span class="tag tag-bloque">${esc(r.bloque)}</span><span class="tag tag-tipo">${esc(r.tipo)}</span><span class="tag tag-palanca">${esc(r.palanca)}</span><span class="tag tag-duracion">${esc(r.duracion)}</span></div>`;
+  animate(meta);
+  document.getElementById('p-guion').innerHTML = r.guion.map(p => `<div class="block"><div class="block-label label-${p.clase}">${esc(p.parte)} <span>${esc(p.timing)}</span></div><div class="script-text ${p.clase}">${esc(p.texto)}</div></div>`).join('');
+  document.getElementById('p-notas').innerHTML = `<div class="notes-grid">${r.notas.map(n => `<div class="note${n.cta ? ' cta-note' : ''}"><div class="note-title">${n.icon} ${esc(n.titulo)}</div><div class="note-text">${esc(n.texto)}</div></div>`).join('')}</div>`;
+  document.getElementById('p-desc').innerHTML = `<div class="desc-box"><button class="desc-copy-btn" onclick="copyDesc(this)">Copiar</button><div class="desc-text">${esc(r.descripcion)}</div><div class="hashtags">${r.hashtags.map(h => `<span class="hashtag">${esc(h)}</span>`).join('')}</div></div>`;
+  ['p-guion','p-notas','p-desc'].forEach(id => animate(document.getElementById(id)));
+  document.getElementById('prev').disabled = current === 0;
+  document.getElementById('next').textContent = current === reels.length - 1 ? '✓ Fin' : 'Siguiente →';
+  document.getElementById('next').disabled = current === reels.length - 1;
+  document.getElementById('dots').innerHTML = reels.map((_, i) => `<div class="dot${i === current ? ' active' : ''}" onclick="goTo(${i})" title="${esc(reels[i].titulo)}"></div>`).join('');
+  switchTab(currentTab);
+  renderDecide();
+}
+function switchTab(tab){
+  currentTab = tab;
+  document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+  document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === 'p-' + tab));
+}
+function navigate(dir){ const n = current + dir; if (n < 0 || n >= reels.length) return; current = n; render(); window.scrollTo({top:0, behavior:'smooth'}); }
+function goTo(i){ current = i; render(); window.scrollTo({top:0, behavior:'smooth'}); }
+function copyDesc(btn){
+  const r = reels[current];
+  const text = r.descripcion + '\n\n' + r.hashtags.join(' ');
+  const done = () => { btn.textContent = '✓ Copiado'; setTimeout(() => btn.textContent = 'Copiar', 2000); };
+  if (navigator.clipboard && window.isSecureContext) { navigator.clipboard.writeText(text).then(done); }
+  else { const ta = document.createElement('textarea'); ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove(); done(); }
+}
+render();
+</script>
+</body>
+</html>
